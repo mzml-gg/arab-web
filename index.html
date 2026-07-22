@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARAB code — منصة الأكواد العربية</title>
+<meta name="description" content="ARAB code — منصة عربية لمشاركة ونشر الأكواد البرمجية بعد مراجعة الإدارة.">
+<meta property="og:title" content="ARAB code">
+<meta property="og:description" content="منصة عربية لمشاركة الأكواد البرمجية">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="brand">ARAB <span>code</span></a>
+  <div class="nav-links">
+    <a href="/search.html">بحث</a>
+    <a href="/submit.html">أضف كود</a>
+    <a href="/account.html">حسابي</a>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <img src="/assets/sphere.png" alt="" class="sphere" loading="eager">
+    <div class="hero-content">
+      <h1>منصة <span class="glow">ARAB code</span></h1>
+      <p class="subtitle">شارك أكوادك · انشرها بدومين خاص · مراجعة من الإدارة</p>
+      <div class="cta">
+        <a href="/submit.html" class="btn btn-primary">أضف كودك الآن</a>
+        <a href="/search.html" class="btn btn-ghost">تصفح الأكواد</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <div class="ico">🔍</div>
+      <h3>بحث في الأكواد</h3>
+      <p>ابحث بين جميع الأكواد المنشورة بسهولة.</p>
+    </div>
+    <div class="feature">
+      <div class="ico">🛡️</div>
+      <h3>مراجعة الإدارة</h3>
+      <p>كل كود يُراجع قبل النشر لضمان الجودة والأمان.</p>
+    </div>
+    <div class="feature">
+      <div class="ico">🌐</div>
+      <h3>دومين لكل كود</h3>
+      <p>كل كود موافق عليه يحصل على رابطه الخاص مباشرة.</p>
+    </div>
+    <div class="feature">
+      <div class="ico">👤</div>
+      <h3>حساب المستخدم</h3>
+      <p>سجل حسابك، تابع طلباتك، وشاهد أكوادك المنشورة.</p>
+    </div>
+  </section>
+
+  <section class="latest">
+    <h2>أحدث الأكواد</h2>
+    <div id="latest-list" class="grid">
+      <div class="loading">جاري التحميل...</div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>© ARAB code — <a href="/admin.html">لوحة الإدارة</a></p>
+</footer>
+
+<script src="/app.js"></script>
+<script>loadLatest();</script>
+</body>
+</html>
