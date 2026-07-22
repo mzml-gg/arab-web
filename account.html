@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حسابي — ARAB code</title>
+<meta name="description" content="إدارة حسابك على منصة ARAB code — تتبع طلباتك.">
+<link rel="stylesheet" href="/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="brand">ARAB <span>code</span></a>
+  <div class="nav-links">
+    <a href="/search.html">بحث</a>
+    <a href="/submit.html">أضف كود</a>
+    <a href="/account.html">حسابي</a>
+  </div>
+</nav>
+<main>
+  <div class="form">
+    <h2>👤 حسابي</h2>
+    <div id="msg"></div>
+    <div id="loggedOut">
+      <p class="hint" style="margin-bottom:16px">أنشئ حساباً محلياً لتتبع أكوادك المرسلة (البيانات محفوظة في متصفحك فقط).</p>
+      <div class="field"><label>اسم المستخدم</label><input id="username" class="input" placeholder="مثال: ziad"></div>
+      <div class="field"><label>البريد (اختياري)</label><input id="email" class="input" type="email" placeholder="you@example.com"></div>
+      <button class="btn btn-primary" onclick="register()">إنشاء / تسجيل الدخول</button>
+    </div>
+    <div id="loggedIn" style="display:none">
+      <p>أهلاً <strong id="who"></strong> 👋</p>
+      <div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="logout()">تسجيل الخروج</button></div>
+      <h3 style="margin-top:24px;margin-bottom:12px">📬 طلباتي</h3>
+      <div id="mySubs"></div>
+    </div>
+  </div>
+</main>
+<footer><p>© ARAB code</p></footer>
+<script src="/app.js"></script>
+<script>
+function register(){
+  const username = document.getElementById('username').value.trim();
+  const email = document.getElementById('email').value.trim();
+  if(!username){ document.getElementById('msg').innerHTML = '<div class="msg err">أدخل اسم المستخدم.</div>'; return; }
+  setUser({username, email, at: Date.now()});
+  location.reload();
+}
+function logout(){ clearUser(); localStorage.removeItem('my_submissions'); location.reload(); }
+function renderPage(){
+  const u = getUser();
+  if(u){
+    document.getElementById('loggedOut').style.display='none';
+    document.getElementById('loggedIn').style.display='block';
+    document.getElementById('who').textContent = '@'+u.username;
+    const subs = JSON.parse(localStorage.getItem('my_submissions')||'[]');
+    const el = document.getElementById('mySubs');
+    if(!subs.length){ el.innerHTML='<p class="hint">لا توجد طلبات بعد.</p>'; return; }
+    el.innerHTML = subs.reverse().map(s=>`<div class="card" style="margin-bottom:8px"><h4>${escapeHtml(s.title)}</h4><div class="meta"><span>#${escapeHtml(s.id)}</span><span>${new Date(s.at).toLocaleDateString('ar')}</span></div></div>`).join('');
+  }
+}
+renderPage();
+</script>
+</body>
+</html>
