@@ -5,11 +5,11 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   try {
     const { username, email, password, phone } = await readBody(req);
-    if (!username || !email || !password || !phone) return res.status(400).json({ error: 'كل الحقول مطلوبة' });
+    if (!username || !email || !password) return res.status(400).json({ error: 'كل الحقول مطلوبة' });
     if (!USERNAME_RE.test(username)) return res.status(400).json({ error: 'اسم المستخدم: 3-20 حرف/رقم/شرطة سفلية' });
     if (!EMAIL_RE.test(email)) return res.status(400).json({ error: 'إيميل غير صالح' });
     if (password.length < 8) return res.status(400).json({ error: 'كلمة السر 8 أحرف على الأقل' });
-    if (!/^\+?[0-9]{8,15}$/.test(phone)) return res.status(400).json({ error: 'رقم واتساب غير صالح' });
+    if (phone && !/^\+?[0-9]{5,20}$/.test(phone)) return res.status(400).json({ error: 'رقم واتساب غير صالح' });
 
     const data = await loadUsers();
     const emailLower = email.toLowerCase();
