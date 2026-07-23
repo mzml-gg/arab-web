@@ -1,84 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>أضف كود — ARAB code</title>
-<meta name="description" content="أرسل كودك للمراجعة والنشر على منصة ARAB code.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إضافة كود · ARAB code</title>
 <link rel="stylesheet" href="/styles.css">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 <nav class="nav">
-  <a href="/" class="brand">ARAB <span>code</span></a>
-  <div class="nav-links">
-    <a href="/search.html">بحث</a>
-    <a href="/submit.html">أضف كود</a>
-    <a href="/account.html">حسابي</a>
-  </div>
+  <a href="/" class="brand"><span class="dot"></span> ARAB code</a>
+  <div class="nav-actions" id="nav-actions"></div>
 </nav>
-
 <main>
-  <div class="form">
-    <h2>📤 إرسال كود للمراجعة</h2>
-    <div id="userBar"></div>
-    <div id="msg"></div>
-    <form id="submitForm">
-      <div class="field">
-        <label>عنوان الكود</label>
-        <input class="input" name="title" required maxlength="120" placeholder="مثال: أداة تنزيل من تيك توك">
-      </div>
-      <div class="field">
-        <label>وصف مختصر</label>
-        <input class="input" name="description" maxlength="240" placeholder="ماذا يفعل هذا الكود؟">
-      </div>
-      <div class="field">
-        <label>اسم الملف المقترح (اختياري)</label>
-        <input class="input" name="filename_hint" maxlength="60" placeholder="مثال: tiktok.js — الإدارة قد تغيّره">
-        <div class="hint">الإدارة تختار الاسم النهائي عند الموافقة. الرابط سيكون: <code>/codes/الاسم</code></div>
-      </div>
-      <div class="field">
-        <label>الكود</label>
-        <textarea class="textarea" name="code" required placeholder="ألصق الكود هنا..."></textarea>
-      </div>
-      <button class="btn btn-primary" type="submit">إرسال للمراجعة</button>
-    </form>
-  </div>
+  <form class="form" id="form" style="max-width:640px">
+    <h2>إضافة كود</h2>
+    <p class="sub">راح يُراجَع من الإدارة قبل النشر</p>
+    <div id="msg" class="msg"></div>
+    <div class="field"><label>العنوان</label><input name="title" required maxlength="120"/></div>
+    <div class="field"><label>وصف قصير</label><input name="description" maxlength="300"/></div>
+    <div class="field"><label>اللغة</label>
+      <select name="language">
+        <option value="js">JavaScript</option>
+        <option value="html">HTML</option>
+        <option value="css">CSS</option>
+        <option value="py">Python</option>
+        <option value="php">PHP</option>
+        <option value="java">Java</option>
+        <option value="cpp">C++</option>
+        <option value="cs">C#</option>
+        <option value="ts">TypeScript</option>
+        <option value="go">Go</option>
+        <option value="rs">Rust</option>
+        <option value="txt">أخرى</option>
+      </select>
+    </div>
+    <div class="field"><label>الكود</label><textarea name="code" rows="14" required></textarea></div>
+    <button type="submit" class="btn primary submit">إرسال للمراجعة</button>
+  </form>
 </main>
-
-<footer><p>© ARAB code</p></footer>
 <script src="/app.js"></script>
 <script>
-renderUserBar('userBar');
-document.getElementById('submitForm').addEventListener('submit', async (e)=>{
+(async () => {
+  await renderNav();
+  const me = await loadMe();
+  if (!me) { location.href = '/auth?mode=login'; return; }
+})();
+document.getElementById('form').onsubmit = async (e) => {
   e.preventDefault();
-  const msg = document.getElementById('msg');
-  msg.innerHTML = '';
-  const u = getUser();
-  const fd = new FormData(e.target);
-  const body = {
-    title: fd.get('title'),
-    description: fd.get('description'),
-    filename_hint: fd.get('filename_hint'),
-    code: fd.get('code'),
-    author: u ? u.username : 'مجهول',
-    author_email: u ? u.email : ''
-  };
-  const btn = e.target.querySelector('button');
-  btn.disabled = true; btn.textContent = 'جاري الإرسال...';
-  try{
-    const r = await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const j = await r.json();
-    if(!r.ok) throw new Error(j.error||'فشل الإرسال');
-    msg.innerHTML = `<div class="msg ok">✅ تم إرسال الكود بنجاح! رقم الطلب: <code>${j.id}</code> — بانتظار موافقة الإدارة.</div>`;
+  const msg = document.getElementById('msg'); msg.className='msg'; msg.textContent='';
+  const body = Object.fromEntries(new FormData(e.target).entries());
+  try {
+    await api('/api/submit', { method:'POST', body: JSON.stringify(body) });
+    msg.className='msg ok'; msg.textContent='✓ تم الإرسال. سيراجعه الأدمن.';
     e.target.reset();
-    if(u){ const list = JSON.parse(localStorage.getItem('my_submissions')||'[]'); list.push({id:j.id,title:body.title,at:Date.now()}); localStorage.setItem('my_submissions',JSON.stringify(list)); }
-  }catch(err){
-    msg.innerHTML = `<div class="msg err">❌ ${err.message}</div>`;
-  }finally{
-    btn.disabled = false; btn.textContent = 'إرسال للمراجعة';
-  }
-});
+  } catch (err) { msg.className='msg err'; msg.textContent=err.message; }
+};
 </script>
 </body>
 </html>

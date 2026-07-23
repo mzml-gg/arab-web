@@ -1,72 +1,87 @@
-// Shared GitHub helper
-const OWNER = process.env.GITHUB_OWNER;
-const REPO = process.env.GITHUB_REPO;
-const TOKEN = process.env.GITHUB_TOKEN;
+// GitHub repo as datastore
+const REPO = process.env.GITHUB_REPO || 'mzml-gg/arab-web';
 const BRANCH = process.env.GITHUB_BRANCH || 'main';
-
+const TOKEN = process.env.GITHUB_TOKEN;
 const API = 'https://api.github.com';
 
-function h(){
-  return {
-    'Authorization': `Bearer ${TOKEN}`,
-    'Accept': 'application/vnd.github+json',
-    'User-Agent': 'arab-code-web',
-    'X-GitHub-Api-Version': '2022-11-28'
-  };
+async function gh(path, opts = {}) {
+  const res = await fetch(`${API}${path}`, {
+    ...opts,
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      Accept: 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+      'User-Agent': 'arab-code-web',
+      ...(opts.headers || {}),
+    },
+  });
+  if (!res.ok && res.status !== 404) {
+    const t = await res.text();
+    throw new Error(`GitHub ${res.status}: ${t}`);
+  }
+  return res;
 }
 
-async function ghGet(path){
-  const r = await fetch(`${API}/repos/${OWNER}/${REPO}/contents/${path}?ref=${BRANCH}`,{headers:h()});
-  if(r.status===404) return null;
-  if(!r.ok) throw new Error(`GH GET ${path} ${r.status}: ${await r.text()}`);
-  return r.json();
-}
-async function ghList(dir){
-  const j = await ghGet(dir);
-  if(!j) return [];
-  return Array.isArray(j) ? j : [j];
-}
-async function ghGetFile(path){
-  const j = await ghGet(path);
-  if(!j) return null;
+async function getFile(path) {
+  const res = await gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`);
+  if (res.status === 404) return null;
+  const j = await res.json();
   const content = Buffer.from(j.content, 'base64').toString('utf8');
   return { content, sha: j.sha };
 }
-async function ghPut(path, content, message, sha){
+
+async function putFile(path, content, message, sha) {
   const body = {
     message,
-    content: Buffer.from(content,'utf8').toString('base64'),
-    branch: BRANCH
+    content: Buffer.from(content, 'utf8').toString('base64'),
+    branch: BRANCH,
   };
-  if(sha) body.sha = sha;
-  const r = await fetch(`${API}/repos/${OWNER}/${REPO}/contents/${path}`,{
-    method:'PUT', headers:{...h(),'Content-Type':'application/json'}, body: JSON.stringify(body)
+  if (sha) body.sha = sha;
+  const res = await gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
   });
-  if(!r.ok) throw new Error(`GH PUT ${path} ${r.status}: ${await r.text()}`);
-  return r.json();
+  if (!res.ok) throw new Error(`putFile ${path} failed`);
+  return res.json();
 }
-async function ghDelete(path, sha, message){
-  const r = await fetch(`${API}/repos/${OWNER}/${REPO}/contents/${path}`,{
-    method:'DELETE', headers:{...h(),'Content-Type':'application/json'},
-    body: JSON.stringify({message, sha, branch: BRANCH})
+
+async function deleteFile(path, message, sha) {
+  const res = await gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}`, {
+    method: 'DELETE',
+    body: JSON.stringify({ message, sha, branch: BRANCH }),
   });
-  if(!r.ok) throw new Error(`GH DEL ${path} ${r.status}: ${await r.text()}`);
-  return r.json();
+  return res.ok;
 }
 
-function checkAdmin(req){
-  const token = req.headers['x-admin-token'];
-  if(!token) return false;
-  try{
-    const [email, password] = Buffer.from(token,'base64').toString('utf8').split(':');
-    return email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD;
-  }catch{ return false; }
+async function listDir(path) {
+  const res = await gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`);
+  if (res.status === 404) return [];
+  const j = await res.json();
+  return Array.isArray(j) ? j : [];
 }
 
-function json(res, code, data){
-  res.setHeader('Content-Type','application/json; charset=utf-8');
-  res.setHeader('Cache-Control','no-store');
-  res.status(code).send(JSON.stringify(data));
+// JSON helpers with retry on sha mismatch
+async function readJson(path, fallback) {
+  const f = await getFile(path);
+  if (!f) return { data: fallback, sha: null };
+  try {
+    return { data: JSON.parse(f.content), sha: f.sha };
+  } catch {
+    return { data: fallback, sha: f.sha };
+  }
 }
 
-module.exports = { ghGet, ghList, ghGetFile, ghPut, ghDelete, checkAdmin, json, OWNER, REPO, TOKEN, BRANCH };
+async function writeJson(path, data, message) {
+  for (let i = 0; i < 3; i++) {
+    const current = await getFile(path);
+    try {
+      await putFile(path, JSON.stringify(data, null, 2), message, current?.sha);
+      return true;
+    } catch (e) {
+      if (i === 2) throw e;
+      await new Promise((r) => setTimeout(r, 300 * (i + 1)));
+    }
+  }
+}
+
+module.exports = { gh, getFile, putFile, deleteFile, listDir, readJson, writeJson, REPO, BRANCH };

@@ -1,110 +1,78 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة الإدارة — ARAB code</title>
-<meta name="description" content="لوحة إدارة منصة ARAB code لمراجعة الأكواد المُرسَلة.">
-<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الإدارة · ARAB code</title>
 <link rel="stylesheet" href="/styles.css">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 <nav class="nav">
-  <a href="/" class="brand">ARAB <span>code</span></a>
-  <div class="nav-links"><a href="/admin.html">إدارة</a></div>
+  <a href="/" class="brand"><span class="dot"></span> ARAB code</a>
+  <div class="nav-actions" id="nav-actions"></div>
 </nav>
-<main>
-  <div id="loginBox" class="form">
-    <h2>🔐 دخول الإدارة</h2>
-    <div id="loginMsg"></div>
-    <div class="field"><label>البريد الإلكتروني</label><input id="email" class="input" type="email" placeholder="اكتب البريد المخصص لي لوحه الاداره"></div>
-    <div class="field"><label>كلمة المرور</label><input id="password" class="input" type="password"></div>
-    <button class="btn btn-primary" onclick="adminLogin()">دخول</button>
-  </div>
-
-  <div id="dashboard" style="display:none">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0">
-      <h2>📥 الطلبات المعلّقة</h2>
-      <div>
-        <button class="btn btn-ghost btn-sm" onclick="loadPending()">تحديث</button>
-        <button class="btn btn-ghost btn-sm" onclick="adminLogout()">خروج</button>
-      </div>
-    </div>
-    <div id="msg"></div>
-    <div id="pendingList" class="admin-list"><div class="loading">جاري التحميل...</div></div>
-  </div>
+<main class="container">
+  <h2 style="color:var(--gold-2)">طلبات في الانتظار</h2>
+  <div id="msg" class="msg"></div>
+  <div id="list" class="pending-list"></div>
+  <p id="empty" style="color:var(--muted);text-align:center;display:none">لا توجد طلبات.</p>
 </main>
-<footer><p>© ARAB code — Admin</p></footer>
 <script src="/app.js"></script>
 <script>
-function adminLogin(){
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  if(!email || !password){ document.getElementById('loginMsg').innerHTML='<div class="msg err">املأ الحقول.</div>'; return; }
-  const token = btoa(email+':'+password);
-  setAdminToken(token);
-  checkAuth();
-}
-function adminLogout(){ clearAdminToken(); location.reload(); }
+(async () => {
+  await renderNav();
+  const me = await loadMe();
+  if (!me || !me.is_admin) { location.href='/auth'; return; }
+  await load();
+})();
 
-async function checkAuth(){
-  const token = getAdminToken();
-  if(!token){ show('loginBox'); return; }
-  const r = await fetch('/api/pending',{headers:{'X-Admin-Token':token}});
-  if(r.status===401){ clearAdminToken(); document.getElementById('loginMsg').innerHTML='<div class="msg err">بيانات غير صحيحة.</div>'; show('loginBox'); return; }
-  show('dashboard');
-  const items = await r.json();
-  renderPending(items);
+async function load() {
+  const list = document.getElementById('list');
+  list.innerHTML = '<p style="color:var(--muted)">تحميل...</p>';
+  try {
+    const { items } = await api('/api/pending');
+    if (!items.length) { list.innerHTML=''; document.getElementById('empty').style.display='block'; return; }
+    document.getElementById('empty').style.display='none';
+    list.innerHTML = items.map(renderItem).join('');
+  } catch (e) { list.innerHTML = `<p style="color:var(--danger)">${esc(e.message)}</p>`; }
 }
-function show(id){
-  document.getElementById('loginBox').style.display = id==='loginBox'?'block':'none';
-  document.getElementById('dashboard').style.display = id==='dashboard'?'block':'none';
-}
-async function loadPending(){
-  const r = await fetch('/api/pending',{headers:{'X-Admin-Token':getAdminToken()}});
-  if(!r.ok){ document.getElementById('msg').innerHTML='<div class="msg err">تعذر التحميل.</div>'; return; }
-  renderPending(await r.json());
-}
-function renderPending(items){
-  const el = document.getElementById('pendingList');
-  if(!items.length){ el.innerHTML='<div class="empty">لا توجد طلبات معلّقة ✅</div>'; return; }
-  el.innerHTML = items.map(it=>`
-    <div class="card admin-card" id="p-${it.id}">
-      <div class="info">
-        <h4>${escapeHtml(it.title)}</h4>
-        <div class="meta"><span>@${escapeHtml(it.author||'مجهول')}</span><span>#${escapeHtml(it.id)}</span></div>
-        <p class="desc" style="margin-top:8px">${escapeHtml(it.description||'')}</p>
-        <p class="hint">اقتراح الاسم: <code>${escapeHtml(it.filename_hint||'—')}</code></p>
-        <pre>${escapeHtml((it.code||'').slice(0,2000))}${(it.code||'').length>2000?'\n...':''}</pre>
-        <div class="field" style="margin-top:12px"><label>اسم الملف النهائي (مع الامتداد)</label>
-          <input class="input filename" placeholder="مثال: tiktok.js" value="${escapeHtml(it.filename_hint||'')}">
-        </div>
-        <div class="admin-actions">
-          <button class="btn btn-primary btn-sm" onclick="approve('${it.id}')">✅ موافقة ونشر</button>
-          <button class="btn btn-danger btn-sm" onclick="reject('${it.id}')">🗑️ رفض</button>
-        </div>
-      </div>
+
+function renderItem(it) {
+  const suggested = (it.title || 'code').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40) + '.' + (it.language||'txt');
+  return `<div class="pending-item" data-id="${esc(it.id)}">
+    <h4>${esc(it.title)}</h4>
+    <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--gold-dim);margin-bottom:6px">
+      ${avatarHTML(it.author)} <span>·</span> <span class="lang-tag">${esc(it.language)}</span>
+      <span>·</span> <span>${new Date(it.submitted_at).toLocaleString('ar')}</span>
     </div>
-  `).join('');
+    <p style="color:var(--muted);margin:6px 0">${esc(it.description||'')}</p>
+    <div class="code-preview">${esc(it.code)}</div>
+    <div class="pending-actions">
+      <input type="text" placeholder="اسم الملف مثل: ${esc(suggested)}" value="${esc(suggested)}" />
+      <button class="btn primary" onclick="doApprove('${esc(it.id)}', this)">موافقة</button>
+      <button class="btn danger" onclick="doReject('${esc(it.id)}', this)">رفض</button>
+    </div>
+  </div>`;
 }
-async function approve(id){
-  const box = document.getElementById('p-'+id);
-  const filename = box.querySelector('.filename').value.trim();
-  if(!filename){ alert('أدخل اسم الملف'); return; }
-  const r = await fetch('/api/approve',{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Token':getAdminToken()},body:JSON.stringify({id,filename})});
-  const j = await r.json();
-  if(!r.ok){ alert(j.error||'فشل'); return; }
-  document.getElementById('msg').innerHTML=`<div class="msg ok">✅ نُشر على: <a href="/codes/${encodeURIComponent(filename)}" target="_blank" style="color:#4ade80">/codes/${escapeHtml(filename)}</a></div>`;
-  loadPending();
+
+async function doApprove(id, btn) {
+  const item = btn.closest('.pending-item');
+  const filename = item.querySelector('input').value.trim();
+  if (!filename) return alert('حدد اسم الملف');
+  btn.disabled = true;
+  try {
+    const r = await api('/api/approve', { method:'POST', body: JSON.stringify({ id, filename }) });
+    item.remove();
+    showMsg('تمت الموافقة: ' + r.url, true);
+  } catch (e) { showMsg(e.message, false); btn.disabled=false; }
 }
-async function reject(id){
-  if(!confirm('رفض هذا الطلب؟')) return;
-  const r = await fetch('/api/reject',{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Token':getAdminToken()},body:JSON.stringify({id})});
-  if(!r.ok){ alert('فشل'); return; }
-  loadPending();
+async function doReject(id, btn) {
+  if (!confirm('رفض هذا الطلب؟')) return;
+  btn.disabled=true;
+  try { await api('/api/reject', { method:'POST', body: JSON.stringify({ id }) }); btn.closest('.pending-item').remove(); showMsg('تم الرفض', true); }
+  catch (e) { showMsg(e.message, false); btn.disabled=false; }
 }
-checkAuth();
+function showMsg(t, ok) { const m=document.getElementById('msg'); m.className='msg '+(ok?'ok':'err'); m.textContent=t; setTimeout(()=>{m.className='msg';m.textContent='';},3500); }
 </script>
 </body>
 </html>

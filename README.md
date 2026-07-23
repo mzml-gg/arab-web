@@ -1,31 +1,19 @@
 # ARAB code
 
-منصة عربية لمشاركة الأكواد البرمجية — تصميم HTML/JS خالص، تخزين عبر GitHub، نشر على Vercel.
+منصة نشر الأكواد العربية. HTML/JS خالص مع Vercel Serverless Functions، والبيانات مخزنة داخل هذا المستودع نفسه.
 
-## المميزات
-- إرسال أكواد من قبل المستخدمين للمراجعة
-- لوحة إدارة لموافقة/رفض الطلبات
-- كل كود موافق عليه يحصل على رابطه الخاص: `/codes/اسم_الملف`
-- بحث في العناوين والأوصاف وداخل محتوى الأكواد (GitHub Code Search)
-- حسابات مستخدمين محلية لتتبع الطلبات
+## Env vars مطلوبة في Vercel
+- `GITHUB_TOKEN` — توكن يقدر يقرأ/يكتب في هذا المستودع
+- `GITHUB_REPO` — `mzml-gg/arab-web`
+- `JWT_SECRET` — سلسلة عشوائية طويلة
+- `ADMIN_EMAIL` — `3rab_top_devs@top.com`
+- `SMTP_HOST` `SMTP_PORT` `SMTP_SECURE` `SMTP_USER` `SMTP_PASS`
+- `PUBLIC_BASE_URL` — `https://arab-code-web.vercel.app`
 
-## متغيرات البيئة (Vercel)
-```
-GITHUB_TOKEN=ghp_xxx
-GITHUB_OWNER=mzml-gg
-GITHUB_REPO=arab-web
-GITHUB_BRANCH=main
-ADMIN_EMAIL=3rab_top_devs@top.com
-ADMIN_PASSWORD=xxxxx
-```
-
-## البنية
-- `index.html` — الرئيسية
-- `submit.html` — إرسال كود
-- `search.html` — البحث
-- `account.html` — حساب المستخدم
-- `admin.html` — لوحة الإدارة
-- `api/*.js` — Serverless functions (GitHub-backed storage)
-- `public/codes/` — الأكواد المنشورة (تحصل على URL مباشر)
-- `public/manifest.json` — فهرس الأكواد
-- `pending/` — الطلبات المعلّقة
+## المسارات
+- `/` رئيسية
+- `/auth` تسجيل دخول/إنشاء حساب
+- `/submit` إضافة كود
+- `/admin` لوحة الأدمن
+- `/u/:username` صفحة مستخدم
+- `/c/:filename` عرض كود

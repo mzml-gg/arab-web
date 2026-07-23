@@ -1,77 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ARAB code — منصة الأكواد العربية</title>
-<meta name="description" content="ARAB code — منصة عربية لمشاركة ونشر الأكواد البرمجية بعد مراجعة الإدارة.">
-<meta property="og:title" content="ARAB code">
-<meta property="og:description" content="منصة عربية لمشاركة الأكواد البرمجية">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ARAB code</title>
+<meta name="description" content="منصة ARAB code لنشر الأكواد">
 <link rel="stylesheet" href="/styles.css">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg">
 </head>
 <body>
 <nav class="nav">
-  <a href="/" class="brand">ARAB <span>code</span></a>
-  <div class="nav-links">
-    <a href="/search.html">بحث</a>
-    <a href="/submit.html">أضف كود</a>
-    <a href="/account.html">حسابي</a>
-  </div>
+  <a href="/" class="brand"><span class="dot"></span> ARAB code</a>
+  <div class="nav-actions" id="nav-actions"></div>
 </nav>
-
-<main>
-  <section class="hero">
-    <img src="/assets/sphere.png" alt="" class="sphere" loading="eager">
-    <div class="hero-content">
-      <h1>منصة <span class="glow">ARAB code</span></h1>
-      <p class="subtitle">شارك أكوادك · انشرها بدومين خاص · مراجعة من الإدارة</p>
-      <div class="cta">
-        <a href="/submit.html" class="btn btn-primary">أضف كودك الآن</a>
-        <a href="/search.html" class="btn btn-ghost">تصفح الأكواد</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="features">
-    <div class="feature">
-      <div class="ico">🔍</div>
-      <h3>بحث في الأكواد</h3>
-      <p>ابحث بين جميع الأكواد المنشورة بسهولة.</p>
-    </div>
-    <div class="feature">
-      <div class="ico">🛡️</div>
-      <h3>مراجعة الإدارة</h3>
-      <p>كل كود يُراجع قبل النشر لضمان الجودة والأمان.</p>
-    </div>
-    <div class="feature">
-      <div class="ico">🌐</div>
-      <h3>دومين لكل كود</h3>
-      <p>كل كود موافق عليه يحصل على رابطه الخاص مباشرة.</p>
-    </div>
-    <div class="feature">
-      <div class="ico">👤</div>
-      <h3>حساب المستخدم</h3>
-      <p>سجل حسابك، تابع طلباتك، وشاهد أكوادك المنشورة.</p>
-    </div>
-  </section>
-
-  <section class="latest">
-    <h2>أحدث الأكواد</h2>
-    <div id="latest-list" class="grid">
-      <div class="loading">جاري التحميل...</div>
-    </div>
-  </section>
+<header class="hero">
+  <div class="sphere"></div>
+  <h1>ARAB code</h1>
+  <p class="tag">منصة نشر الأكواد</p>
+</header>
+<main class="container">
+  <div id="codes" class="grid"></div>
+  <p id="empty" style="text-align:center;color:var(--muted);display:none;margin-top:40px">لا توجد أكواد منشورة بعد.</p>
 </main>
-
-<footer>
-  <p>© ARAB code — <a href="/admin.html">لوحة الإدارة</a></p>
-</footer>
-
 <script src="/app.js"></script>
-<script>loadLatest();</script>
+<script>
+(async () => {
+  await renderNav();
+  try {
+    const { codes } = await api('/api/list');
+    const box = document.getElementById('codes');
+    if (!codes.length) { document.getElementById('empty').style.display='block'; return; }
+    box.innerHTML = codes.map(codeCard).join('');
+  } catch (e) { console.error(e); }
+})();
+</script>
 </body>
 </html>

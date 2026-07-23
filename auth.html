@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>دخول · ARAB code</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="brand"><span class="dot"></span> ARAB code</a>
+  <div class="nav-actions" id="nav-actions"></div>
+</nav>
+<main>
+  <form class="form" id="form">
+    <h2 id="title">دخول</h2>
+    <p class="sub" id="sub">أهلاً بعودتك</p>
+    <div id="msg" class="msg"></div>
+
+    <div id="fields-signup" style="display:none">
+      <div class="field"><label>اسم المستخدم</label><input name="username" autocomplete="username" maxlength="20"/></div>
+      <div class="field"><label>رقم واتساب (مع كود الدولة)</label><input name="phone" placeholder="+9665..."/></div>
+    </div>
+    <div class="field"><label>الإيميل</label><input type="email" name="email" autocomplete="email" required/></div>
+    <div class="field"><label>كلمة السر</label><input type="password" name="password" autocomplete="current-password" required minlength="8"/></div>
+
+    <button type="submit" class="btn primary submit" id="submit-btn">دخول</button>
+    <div class="switch">
+      <span id="switch-text">ليس لديك حساب؟</span>
+      <a href="#" id="toggle">إنشاء حساب</a>
+    </div>
+  </form>
+</main>
+<script src="/app.js"></script>
+<script>
+renderNav();
+let mode = 'login';
+const params = new URLSearchParams(location.search);
+if (params.get('mode') === 'signup') setMode('signup');
+
+document.getElementById('toggle').onclick = (e) => {
+  e.preventDefault();
+  setMode(mode === 'login' ? 'signup' : 'login');
+};
+
+function setMode(m) {
+  mode = m;
+  const isSignup = m === 'signup';
+  document.getElementById('title').textContent = isSignup ? 'إنشاء حساب' : 'دخول';
+  document.getElementById('sub').textContent = isSignup ? 'انضم إلى ARAB code' : 'أهلاً بعودتك';
+  document.getElementById('fields-signup').style.display = isSignup ? '' : 'none';
+  document.getElementById('submit-btn').textContent = isSignup ? 'إنشاء الحساب' : 'دخول';
+  document.getElementById('switch-text').textContent = isSignup ? 'لديك حساب؟' : 'ليس لديك حساب؟';
+  document.getElementById('toggle').textContent = isSignup ? 'دخول' : 'إنشاء حساب';
+  document.querySelectorAll('#fields-signup input').forEach(i => i.required = isSignup);
+}
+
+document.getElementById('form').onsubmit = async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('msg');
+  msg.className = 'msg'; msg.textContent = '';
+  const fd = new FormData(e.target);
+  const body = Object.fromEntries(fd.entries());
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; const old = btn.textContent; btn.textContent = '...';
+  try {
+    if (mode === 'signup') {
+      const r = await api('/api/signup', { method: 'POST', body: JSON.stringify(body) });
+      msg.className = 'msg ok';
+      msg.textContent = r.needs_verification ? '✓ تم الإنشاء. تحقق من بريدك لتفعيل الحساب.' : '✓ تم إنشاء حساب الأدمن. سجّل الدخول.';
+      setTimeout(() => setMode('login'), 2000);
+    } else {
+      const r = await api('/api/login', { method: 'POST', body: JSON.stringify(body) });
+      location.href = r.user.is_admin ? '/admin' : '/';
+    }
+  } catch (err) {
+    msg.className = 'msg err';
+    msg.textContent = err.message;
+  } finally {
+    btn.disabled = false; btn.textContent = old;
+  }
+};
+</script>
+</body>
+</html>

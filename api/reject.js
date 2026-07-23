@@ -1,18 +1,14 @@
-const { checkAdmin, ghGetFile, ghDelete, json } = require('./_gh');
+const { currentUser, readBody, ADMIN_EMAIL } = require('./_auth');
+const { getFile, deleteFile } = require('./_gh');
 
 module.exports = async (req, res) => {
-  if(req.method !== 'POST') return json(res, 405, {error:'method'});
-  if(!checkAdmin(req)) return json(res, 401, {error:'unauthorized'});
-  try{
-    const body = typeof req.body === 'string' ? JSON.parse(req.body||'{}') : (req.body||{});
-    const { id } = body;
-    if(!id) return json(res, 400, {error:'id مطلوب'});
-    const pf = await ghGetFile(`pending/${id}.json`);
-    if(!pf) return json(res, 404, {error:'غير موجود'});
-    await ghDelete(`pending/${id}.json`, pf.sha, `reject: ${id}`);
-    json(res, 200, {ok:true});
-  }catch(e){
-    console.error(e);
-    json(res, 500, {error:'server error'});
-  }
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  const u = await currentUser(req);
+  if (!u || u.email.toLowerCase() !== ADMIN_EMAIL) return res.status(403).json({ error: 'ممنوع' });
+  const { id } = await readBody(req);
+  if (!id) return res.status(400).json({ error: 'id مطلوب' });
+  const pf = await getFile(`pending/${id}.json`);
+  if (!pf) return res.status(404).json({ error: 'غير موجود' });
+  await deleteFile(`pending/${id}.json`, `reject ${id}`, pf.sha);
+  res.status(200).json({ ok: true });
 };
