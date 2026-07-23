@@ -1,54 +1,44 @@
-const { checkAdmin, ghGetFile, ghPut, ghDelete, json } = require('./_gh');
-
-function extLang(filename){
-  const e = (filename.split('.').pop()||'').toLowerCase();
-  const map = {js:'JavaScript',ts:'TypeScript',html:'HTML',css:'CSS',py:'Python',php:'PHP',java:'Java',cpp:'C++',c:'C',rb:'Ruby',go:'Go',rs:'Rust',json:'JSON',sh:'Shell'};
-  return map[e] || e.toUpperCase() || 'TEXT';
-}
-function safeName(s){
-  return String(s).replace(/[^A-Za-z0-9._-]/g,'_').replace(/^\.+/,'').slice(0,80);
-}
+const { currentUser, readBody, ADMIN_EMAIL } = require('./_auth');
+const { getFile, putFile, deleteFile, readJson, writeJson } = require('./_gh');
 
 module.exports = async (req, res) => {
-  if(req.method !== 'POST') return json(res, 405, {error:'method'});
-  if(!checkAdmin(req)) return json(res, 401, {error:'unauthorized'});
-  try{
-    const body = typeof req.body === 'string' ? JSON.parse(req.body||'{}') : (req.body||{});
-    const { id, filename } = body;
-    if(!id || !filename) return json(res, 400, {error:'id/filename مطلوبان'});
-    const fname = safeName(filename);
-    if(!fname.includes('.')) return json(res, 400, {error:'اسم الملف يجب أن يحتوي على امتداد'});
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  const u = await currentUser(req);
+  if (!u || u.email.toLowerCase() !== ADMIN_EMAIL) return res.status(403).json({ error: 'ممنوع' });
+  try {
+    const { id, filename } = await readBody(req);
+    if (!id || !filename) return res.status(400).json({ error: 'id و filename مطلوبان' });
+    if (!/^[a-zA-Z0-9._-]{1,60}$/.test(filename)) return res.status(400).json({ error: 'اسم ملف غير صالح' });
 
-    const pf = await ghGetFile(`pending/${id}.json`);
-    if(!pf) return json(res, 404, {error:'الطلب غير موجود'});
-    const rec = JSON.parse(pf.content);
+    const pf = await getFile(`pending/${id}.json`);
+    if (!pf) return res.status(404).json({ error: 'الطلب غير موجود' });
+    const entry = JSON.parse(pf.content);
 
-    // 1. اكتب الكود الخام
-    const existing = await ghGetFile(`codes/${fname}`);
-    await ghPut(`codes/${fname}`, rec.code, `approve: ${rec.title} (${fname})`, existing?.sha);
+    // Save code file
+    const codePath = `codes/${filename}`;
+    const existing = await getFile(codePath);
+    await putFile(codePath, entry.code, `approve: ${filename} by ${entry.author}`, existing?.sha);
 
-    // 2. حدّث المانيفست
-    const mf = await ghGetFile('data/manifest.json');
-    const arr = mf ? JSON.parse(mf.content) : [];
-    const item = {
-      filename: fname,
-      title: rec.title,
-      description: rec.description,
-      language: extLang(fname),
-      author: rec.author,
+    // Update manifest
+    const { data: manifest } = await readJson('data/manifest.json', { codes: [] });
+    if (!manifest.codes) manifest.codes = [];
+    manifest.codes = manifest.codes.filter((c) => c.filename !== filename);
+    manifest.codes.unshift({
+      filename,
+      title: entry.title,
+      description: entry.description,
+      language: entry.language,
+      author: entry.author,
       approved_at: new Date().toISOString(),
-      submitted_at: rec.created_at
-    };
-    const idx = arr.findIndex(x => x.filename === fname);
-    if(idx >= 0) arr[idx] = item; else arr.push(item);
-    await ghPut('data/manifest.json', JSON.stringify(arr,null,2), `manifest: +${fname}`, mf?.sha);
+    });
+    await writeJson('data/manifest.json', manifest, `manifest: +${filename}`);
 
-    // 3. احذف الطلب المعلّق
-    await ghDelete(`pending/${id}.json`, pf.sha, `approved: ${id}`);
+    // Remove pending
+    await deleteFile(`pending/${id}.json`, `approved ${id}`, pf.sha);
 
-    json(res, 200, {ok:true, url:`/codes/${fname}`});
-  }catch(e){
+    res.status(200).json({ ok: true, url: `/codes/${filename}` });
+  } catch (e) {
     console.error(e);
-    json(res, 500, {error: e.message||'server error'});
+    res.status(500).json({ error: 'خطأ داخلي' });
   }
 };

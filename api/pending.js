@@ -1,21 +1,17 @@
-const { checkAdmin, ghList, ghGetFile, json } = require('./_gh');
+const { currentUser, ADMIN_EMAIL } = require('./_auth');
+const { listDir, getFile } = require('./_gh');
 
 module.exports = async (req, res) => {
-  if(!checkAdmin(req)) return json(res, 401, {error:'unauthorized'});
-  try{
-    const files = await ghList('pending');
-    const items = [];
-    for(const f of files){
-      if(!f.name.endsWith('.json')) continue;
-      const g = await ghGetFile(`pending/${f.name}`);
-      if(g){
-        try{ items.push({...JSON.parse(g.content), _sha: g.sha}); }catch{}
-      }
-    }
-    items.sort((a,b)=> (a.created_at||'').localeCompare(b.created_at||''));
-    json(res, 200, items);
-  }catch(e){
-    console.error(e);
-    json(res, 500, {error:'server error'});
+  const u = await currentUser(req);
+  if (!u || u.email.toLowerCase() !== ADMIN_EMAIL) return res.status(403).json({ error: 'ممنوع' });
+  const items = await listDir('pending');
+  const out = [];
+  for (const it of items) {
+    if (!it.name.endsWith('.json')) continue;
+    const f = await getFile(it.path);
+    if (!f) continue;
+    try { out.push(JSON.parse(f.content)); } catch {}
   }
+  out.sort((a, b) => (a.submitted_at < b.submitted_at ? 1 : -1));
+  res.status(200).json({ items: out });
 };

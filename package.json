@@ -1,6 +1,11 @@
 {
   "name": "arab-code-web",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "engines": { "node": "20.x" }
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.14"
+  }
 }

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>كود · ARAB code</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="brand"><span class="dot"></span> ARAB code</a>
+  <div class="nav-actions" id="nav-actions"></div>
+</nav>
+<main class="container">
+  <div id="header"></div>
+  <pre class="code-view" id="code">تحميل...</pre>
+  <div style="margin-top:12px;display:flex;gap:8px">
+    <button class="btn" onclick="copyCode()">📋 نسخ</button>
+    <a class="btn" id="raw" href="#" target="_blank">عرض خام</a>
+  </div>
+</main>
+<script src="/app.js"></script>
+<script>
+(async () => {
+  await renderNav();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const filename = decodeURIComponent(parts[1] || '');
+  if (!filename) { location.href='/'; return; }
+  const rawUrl = `https://raw.githubusercontent.com/mzml-gg/arab-web/main/codes/${encodeURIComponent(filename)}`;
+  document.getElementById('raw').href = rawUrl;
+  try {
+    const { codes } = await api('/api/list');
+    const meta = codes.find(c => c.filename === filename) || { title: filename, author: 'unknown' };
+    document.getElementById('header').innerHTML = `
+      <h2 style="color:var(--gold-2);margin-bottom:6px">${esc(meta.title)}</h2>
+      <div style="display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin-bottom:14px">
+        ${avatarHTML(meta.author)} <span>·</span>
+        <span class="lang-tag">${esc(meta.language||'txt')}</span> <span>·</span>
+        <span>${esc(filename)}</span>
+      </div>
+      ${meta.description ? `<p style="color:var(--muted)">${esc(meta.description)}</p>` : ''}`;
+    const res = await fetch(rawUrl);
+    document.getElementById('code').textContent = await res.text();
+  } catch (e) {
+    document.getElementById('code').textContent = 'خطأ: ' + e.message;
+  }
+})();
+function copyCode() {
+  const t = document.getElementById('code').textContent;
+  navigator.clipboard.writeText(t).then(()=>alert('تم النسخ ✓'));
+}
+</script>
+</body>
+</html>

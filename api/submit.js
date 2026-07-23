@@ -1,26 +1,29 @@
-const { ghGetFile, ghPut, json } = require('./_gh');
+const { currentUser, readBody, randomToken } = require('./_auth');
+const { writeJson } = require('./_gh');
 
 module.exports = async (req, res) => {
-  if(req.method !== 'POST') return json(res, 405, {error:'method'});
-  try{
-    const body = typeof req.body === 'string' ? JSON.parse(req.body||'{}') : (req.body||{});
-    const { title, description, filename_hint, code, author, author_email } = body;
-    if(!title || !code) return json(res, 400, {error:'العنوان والكود مطلوبان'});
-    if(code.length > 200000) return json(res, 400, {error:'الكود كبير جداً'});
-    const id = Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-    const rec = {
-      id, title: String(title).slice(0,120),
-      description: String(description||'').slice(0,240),
-      filename_hint: String(filename_hint||'').slice(0,60),
-      code: String(code),
-      author: String(author||'مجهول').slice(0,40),
-      author_email: String(author_email||'').slice(0,120),
-      created_at: new Date().toISOString()
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  const u = await currentUser(req);
+  if (!u) return res.status(401).json({ error: 'سجل دخول أولاً' });
+  if (!u.verified) return res.status(403).json({ error: 'فعّل بريدك أولاً' });
+  try {
+    const { title, description, language, code } = await readBody(req);
+    if (!title || !code) return res.status(400).json({ error: 'العنوان والكود مطلوبان' });
+    if (code.length > 200000) return res.status(400).json({ error: 'الكود طويل جداً' });
+    const id = Date.now().toString(36) + '-' + randomToken(4);
+    const entry = {
+      id,
+      title: String(title).slice(0, 120),
+      description: String(description || '').slice(0, 600),
+      language: String(language || 'txt').slice(0, 20),
+      code,
+      author: u.username,
+      submitted_at: new Date().toISOString(),
     };
-    await ghPut(`pending/${id}.json`, JSON.stringify(rec,null,2), `submit: ${rec.title}`);
-    json(res, 200, {ok:true, id});
-  }catch(e){
+    await writeJson(`pending/${id}.json`, entry, `submit: ${u.username} - ${entry.title}`);
+    res.status(200).json({ ok: true, id });
+  } catch (e) {
     console.error(e);
-    json(res, 500, {error:'server error'});
+    res.status(500).json({ error: 'خطأ داخلي' });
   }
 };
