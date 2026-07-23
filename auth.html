@@ -23,6 +23,9 @@
     </div>
     <div class="field"><label>الإيميل</label><input type="email" name="email" autocomplete="email" required/></div>
     <div class="field"><label>كلمة السر</label><input type="password" name="password" autocomplete="current-password" required minlength="8"/></div>
+    <div id="forgot-link" style="text-align:left;margin-top:-10px;margin-bottom:10px;">
+      <a href="#" id="forgot-btn" style="font-size:0.85rem;color:var(--gold);">نسيت كلمة السر؟</a>
+    </div>
 
     <button type="submit" class="btn primary submit" id="submit-btn">دخول</button>
     <div class="switch">
@@ -37,22 +40,60 @@ renderNav();
 let mode = 'login';
 const params = new URLSearchParams(location.search);
 if (params.get('mode') === 'signup') setMode('signup');
+if (params.get('mode') === 'reset') setMode('reset');
 
 document.getElementById('toggle').onclick = (e) => {
   e.preventDefault();
   setMode(mode === 'login' ? 'signup' : 'login');
 };
 
+document.getElementById('forgot-btn').onclick = (e) => {
+  e.preventDefault();
+  const email = document.querySelector('input[name="email"]').value;
+  if (!email) {
+    msg.className = 'msg err';
+    msg.textContent = 'يرجى كتابة الإيميل أولاً';
+    return;
+  }
+  if (confirm('هل تريد إرسال رابط استعادة كلمة السر إلى ' + email + '؟')) {
+    api('/api/forgot-password', { method: 'POST', body: JSON.stringify({ email }) })
+      .then(() => {
+        msg.className = 'msg ok';
+        msg.textContent = '✓ تم إرسال الرابط إلى بريدك.';
+      })
+      .catch(err => {
+        msg.className = 'msg err';
+        msg.textContent = err.message;
+      });
+  }
+};
+
 function setMode(m) {
   mode = m;
   const isSignup = m === 'signup';
-  document.getElementById('title').textContent = isSignup ? 'إنشاء حساب' : 'دخول';
-  document.getElementById('sub').textContent = isSignup ? 'انضم إلى ARAB code' : 'أهلاً بعودتك';
+  const isReset = m === 'reset';
+  
+  document.getElementById('title').textContent = isReset ? 'تعيين كلمة السر' : (isSignup ? 'إنشاء حساب' : 'دخول');
+  document.getElementById('sub').textContent = isReset ? 'أدخل كلمة السر الجديدة' : (isSignup ? 'انضم إلى ARAB code' : 'أهلاً بعودتك');
   document.getElementById('fields-signup').style.display = isSignup ? '' : 'none';
-  document.getElementById('submit-btn').textContent = isSignup ? 'إنشاء الحساب' : 'دخول';
+  document.getElementById('submit-btn').textContent = isReset ? 'تغيير كلمة السر' : (isSignup ? 'إنشاء الحساب' : 'دخول');
   document.getElementById('switch-text').textContent = isSignup ? 'لديك حساب؟' : 'ليس لديك حساب؟';
   document.getElementById('toggle').textContent = isSignup ? 'دخول' : 'إنشاء حساب';
-  document.querySelectorAll('#fields-signup input').forEach(i => i.required = isSignup);
+  
+  if (isReset) {
+    document.querySelector('input[name="email"]').readOnly = true;
+    document.querySelector('input[name="email"]').value = params.get('email') || '';
+    document.getElementById('forgot-link').style.display = 'none';
+    document.querySelector('.switch').style.display = 'none';
+  } else {
+    document.querySelector('input[name="email"]').readOnly = false;
+    document.querySelector('.switch').style.display = '';
+    document.getElementById('forgot-link').style.display = isSignup ? 'none' : '';
+  }
+
+  document.querySelectorAll('#fields-signup input').forEach(i => {
+    if (i.name !== 'phone') i.required = isSignup;
+  });
 }
 
 document.getElementById('form').onsubmit = async (e) => {
@@ -69,6 +110,14 @@ document.getElementById('form').onsubmit = async (e) => {
       msg.className = 'msg ok';
       msg.textContent = r.needs_verification ? '✓ تم الإنشاء. تحقق من بريدك لتفعيل الحساب.' : '✓ تم إنشاء حساب الأدمن. سجّل الدخول.';
       setTimeout(() => setMode('login'), 2000);
+    } else if (mode === 'reset') {
+      const resetBody = { ...body, token: params.get('token') };
+      await api('/api/reset-password', { method: 'POST', body: JSON.stringify(resetBody) });
+      msg.className = 'msg ok';
+      msg.textContent = '✓ تم تغيير كلمة السر بنجاح. يمكنك الدخول الآن.';
+      setTimeout(() => {
+        location.search = ''; // back to login
+      }, 2000);
     } else {
       const r = await api('/api/login', { method: 'POST', body: JSON.stringify(body) });
       location.href = r.user.is_admin ? '/admin' : '/';

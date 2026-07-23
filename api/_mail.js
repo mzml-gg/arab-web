@@ -54,4 +54,14 @@ async function sendVerification({ to, username, verifyUrl }) {
   });
 }
 
-module.exports = { sendVerification };
+async function sendMail({ to, subject, html }) {
+  const t = transporter();
+  await t.sendMail({
+    from: `"ARAB code" <${process.env.SMTP_USER}>`,
+    to,
+    subject,
+    html,
+  });
+}
+
+module.exports = { sendVerification, sendMail };
