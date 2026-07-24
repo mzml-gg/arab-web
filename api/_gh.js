@@ -1,14 +1,28 @@
 // GitHub repo as datastore
 const REPO = process.env.GITHUB_REPO || 'mzml-gg/arab-web';
 const BRANCH = process.env.GITHUB_BRANCH || 'main';
-const TOKEN = process.env.GITHUB_TOKEN;
+const TOKEN = (process.env.GITHUB_TOKEN || '').trim();
 const API = 'https://api.github.com';
+
+function repoPath(path) {
+  return String(path || '').split('/').map(encodeURIComponent).join('/');
+}
+
+function authHeaders() {
+  return TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {};
+}
+
+function requireToken(action = 'تنفيذ العملية') {
+  if (!TOKEN) {
+    throw new Error(`${action} يحتاج ضبط GITHUB_TOKEN في متغيرات البيئة على Vercel`);
+  }
+}
 
 async function gh(path, opts = {}) {
   const res = await fetch(`${API}${path}`, {
     ...opts,
     headers: {
-      Authorization: `token ${TOKEN}`,
+      ...authHeaders(),
       Accept: 'application/vnd.github+json',
       'Content-Type': 'application/json',
       'User-Agent': 'arab-code-web',
@@ -23,7 +37,7 @@ async function gh(path, opts = {}) {
 }
 
 async function getFile(path) {
-  const res = await gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`);
+  const res = await gh(`/repos/${REPO}/contents/${repoPath(path)}?ref=${encodeURIComponent(BRANCH)}`);
   if (res.status === 404) return null;
   const j = await res.json();
   const content = Buffer.from(j.content, 'base64').toString('utf8');
@@ -31,13 +45,14 @@ async function getFile(path) {
 }
 
 async function putFile(path, content, message, sha) {
+  requireToken('حفظ البيانات');
   const body = {
     message,
     content: Buffer.from(content, 'utf8').toString('base64'),
     branch: BRANCH,
   };
   if (sha) body.sha = sha;
-  const res = await gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}`, {
+  const res = await gh(`/repos/${REPO}/contents/${repoPath(path)}`, {
     method: 'PUT',
     body: JSON.stringify(body),
   });
@@ -46,7 +61,8 @@ async function putFile(path, content, message, sha) {
 }
 
 async function deleteFile(path, message, sha) {
-  const res = await gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}`, {
+  requireToken('حذف البيانات');
+  const res = await gh(`/repos/${REPO}/contents/${repoPath(path)}`, {
     method: 'DELETE',
     body: JSON.stringify({ message, sha, branch: BRANCH }),
   });
@@ -54,7 +70,7 @@ async function deleteFile(path, message, sha) {
 }
 
 async function listDir(path) {
-  const res = await gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`);
+  const res = await gh(`/repos/${REPO}/contents/${repoPath(path)}?ref=${encodeURIComponent(BRANCH)}`);
   if (res.status === 404) return [];
   const j = await res.json();
   return Array.isArray(j) ? j : [];
