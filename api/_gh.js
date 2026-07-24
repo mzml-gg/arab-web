@@ -1,5 +1,8 @@
 // GitHub repo as datastore
 const REPO = process.env.GITHUB_REPO || 'mzml-gg/arab-web';
+if (!process.env.GITHUB_TOKEN) {
+  console.warn('WARNING: GITHUB_TOKEN is not set in environment variables');
+}
 const BRANCH = process.env.GITHUB_BRANCH || 'main';
 const TOKEN = (process.env.GITHUB_TOKEN || '').trim();
 const API = 'https://api.github.com';
@@ -31,7 +34,8 @@ async function gh(path, opts = {}) {
   });
   if (!res.ok && res.status !== 404) {
     const t = await res.text();
-    throw new Error(`GitHub ${res.status}: ${t}`);
+    console.error(`GitHub API Error: ${res.status} ${t} (Path: ${path})`);
+    throw new Error(`خطأ في الاتصال بقاعدة البيانات (${res.status})`);
   }
   return res;
 }

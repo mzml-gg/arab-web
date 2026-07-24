@@ -31,7 +31,9 @@ module.exports = async (req, res) => {
     const user = {
       username, email, phone: phone || '',
       password_hash,
+      display_name: isAdmin ? 'arab top' : username,
       verified: isAdmin ? true : false,
+      is_verified_badge: isAdmin ? true : false,
       verification_token: isAdmin ? null : verification_token,
       created_at: new Date().toISOString(),
     };

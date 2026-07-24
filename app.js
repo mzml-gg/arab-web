@@ -20,8 +20,9 @@ function avatarLetter(name) {
   return (name || '?').trim().charAt(0).toUpperCase();
 }
 
-function avatarHTML(username, cls = '') {
-  return `<a href="/u/${encodeURIComponent(username)}" class="author"><span class="avatar ${cls}">${esc(avatarLetter(username))}</span><span>${esc(username)}</span></a>`;
+function avatarHTML(username, cls = '', isVerified = false) {
+  const badge = isVerified ? '<span class="verified-badge sparkle"></span>' : '';
+  return `<a href="/u/${encodeURIComponent(username)}" class="author"><span class="avatar ${cls}">${esc(avatarLetter(username))}</span><span>${esc(username)}</span>${badge}</a>`;
 }
 
 async function loadMe() {
@@ -41,7 +42,7 @@ async function renderNav() {
     el.innerHTML = `${searchBtn}
       <a class="btn" href="/submit">+ كود</a>
       ${adminLink}
-      <a href="/u/${encodeURIComponent(me.username)}" class="author">${avatarHTML(me.username)}</a>
+      ${avatarHTML(me.username, '', me.is_verified_badge)}
       <button class="icon-btn" title="خروج" onclick="doLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>`;
   } else {
     el.innerHTML = `${searchBtn}<a class="btn primary" href="/auth">دخول</a>`;

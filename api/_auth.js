@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const { readJson, writeJson } = require('./_gh');
 
 const SECRET = process.env.JWT_SECRET || 'change-me';
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || '3rab_top_devs@top.com').toLowerCase();
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'mzmlzip@gmail.com').toLowerCase();
 const USERS_PATH = 'data/users.json';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -52,6 +52,7 @@ function publicUser(u) {
     email: u.email,
     verified: !!u.verified,
     is_admin: u.email && u.email.toLowerCase() === ADMIN_EMAIL,
+    is_verified_badge: !!u.is_verified_badge,
     created_at: u.created_at,
   };
 }
