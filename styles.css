@@ -104,3 +104,40 @@ input,textarea,select{font-family:inherit}
   .sphere{width:130px;height:130px}
   .form .row{flex-direction:column}
 }
+
+/* Verified Badge Style */
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: white;
+  border-radius: 50%;
+  font-size: 10px;
+  margin-right: 5px;
+  box-shadow: 0 0 8px rgba(124, 58, 237, 0.6);
+  vertical-align: middle;
+  position: relative;
+}
+.verified-badge::after {
+  content: "✓";
+  font-weight: bold;
+}
+.verified-badge.sparkle::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background: rgba(168, 85, 247, 0.3);
+  animation: sparkle 1.5s infinite;
+}
+@keyframes sparkle {
+  0% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.3); opacity: 0; }
+  100% { transform: scale(1); opacity: 0.5; }
+}
