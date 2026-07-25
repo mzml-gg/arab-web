@@ -15,14 +15,14 @@
       "username": "Monte",
       "email": "mzmlzip@gmail.com",
       "phone": "249918614328",
-      "password_hash": "$2a$10$GN3TilchAhBA54kTES6sNuV9NS.fJc4lVufg2D3n9/kCRXmYD06CG",
+      "password_hash": "$2a$10$d7dlm6EoIN3MRDo49DBSeOuYR4wYgn6XhyG913Jg0Kr8cYCWM0Y.a",
       "display_name": "Monte",
       "verified": true,
       "is_verified_badge": false,
       "verification_token": null,
       "created_at": "2026-07-25T12:57:53.775Z",
-      "reset_token": "ad224f1a7a70adc1fa8aa3299a31a9d9bce09d2c1ebc001f7d6042a32cdb9ad2",
-      "reset_expires": 1784999733101
+      "reset_token": null,
+      "reset_expires": null
     }
   ]
 }
