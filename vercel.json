@@ -1,7 +1,12 @@
 {
-  "cleanUrls": true,
   "rewrites": [
-    { "source": "/u/:username", "destination": "/user.html" },
-    { "source": "/c/:filename", "destination": "/code.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/codes/(.*)",
+      "destination": "/codes/$1"
+    }
   ]
 }

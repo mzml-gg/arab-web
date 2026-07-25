@@ -1,5 +1,5 @@
-const { loadUsers, saveUsers, readBody, randomToken, EMAIL_RE } = require('./_auth');
-const { sendMail } = require('./_mail');
+const { loadUsers, saveUsers, readBody, randomToken, EMAIL_RE } = require('../_auth');
+const { sendMail } = require('../_mail');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });

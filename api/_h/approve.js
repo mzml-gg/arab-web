@@ -1,5 +1,5 @@
-const { currentUser, readBody, ADMIN_EMAIL } = require('./_auth');
-const { getFile, putFile, deleteFile, readJson, writeJson } = require('./_gh');
+const { currentUser, readBody, ADMIN_EMAIL } = require('../_auth');
+const { getFile, putFile, deleteFile, readJson, writeJson } = require('../_gh');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });

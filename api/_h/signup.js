@@ -1,5 +1,5 @@
-const { bcrypt, EMAIL_RE, USERNAME_RE, loadUsers, saveUsers, readBody, randomToken, ADMIN_EMAIL } = require('./_auth');
-const { sendVerification } = require('./_mail');
+const { bcrypt, EMAIL_RE, USERNAME_RE, loadUsers, saveUsers, readBody, randomToken, ADMIN_EMAIL } = require('../_auth');
+const { sendVerification } = require('../_mail');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });

@@ -1,5 +1,5 @@
-const { currentUser, ADMIN_EMAIL } = require('./_auth');
-const { listDir, getFile } = require('./_gh');
+const { currentUser, ADMIN_EMAIL } = require('../_auth');
+const { listDir, getFile } = require('../_gh');
 
 module.exports = async (req, res) => {
   const u = await currentUser(req);
