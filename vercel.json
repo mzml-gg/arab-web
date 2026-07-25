@@ -1,12 +1,10 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "/api/index"
-    },
-    {
-      "source": "/codes/(.*)",
-      "destination": "/codes/$1"
     }
   ]
 }
