@@ -1,5 +1,5 @@
-const { currentUser, readBody, randomToken } = require('./_auth');
-const { writeJson } = require('./_gh');
+const { currentUser, readBody, randomToken } = require('../_auth');
+const { writeJson } = require('../_gh');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });

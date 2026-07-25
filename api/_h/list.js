@@ -1,4 +1,4 @@
-const { readJson } = require('./_gh');
+const { readJson } = require('../_gh');
 module.exports = async (req, res) => {
   const { data } = await readJson('data/manifest.json', { codes: [] });
   res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate=120');

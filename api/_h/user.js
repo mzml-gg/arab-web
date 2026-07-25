@@ -1,5 +1,5 @@
-const { loadUsers } = require('./_auth');
-const { readJson } = require('./_gh');
+const { loadUsers } = require('../_auth');
+const { readJson } = require('../_gh');
 
 module.exports = async (req, res) => {
   const { username } = req.query || {};

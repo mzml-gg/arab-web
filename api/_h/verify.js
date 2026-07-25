@@ -1,4 +1,4 @@
-const { loadUsers, saveUsers, sign, setSessionCookie } = require('./_auth');
+const { loadUsers, saveUsers, sign, setSessionCookie } = require('../_auth');
 
 module.exports = async (req, res) => {
   const { token, u } = req.query || {};

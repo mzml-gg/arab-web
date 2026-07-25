@@ -1,4 +1,4 @@
-const { readJson } = require('./_gh');
+const { readJson } = require('../_gh');
 module.exports = async (req, res) => {
   const q = String(req.query?.q || '').trim().toLowerCase();
   if (!q) return res.status(200).json({ codes: [] });
