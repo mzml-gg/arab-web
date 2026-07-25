@@ -10,6 +10,17 @@
       "is_verified_badge": true,
       "verification_token": null,
       "created_at": "2026-07-23T11:00:00.000Z"
+    },
+    {
+      "username": "Monte",
+      "email": "mzmlzip@gmail.com",
+      "phone": "249918614328",
+      "password_hash": "$2a$10$GN3TilchAhBA54kTES6sNuV9NS.fJc4lVufg2D3n9/kCRXmYD06CG",
+      "display_name": "Monte",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "30fc148dd5d39cca30cba7c4c4f69042d7cf5acc470ae7e6",
+      "created_at": "2026-07-25T12:57:53.775Z"
     }
   ]
 }
