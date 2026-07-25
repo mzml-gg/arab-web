@@ -1,1 +1,12 @@
-{"codes":[]}
+{
+  "codes": [
+    {
+      "filename": "tik-tok-dl.js",
+      "title": "tik-tok-dl",
+      "description": "تحميل فيديوهات تيك توك جوده HD ",
+      "language": "js",
+      "author": "ziad",
+      "approved_at": "2026-07-25T12:55:11.184Z"
+    }
+  ]
+}
