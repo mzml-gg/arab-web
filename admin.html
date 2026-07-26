@@ -19,6 +19,10 @@
   <div id="msg" class="msg"></div>
   <div id="list" class="pending-list"></div>
   <p id="empty" style="color:var(--muted);text-align:center;display:none">لا توجد طلبات.</p>
+
+  <h2 style="color:var(--gold-2);margin-top:34px">طلبات حذف</h2>
+  <div id="del-list" class="pending-list"></div>
+  <p id="del-empty" style="color:var(--muted);text-align:center;display:none">لا طلبات حذف.</p>
 </main>
 <script src="/app.js"></script>
 <script>
@@ -27,6 +31,7 @@
   const me = await loadMe();
   if (!me || !me.is_admin) { location.href='/auth'; return; }
   await load();
+  await loadDeletes();
 })();
 
 async function load() {
@@ -40,20 +45,49 @@ async function load() {
   } catch (e) { list.innerHTML = `<p style="color:var(--danger)">${esc(e.message)}</p>`; }
 }
 
+async function loadDeletes() {
+  const list = document.getElementById('del-list');
+  list.innerHTML = '';
+  try {
+    const { items } = await api('/api/delete-requests');
+    if (!items.length) { document.getElementById('del-empty').style.display='block'; return; }
+    document.getElementById('del-empty').style.display='none';
+    list.innerHTML = items.map(renderDel).join('');
+  } catch (e) { list.innerHTML = `<p style="color:var(--danger)">${esc(e.message)}</p>`; }
+}
+
 function renderItem(it) {
   const suggested = (it.title || 'code').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40) + '.' + (it.language||'txt');
   return `<div class="pending-item" data-id="${esc(it.id)}">
     <h4>${esc(it.title)}</h4>
     <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--gold-dim);margin-bottom:6px">
-      ${avatarHTML(it.author)} <span>·</span> <span class="lang-tag">${esc(it.language)}</span>
+      ${authorLink({ author: it.author, author_avatar: it.author_avatar, author_verified: it.author_verified })}
+      <span>·</span> <span class="lang-tag">${esc(it.language)}</span>
       <span>·</span> <span>${new Date(it.submitted_at).toLocaleString('ar')}</span>
     </div>
     <p style="color:var(--muted);margin:6px 0">${esc(it.description||'')}</p>
     <div class="code-preview">${esc(it.code)}</div>
     <div class="pending-actions">
-      <input type="text" placeholder="اسم الملف مثل: ${esc(suggested)}" value="${esc(suggested)}" />
+      <input type="text" placeholder="اسم الملف" value="${esc(suggested)}" />
       <button class="btn primary" onclick="doApprove('${esc(it.id)}', this)">موافقة</button>
       <button class="btn danger" onclick="doReject('${esc(it.id)}', this)">رفض</button>
+    </div>
+  </div>`;
+}
+
+function renderDel(it) {
+  return `<div class="pending-item" data-id="${esc(it.id)}">
+    <h4>حذف: ${esc(it.filename)}</h4>
+    <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--gold-dim);margin-bottom:6px">
+      <span>الطالب:</span> ${authorLink({ author: it.author })}
+      <span>·</span> <span>${esc(it.email||'')}</span>
+      <span>·</span> <span>${new Date(it.created_at).toLocaleString('ar')}</span>
+    </div>
+    <p style="color:var(--muted);margin:6px 0">السبب: ${esc(it.reason||'—')}</p>
+    <div class="pending-actions">
+      <button class="btn primary" onclick="doResolve('${esc(it.id)}',true,this)">موافقة على الحذف</button>
+      <button class="btn danger" onclick="doResolve('${esc(it.id)}',false,this)">رفض</button>
+      <a class="btn ghost" href="/c/${esc(it.filename)}" target="_blank">عرض الكود</a>
     </div>
   </div>`;
 }
@@ -74,6 +108,15 @@ async function doReject(id, btn) {
   btn.disabled=true;
   try { await api('/api/reject', { method:'POST', body: JSON.stringify({ id }) }); btn.closest('.pending-item').remove(); showMsg('تم الرفض', true); }
   catch (e) { showMsg(e.message, false); btn.disabled=false; }
+}
+async function doResolve(id, approve, btn) {
+  if (!confirm(approve ? 'تأكيد حذف الكود؟' : 'رفض طلب الحذف؟')) return;
+  btn.disabled=true;
+  try {
+    await api('/api/resolve-delete', { method:'POST', body: JSON.stringify({ id, approve }) });
+    btn.closest('.pending-item').remove();
+    showMsg(approve ? 'تم الحذف' : 'رُفض الطلب', true);
+  } catch (e) { showMsg(e.message, false); btn.disabled=false; }
 }
 function showMsg(t, ok) { const m=document.getElementById('msg'); m.className='msg '+(ok?'ok':'err'); m.textContent=t; setTimeout(()=>{m.className='msg';m.textContent='';},3500); }
 </script>

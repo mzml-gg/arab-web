@@ -14,14 +14,19 @@ const routes = {
   verify: require('./_h/verify'),
   'forgot-password': require('./_h/forgot-password'),
   'reset-password': require('./_h/reset-password'),
+  'update-profile': require('./_h/update-profile'),
+  'upload-avatar': require('./_h/upload-avatar'),
+  'delete-request': require('./_h/delete-request'),
+  'delete-requests': require('./_h/delete-requests'),
+  'resolve-delete': require('./_h/resolve-delete'),
+  raw: require('./_h/raw'),
 };
 
 module.exports = async (req, res) => {
   try {
     const url = new URL(req.url, 'http://x');
-    // strip /api/ prefix
     let p = url.pathname.replace(/^\/api\//, '').replace(/\/+$/, '');
-    if (!p || p === 'index') p = 'me'; // fallback
+    if (!p || p === 'index') p = 'me';
     const h = routes[p];
     if (!h) return res.status(404).json({ error: 'Not found: ' + p });
     return h(req, res);

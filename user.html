@@ -16,9 +16,14 @@
 </nav>
 <main class="container">
   <div id="profile"></div>
-  <h3 style="color:var(--gold-2);margin-top:24px">الأكواد المنشورة</h3>
-  <div id="codes" class="grid"></div>
-  <p id="empty" style="color:var(--muted);text-align:center;display:none">لم ينشر هذا المستخدم أي كود بعد.</p>
+  <div class="profile-grid">
+    <div>
+      <h3 style="color:var(--gold-2);margin:6px 0 12px">الأكواد المنشورة</h3>
+      <div id="codes" class="grid"></div>
+      <p id="empty" style="color:var(--muted);text-align:center;display:none">لا توجد أكواد بعد.</p>
+    </div>
+    <aside id="side-wrap"></aside>
+  </div>
 </main>
 <script src="/app.js"></script>
 <script>
@@ -27,22 +32,86 @@
   const parts = location.pathname.split('/').filter(Boolean);
   const username = decodeURIComponent(parts[1] || '');
   if (!username) { location.href='/'; return; }
+  let data;
   try {
-    const { user, codes, count } = await api('/api/user?username=' + encodeURIComponent(username));
-    document.getElementById('profile').innerHTML = `
-      <div class="profile">
-        <span class="avatar lg">${esc(user.username.charAt(0).toUpperCase())}</span>
-        <div class="info">
-          <h2>@${esc(user.username)}</h2>
-          <p>عضو منذ ${new Date(user.created_at).toLocaleDateString('ar')} · ${count} كود منشور</p>
-        </div>
-      </div>`;
-    if (!codes.length) document.getElementById('empty').style.display='block';
-    else document.getElementById('codes').innerHTML = codes.map(codeCard).join('');
+    data = await api('/api/user?username=' + encodeURIComponent(username));
   } catch (e) {
     document.getElementById('profile').innerHTML = `<p style="color:var(--danger);text-align:center">${esc(e.message)}</p>`;
+    return;
   }
+  const { user, codes, count, is_self, pending } = data;
+
+  const badge = user.is_verified_badge ? verifiedBadge() : '';
+  const editBtn = is_self ? `
+    <div class="avatar-edit">
+      <label class="btn sm ghost" style="cursor:pointer">
+        تغيير الصورة
+        <input id="avatar-file" type="file" accept="image/*" hidden>
+      </label>
+      ${user.avatar_url ? '<button class="btn sm ghost" onclick="removeAvatar()">إزالة</button>' : ''}
+    </div>` : '';
+
+  document.getElementById('profile').innerHTML = `
+    <div class="profile">
+      ${avatarNode({ username: user.username, avatar_url: user.avatar_url }, 'lg')}
+      <div class="info">
+        <h2>@${esc(user.username)} ${badge}</h2>
+        <p>عضو منذ ${new Date(user.created_at).toLocaleDateString('ar')} · ${count} كود منشور</p>
+      </div>
+      ${editBtn}
+    </div>`;
+
+  if (is_self) {
+    document.getElementById('avatar-file').addEventListener('change', onAvatarPick);
+    const pendingHtml = pending && pending.length
+      ? pending.map(p => `<div class="side-item"><span>${esc(p.title)}</span><span class="lang-tag">مراجعة</span></div>`).join('')
+      : '<p style="color:var(--muted);font-size:12px;margin:6px 0">لا شي في المراجعة.</p>';
+    document.getElementById('side-wrap').innerHTML = `
+      <div class="side">
+        <h4>أكوادي</h4>
+        ${codes.length ? codes.map(c => `<div class="side-item"><a href="/c/${encodeURIComponent(c.filename)}">${esc(c.title)}</a><button class="btn sm danger" onclick="reqDel('${esc(c.filename)}')">حذف</button></div>`).join('') : '<p style="color:var(--muted);font-size:12px;margin:6px 0">لم تنشر أي كود بعد.</p>'}
+      </div>
+      <div class="side" style="margin-top:12px">
+        <h4>قيد المراجعة</h4>
+        ${pendingHtml}
+      </div>`;
+  }
+
+  if (!codes.length) document.getElementById('empty').style.display='block';
+  else document.getElementById('codes').innerHTML = codes.map(codeCard).join('');
 })();
+
+async function onAvatarPick(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 3 * 1024 * 1024) { alert('حجم الصورة أكبر من 3 ميغا'); return; }
+  const reader = new FileReader();
+  reader.onload = async () => {
+    try {
+      const up = await api('/api/upload-avatar', { method:'POST', body: JSON.stringify({ data_url: reader.result, filename: file.name }) });
+      await api('/api/update-profile', { method:'POST', body: JSON.stringify({ avatar_url: up.url }) });
+      location.reload();
+    } catch (err) { alert(err.message); }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function removeAvatar() {
+  if (!confirm('إزالة صورة البروفايل؟')) return;
+  try {
+    await api('/api/update-profile', { method:'POST', body: JSON.stringify({ avatar_url: null }) });
+    location.reload();
+  } catch (e) { alert(e.message); }
+}
+
+async function reqDel(filename) {
+  const reason = prompt('سبب طلب الحذف (اختياري):');
+  if (reason === null) return;
+  try {
+    await api('/api/delete-request', { method:'POST', body: JSON.stringify({ filename, reason: reason || '' }) });
+    alert('تم إرسال الطلب للإدارة ✓');
+  } catch (e) { alert(e.message); }
+}
 </script>
 </body>
 </html>
