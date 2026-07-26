@@ -6,7 +6,7 @@
 <title>إضافة كود · ARAB code</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
 </nav>
 <main>
   <form class="form" id="form" style="max-width:640px">
-    <h2>إضافة كود</h2>
+    <h2 id="form-title">إضافة كود</h2>
     <p class="sub">راح يُراجَع من الإدارة قبل النشر</p>
     <div id="msg" class="msg"></div>
     <div class="field"><label>العنوان</label><input name="title" required maxlength="120"/></div>
@@ -47,7 +47,25 @@
   await renderNav();
   const me = await loadMe();
   if (!me) { location.href = '/auth?mode=login'; return; }
+
+  const fork = new URLSearchParams(location.search).get('fork');
+  if (fork) {
+    document.getElementById('form-title').textContent = 'Fork: ' + fork;
+    try {
+      const { codes } = await api('/api/list');
+      const meta = codes.find(c => c.filename === fork);
+      if (meta) {
+        document.querySelector('[name=title]').value = 'Fork of ' + meta.title;
+        document.querySelector('[name=description]').value = meta.description || '';
+        const langSel = document.querySelector('[name=language]');
+        if (meta.language) [...langSel.options].forEach(o => { if (o.value === meta.language) o.selected = true; });
+      }
+      const r = await fetch('/api/raw?file=' + encodeURIComponent(fork));
+      if (r.ok) document.querySelector('[name=code]').value = await r.text();
+    } catch (e) { console.error(e); }
+  }
 })();
+
 document.getElementById('form').onsubmit = async (e) => {
   e.preventDefault();
   const msg = document.getElementById('msg'); msg.className='msg'; msg.textContent='';

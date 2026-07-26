@@ -10,12 +10,8 @@ const USERS_PATH = 'data/users.json';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_RE = /^[a-zA-Z0-9_]{3,20}$/;
 
-function sign(payload) {
-  return jwt.sign(payload, SECRET, { expiresIn: '30d' });
-}
-function verify(token) {
-  try { return jwt.verify(token, SECRET); } catch { return null; }
-}
+function sign(payload) { return jwt.sign(payload, SECRET, { expiresIn: '30d' }); }
+function verify(token) { try { return jwt.verify(token, SECRET); } catch { return null; } }
 
 function parseCookies(req) {
   const h = req.headers.cookie || '';
@@ -45,14 +41,18 @@ async function saveUsers(data, msg) {
   await writeJson(USERS_PATH, data, msg || 'chore: update users');
 }
 
+function isAdminEmail(email) { return (email || '').toLowerCase() === ADMIN_EMAIL; }
+
 function publicUser(u) {
   if (!u) return null;
+  const admin = isAdminEmail(u.email);
   return {
     username: u.username,
     email: u.email,
     verified: !!u.verified,
-    is_admin: u.email && u.email.toLowerCase() === ADMIN_EMAIL,
-    is_verified_badge: !!u.is_verified_badge,
+    is_admin: admin,
+    is_verified_badge: admin || !!u.is_verified_badge,
+    avatar_url: u.avatar_url || null,
     created_at: u.created_at,
   };
 }
@@ -82,11 +82,7 @@ function readBody(req) {
 function randomToken(n = 24) { return crypto.randomBytes(n).toString('hex'); }
 
 module.exports = {
-  bcrypt, jwt, crypto,
-  SECRET, ADMIN_EMAIL, USERS_PATH,
-  EMAIL_RE, USERNAME_RE,
-  sign, verify,
-  parseCookies, setSessionCookie, clearSessionCookie,
-  loadUsers, saveUsers, publicUser, currentUser,
-  readBody, randomToken,
+  bcrypt, jwt, sign, verify, parseCookies, setSessionCookie, clearSessionCookie,
+  loadUsers, saveUsers, currentUser, publicUser, readBody, randomToken,
+  isAdminEmail, ADMIN_EMAIL, EMAIL_RE, USERNAME_RE, SECRET,
 };

@@ -1,4 +1,4 @@
-const { currentUser, readBody, randomToken } = require('../_auth');
+const { currentUser, readBody, randomToken, isAdminEmail } = require('../_auth');
 const { writeJson } = require('../_gh');
 
 module.exports = async (req, res) => {
@@ -18,12 +18,15 @@ module.exports = async (req, res) => {
       language: String(language || 'txt').slice(0, 20),
       code,
       author: u.username,
+      author_avatar: u.avatar_url || null,
+      author_verified: isAdminEmail(u.email) || !!u.is_verified_badge,
+      author_is_admin: isAdminEmail(u.email),
       submitted_at: new Date().toISOString(),
     };
     await writeJson(`pending/${id}.json`, entry, `submit: ${u.username} - ${entry.title}`);
     res.status(200).json({ ok: true, id });
   } catch (e) {
     console.error(e);
-    res.status(500).json({ error: 'خطأ داخلي' });
+    res.status(500).json({ error: 'خطأ داخلي: ' + (e.message || 'unknown') });
   }
 };

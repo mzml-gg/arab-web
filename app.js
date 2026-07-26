@@ -16,20 +16,40 @@ function esc(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
 
-function avatarLetter(name) {
-  return (name || '?').trim().charAt(0).toUpperCase();
+function avatarLetter(name) { return (name || '?').trim().charAt(0).toUpperCase(); }
+
+function avatarNode(user, size = '') {
+  // user = { username, avatar_url } or string
+  const name = typeof user === 'string' ? user : (user && user.username) || '?';
+  const url = typeof user === 'object' && user ? user.avatar_url : null;
+  const cls = 'avatar' + (size ? ' ' + size : '');
+  if (url) return `<span class="${cls}"><img src="${esc(url)}" alt=""></span>`;
+  return `<span class="${cls}">${esc(avatarLetter(name))}</span>`;
 }
 
-function avatarHTML(username, cls = '', isVerified = false) {
-  const badge = isVerified ? '<span class="verified-badge sparkle"></span>' : '';
-  return `<a href="/u/${encodeURIComponent(username)}" class="author"><span class="avatar ${cls}">${esc(avatarLetter(username))}</span><span>${esc(username)}</span>${badge}</a>`;
+function verifiedBadge() {
+  return `<span class="verified-badge" title="حساب موثّق">
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+      <path fill="#a259ff" d="M12 1l2.6 2.1 3.3-.3.8 3.2 3 1.5-1.2 3.1 1.2 3.1-3 1.5-.8 3.2-3.3-.3L12 20l-2.6-1.9-3.3.3-.8-3.2-3-1.5 1.2-3.1L2.3 7.5l3-1.5.8-3.2 3.3.3z"/>
+      <path fill="#fff" d="M10.6 14.2l-2.4-2.4 1.1-1.1 1.3 1.3 3.7-3.7 1.1 1.1z"/>
+    </svg>
+  </span>`;
+}
+
+function authorLink(entry, opts = {}) {
+  // entry can be manifest code OR user profile
+  const username = entry.author || entry.username || 'unknown';
+  const avatar = entry.author_avatar || entry.avatar_url || null;
+  const verified = entry.author_verified || entry.is_verified_badge || entry.is_admin;
+  return `<a href="/u/${encodeURIComponent(username)}" class="author">
+    ${avatarNode({ username, avatar_url: avatar }, opts.size || 'sm')}
+    <span class="uname">${esc(username)}</span>
+    ${verified ? verifiedBadge() : ''}
+  </a>`;
 }
 
 async function loadMe() {
-  try {
-    const { user } = await api('/api/me');
-    return user;
-  } catch { return null; }
+  try { const { user } = await api('/api/me'); return user; } catch { return null; }
 }
 
 async function renderNav() {
@@ -42,17 +62,14 @@ async function renderNav() {
     el.innerHTML = `${searchBtn}
       <a class="btn" href="/submit">+ كود</a>
       ${adminLink}
-      ${avatarHTML(me.username, '', me.is_verified_badge)}
+      ${authorLink({ username: me.username, author_avatar: me.avatar_url, author_verified: me.is_verified_badge })}
       <button class="icon-btn" title="خروج" onclick="doLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>`;
   } else {
     el.innerHTML = `${searchBtn}<a class="btn primary" href="/auth">دخول</a>`;
   }
 }
 
-async function doLogout() {
-  await api('/api/logout', { method: 'POST' });
-  location.href = '/';
-}
+async function doLogout() { await api('/api/logout', { method: 'POST' }); location.href = '/'; }
 
 // Search overlay
 function ensureSearchOverlay() {
@@ -68,10 +85,7 @@ function ensureSearchOverlay() {
   document.body.appendChild(div);
   const input = div.querySelector('#search-input');
   let t;
-  input.addEventListener('input', () => {
-    clearTimeout(t);
-    t = setTimeout(runSearch, 250);
-  });
+  input.addEventListener('input', () => { clearTimeout(t); t = setTimeout(runSearch, 250); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSearch(); });
 }
 function openSearch() { ensureSearchOverlay(); document.getElementById('search-overlay').classList.add('open'); document.getElementById('search-input').focus(); }
@@ -88,17 +102,19 @@ async function runSearch() {
 }
 
 function codeCard(c) {
+  const adminMark = c.admin_added ? `<span class="admin-mark" title="مضاف من الإدارة">${verifiedBadge()}</span>` : '';
   return `<a href="/c/${encodeURIComponent(c.filename)}" class="card" style="text-decoration:none">
-    <h3>${esc(c.title)}</h3>
+    <h3>${esc(c.title)} ${adminMark}</h3>
     <p>${esc(c.description || '').slice(0, 120)}</p>
     <div class="meta">
-      ${avatarHTML(c.author || 'unknown')}
+      ${authorLink(c)}
       <span class="lang-tag">${esc(c.language || 'txt')}</span>
     </div>
   </a>`;
 }
 
-window.api = api; window.esc = esc; window.avatarHTML = avatarHTML;
+window.api = api; window.esc = esc;
+window.avatarNode = avatarNode; window.authorLink = authorLink; window.verifiedBadge = verifiedBadge;
 window.renderNav = renderNav; window.doLogout = doLogout;
 window.openSearch = openSearch; window.closeSearch = closeSearch;
 window.codeCard = codeCard; window.loadMe = loadMe;
