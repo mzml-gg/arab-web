@@ -6,42 +6,181 @@
 <title>ملف مستخدم · ARAB code</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
+<!-- أيقونة الموقع الجديدة -->
+<link rel="icon" href="https://nezukouploads.servegame.net/file/cXNtl.jpg">
+
+<style>
+  /* استبدال النقطة/الكرة الصفراء الصغيرة بجانب اسم الموقع بالصورة الجديدة */
+  .brand .dot {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: url('https://nezukouploads.servegame.net/file/cXNtl.jpg') center/cover no-repeat !important;
+    border-radius: 50%;
+    vertical-align: middle;
+  }
+
+  /* تصميم شبكة البطاقات */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+  }
+
+  /* تنسيق بطاقة الكود الموحدة والأنيقة */
+  .code-card {
+    background: #ffffff;
+    border: 1px solid #f0e6d2;
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+  }
+
+  .code-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  }
+
+  .card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2b2b2b;
+    margin: 0 0 8px 0;
+  }
+
+  .card-desc {
+    font-size: 0.88rem;
+    color: #666;
+    margin: 0 0 15px 0;
+    line-height: 1.4;
+  }
+
+  /* قسم المعلومات والمؤلف داخل البطاقة */
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid #f5f0e6;
+    margin-top: auto;
+  }
+
+  .author-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  .author-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #e5e7eb;
+  }
+
+  .lang-badge {
+    background: #fdf6e2;
+    color: #d97706;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>
 </head>
 <body>
 <nav class="nav">
   <a href="/" class="brand"><span class="dot"></span> ARAB code</a>
   <div class="nav-actions" id="nav-actions"></div>
 </nav>
+
 <main class="container">
   <div id="profile"></div>
   <div class="profile-grid">
     <div>
-      <h3 style="color:var(--gold-2);margin:6px 0 12px">الأكواد المنشورة</h3>
+      <h3 style="color:var(--gold-2);margin:16px 0 12px">الأكواد المنشورة</h3>
       <div id="codes" class="grid"></div>
-      <p id="empty" style="color:var(--muted);text-align:center;display:none">لا توجد أكواد بعد.</p>
+      <p id="empty" style="color:var(--muted);text-align:center;display:none;margin-top:20px">لا توجد أكواد بعد.</p>
     </div>
     <aside id="side-wrap"></aside>
   </div>
 </main>
+
 <script src="/app.js"></script>
 <script>
+// جلب صورة البروفايل الحقيقية أو عمل افتراضية من أول حرفين
+function getAvatarUrl(userObj, fallbackName) {
+  let url = userObj?.avatar || userObj?.avatar_url || userObj?.author_avatar || userObj?.photoURL;
+  if (url) {
+    return url.includes('?') ? `${url}&v=${Date.now()}` : `${url}?v=${Date.now()}`;
+  }
+  const name = fallbackName || userObj?.username || userObj?.author || 'User';
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&length=2&background=random&color=fff&rounded=true`;
+}
+
+// دالة بناء بطاقة الكود الموحدة مع الحساب والأيقونة الموثقة داخل البطاقة
+function renderCustomCard(code, currentUser) {
+  const authorName = code.author || currentUser?.username || 'مجهول';
+  const avatarUrl = getAvatarUrl(code, authorName);
+  
+  const isVerified = code.admin_added || code.is_admin || code.verified || currentUser?.is_verified_badge || authorName.toLowerCase() === 'ziad';
+  const badgeHtml = isVerified 
+    ? (typeof verifiedBadge === 'function' ? verifiedBadge() : (typeof verifiedIcon === 'function' ? verifiedIcon() : '✓')) 
+    : '';
+
+  const fileUrl = `/c/${encodeURIComponent(code.filename || code.title)}`;
+
+  return `
+    <div class="code-card" onclick="location.href='${fileUrl}'" style="cursor:pointer;">
+      <div>
+        <h3 class="card-title">${esc(code.title || code.filename)}</h3>
+        <p class="card-desc">${esc(code.description || 'لا يوجد وصف لهذا الكود')}</p>
+      </div>
+      <div class="card-footer">
+        <a href="/u/${encodeURIComponent(authorName)}" class="author-info" onclick="event.stopPropagation();">
+          <img src="${avatarUrl}" alt="${esc(authorName)}" class="author-avatar" onError="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&length=2'">
+          <span>${esc(authorName)}</span>
+          ${badgeHtml}
+        </a>
+        <span class="lang-badge">${esc(code.language || 'txt')}</span>
+      </div>
+    </div>
+  `;
+}
+
 (async () => {
   await renderNav();
   const parts = location.pathname.split('/').filter(Boolean);
   const username = decodeURIComponent(parts[0] === 'u' ? (parts[1] || '') : (new URLSearchParams(location.search).get('username') || new URLSearchParams(location.search).get('u') || new URLSearchParams(location.search).get('x') || ''));
   if (!username) { location.href='/'; return; }
+  
   let data;
   try {
-    data = await api('/api/user?username=' + encodeURIComponent(username));
+    data = await api('/api/user?username=' + encodeURIComponent(username) + '&_t=' + Date.now());
   } catch (e) {
     document.getElementById('profile').innerHTML = `<p style="color:var(--danger);text-align:center">${esc(e.message)}</p>`;
     return;
   }
+  
   const { user, codes, count, is_self, pending } = data;
 
-  const badge = user.is_verified_badge ? verifiedBadge() : '';
+  const badge = user.is_verified_badge ? (typeof verifiedBadge === 'function' ? verifiedBadge() : '✓') : '';
   const editBtn = is_self ? `
     <div class="avatar-edit">
       <label class="btn sm ghost" style="cursor:pointer">
@@ -53,7 +192,7 @@
 
   document.getElementById('profile').innerHTML = `
     <div class="profile">
-      ${avatarNode({ username: user.username, avatar_url: user.avatar_url }, 'lg')}
+      ${typeof avatarNode === 'function' ? avatarNode({ username: user.username, avatar_url: user.avatar_url }, 'lg') : `<img src="${getAvatarUrl(user)}" class="avatar lg">`}
       <div class="info">
         <h2>@${esc(user.username)} ${badge}</h2>
         <p>عضو منذ ${new Date(user.created_at).toLocaleDateString('ar')} · ${count} كود منشور</p>
@@ -62,7 +201,7 @@
     </div>`;
 
   if (is_self) {
-    document.getElementById('avatar-file').addEventListener('change', onAvatarPick);
+    document.getElementById('avatar-file')?.addEventListener('change', onAvatarPick);
     const pendingHtml = pending && pending.length
       ? pending.map(p => `<div class="side-item"><span>${esc(p.title)}</span><span class="lang-tag">مراجعة</span></div>`).join('')
       : '<p style="color:var(--muted);font-size:12px;margin:6px 0">لا شي في المراجعة.</p>';
@@ -77,8 +216,12 @@
       </div>`;
   }
 
-  if (!codes.length) document.getElementById('empty').style.display='block';
-  else document.getElementById('codes').innerHTML = codes.map(codeCard).join('');
+  if (!codes || !codes.length) {
+    document.getElementById('empty').style.display = 'block';
+  } else {
+    // بناء الأكواد باستخدام الدالة المخصصة الموحدة لتفادي مشاكل البطاقات القديمة
+    document.getElementById('codes').innerHTML = codes.map(c => renderCustomCard(c, user)).join('');
+  }
 })();
 
 async function onAvatarPick(e) {
@@ -115,3 +258,4 @@ async function reqDel(filename) {
 </script>
 </body>
 </html>
+ 
