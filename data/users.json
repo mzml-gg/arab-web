@@ -36,6 +36,17 @@
       "is_verified_badge": false,
       "verification_token": null,
       "created_at": "2026-07-27T11:52:50.847Z"
+    },
+    {
+      "username": "obito",
+      "email": "nuzomaki515@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$JDfnUam341Db18PKzyv7weCUOwpT/BDMCo0MBf9Mu2P1o0YukqXR2",
+      "display_name": "obito",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "396b7f6dcd4296a7752345158b58a6afd8f568f9cde6952e",
+      "created_at": "2026-07-27T17:33:44.816Z"
     }
   ]
 }
