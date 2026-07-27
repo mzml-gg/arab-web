@@ -87,9 +87,9 @@
       "phone": "",
       "password_hash": "$2a$10$usn7aiBiGeG/o81Z7eLR7eB7sXB3M8.nnF6t86bI9BqU5THe/MTZi",
       "display_name": "Prototype",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "6d0a31fd812b5c0ce422f9e3ba0a22cf7ac94a0ff97f74f1",
+      "verification_token": null,
       "created_at": "2026-07-27T21:21:12.791Z"
     }
   ]
