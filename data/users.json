@@ -92,6 +92,17 @@
       "verification_token": null,
       "created_at": "2026-07-27T21:21:12.791Z",
       "avatar_url": "https://nezukouploads.servegame.net/file/rQ3GS.jpg"
+    },
+    {
+      "username": "TOBI",
+      "email": "nirouniro83@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$9jSsn2YRAOpVO6TnEEcJhOh6cQdDySqyQhMz4avdMMafXS/oUkhvK",
+      "display_name": "TOBI",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "2b143b6fb8931205f850834a23a3df1aabbb0772c6ae012f",
+      "created_at": "2026-07-27T21:52:03.773Z"
     }
   ]
 }
