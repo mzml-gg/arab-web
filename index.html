@@ -13,6 +13,16 @@
 <link rel="icon" href="https://nezukouploads.servegame.net/file/cXNtl.jpg">
 
 <style>
+  /* استبدال النقطة/الكرة الصفراء الصغيرة بجانب اسم الموقع بالصورة الجديدة */
+  .brand .dot {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: url('https://nezukouploads.servegame.net/file/cXNtl.jpg') center/cover no-repeat !important;
+    border-radius: 50%;
+    vertical-align: middle;
+  }
+
   /* تعديل شعار الهيرو واستبدال الكرة الصفراء بالصورة الجديدة */
   .hero .sphere {
     width: 120px;
@@ -20,7 +30,7 @@
     background: url('https://nezukouploads.servegame.net/file/cXNtl.jpg') center/cover no-repeat;
     border-radius: 50%;
     margin: 0 auto 15px auto;
-    box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
 
   /* تصميم شبكة البطاقات */
@@ -175,7 +185,6 @@ function renderCustomCard(code) {
       return; 
     }
     
-    // إجبار الصفحة على استخدام دالة البناء الجديدة الخاصة بنا لتجاوز دالة codeCard القديمة
     box.innerHTML = codes.map(renderCustomCard).join('');
   } catch (e) { 
     console.error(e); 
@@ -184,3 +193,4 @@ function renderCustomCard(code) {
 </script>
 </body>
 </html>
+ 
