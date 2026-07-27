@@ -26,25 +26,25 @@
 
   /* تنسيق مربع الكود (خلفية سوداء، منع السحب الجانبي، والاتجاه من اليسار لليمين) */
   .code-view pre {
-    background-color: #000000 !important; /* لون أسود */
-    direction: ltr; /* ضبط الكود من اليسار لليمين */
+    background-color: #000000 !important;
+    direction: ltr;
     text-align: left;
     margin: 0;
     padding: 15px 0;
     max-height: 450px;
-    overflow-y: auto; /* سكرول عمودي فقط إذا الكود طويل */
-    overflow-x: hidden !important; /* منع السكرول الجانبي */
+    overflow-y: auto;
+    overflow-x: hidden !important;
   }
 
   .code-view pre code {
     background-color: transparent !important;
-    white-space: pre-wrap !important; /* التفاف السطور الطويلة */
-    word-break: break-word !important; /* كسر الكلمات الطويلة */
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
     font-size: 0.8rem !important;
     line-height: 1.5;
     padding: 0 10px;
     display: block;
-    counter-reset: line; /* تجهيز عداد الأسطر */
+    counter-reset: line;
   }
 
   /* تنسيق أرقام الأسطر */
@@ -53,10 +53,10 @@
     display: inline-block;
     width: 25px;
     min-width: 25px;
-    color: #666; /* لون الرقم */
+    color: #666;
     text-align: right;
     margin-right: 15px;
-    user-select: none; /* منع نسخ الأرقام عند نسخ الكود */
+    user-select: none;
     border-right: 1px solid #333;
     padding-right: 8px;
   }
@@ -95,6 +95,14 @@
     gap: 10px;
     margin-top: 8px;
     flex-wrap: wrap;
+  }
+
+  /* تنسيق أيقونات الأزرار */
+  .btn-icon {
+    vertical-align: middle;
+    margin-left: 5px;
+    width: 16px;
+    height: 16px;
   }
 </style>
 </head>
@@ -158,9 +166,13 @@
       </div>
     </div>`;
 
+  // هنا أضفت أيقونة الـ SVG داخل زر النسخ وأعطيته id عشان نتحكم فيه
   const actions = document.getElementById('actions');
   actions.innerHTML = `
-    <button class="btn primary" onclick="copyCode()">📋 نسخ</button>
+    <button class="btn primary" id="copyBtn" onclick="copyCode()">
+      <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      نسخ
+    </button>
     <a class="btn" href="${ghRaw}" target="_blank">Raw</a>
     <a class="btn" href="/submit?fork=${encodeURIComponent(filename)}">🍴 Fork</a>
     ${isOwner ? `<button class="btn danger" onclick="requestDelete()">طلب حذف</button>` : ''}
@@ -174,12 +186,10 @@
     codeEl.textContent = t;
     codeEl.className = 'hljs language-' + (meta.language || 'plaintext');
     
-    // تفعيل التلوين أولاً
     if (window.hljs) hljs.highlightElement(codeEl);
     
-    // إضافة ترقيم الأسطر
     let htmlLines = codeEl.innerHTML.split(/\r?\n/);
-    if (htmlLines[htmlLines.length - 1].trim() === '') htmlLines.pop(); // إزالة السطر الأخير إذا كان فارغاً
+    if (htmlLines[htmlLines.length - 1].trim() === '') htmlLines.pop(); 
     codeEl.innerHTML = htmlLines.map(line => `<span class="ln"></span>${line}`).join('\n');
     
   } catch (e) {
@@ -187,9 +197,30 @@
   }
 })();
 
+// دالة النسخ الجديدة بدون Alert
 async function copyCode() {
-  try { await navigator.clipboard.writeText(window.__codeText || ''); alert('تم النسخ ✓'); }
-  catch { alert('تعذر النسخ'); }
+  const btn = document.getElementById('copyBtn');
+  const originalHtml = btn.innerHTML; // نحفظ الشكل الأصلي للزر
+
+  try { 
+    await navigator.clipboard.writeText(window.__codeText || ''); 
+    // نغير شكل الزر ونضيف علامة الصح
+    btn.innerHTML = `
+      <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      تم النسخ
+    `;
+    
+    // نرجع الزر لشكله الطبيعي بعد ثانيتين
+    setTimeout(() => {
+      btn.innerHTML = originalHtml;
+    }, 2000);
+
+  } catch { 
+    btn.innerHTML = 'تعذر النسخ ❌'; 
+    setTimeout(() => {
+      btn.innerHTML = originalHtml;
+    }, 2000);
+  }
 }
 
 async function requestDelete() {
