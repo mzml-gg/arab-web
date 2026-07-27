@@ -65,9 +65,9 @@
       "phone": "+212638826196",
       "password_hash": "$2a$10$UJDkAIMMxvW31mDT62xPOeCQQwugwohjn2lhs1lw6qNIUyfFIwIo2",
       "display_name": "ja3fardev",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "1675234f6f79bfcd25f39bdd2317a6b5e2da86a7c79e1708",
+      "verification_token": null,
       "created_at": "2026-07-27T17:34:42.899Z"
     }
   ]
