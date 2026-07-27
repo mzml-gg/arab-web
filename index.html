@@ -134,28 +134,27 @@
 
 <script src="/app.js"></script>
 <script>
-// جلب صورة البروفايل الحقيقية مع منع كاش الصور القديمة
+// جلب صورة البروفايل الحقيقية مع كسر الكاش
 function getAvatarUrl(code) {
-  let url = code.avatar || code.avatar_url || code.author_avatar || code.photoURL;
+  let url = code.avatar || code.avatar_url || code.author_avatar || code.user?.avatar_url || code.photoURL;
   if (url) {
     return url.includes('?') ? `${url}&v=${Date.now()}` : `${url}?v=${Date.now()}`;
   }
   
-  const name = code.author || 'User';
+  const name = code.author || code.user?.username || 'User';
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&length=2&background=random&color=fff&rounded=true`;
 }
 
 function renderCustomCard(code) {
-  const authorName = code.author || 'مجهول';
+  const authorName = code.author || code.user?.username || 'مجهول';
   const avatarUrl = getAvatarUrl(code);
   
-  // فحص شامل لكل حقول التوثيق المحتملة من الداتابيز
+  // قراءة مفتاح is_verified_badge المباشر المقتبس من قاعدة البيانات
   const isVerified = Boolean(
+    code.is_verified_badge === true || 
+    code.user?.is_verified_badge === true || 
     code.is_verified || 
-    code.is_verified_badge || 
     code.verified || 
-    code.verified_badge || 
-    code.user_verified || 
     code.admin_added || 
     code.is_admin || 
     authorName.toLowerCase() === 'ziad'
@@ -185,7 +184,7 @@ function renderCustomCard(code) {
   `;
 }
 
-// دالة جلب الأكواد وتحديث القائمة بدون إعادة تحميل الصفحة
+// دالة جلب الأكواد وتحديث القائمة تلقائياً
 async function fetchAndRenderCodes() {
   try {
     const { codes } = await api(`/api/list?_t=${Date.now()}`);
@@ -208,7 +207,7 @@ async function fetchAndRenderCodes() {
   await renderNav();
   await fetchAndRenderCodes();
   
-  // تحديث القائمة تلقائياً كل دقيقة
+  // تحديث تلقائي كل دقيقة
   setInterval(fetchAndRenderCodes, 60000);
 })();
 </script>
