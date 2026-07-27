@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "quran.js",
+      "title": "Quran",
+      "description": "امر لبوت واتس اب (.سورة) و البوت برسلك قائمه من سور القرأن الكريم (مصحف كامل) ",
+      "language": "js",
+      "author": "Monte",
+      "author_avatar": "https://nezukouploads.servegame.net/file/O1IRO.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-07-27T17:22:43.582Z"
+    },
+    {
       "filename": "ig-downloader.js",
       "title": "ig-downloader",
       "description": "تحميل فيديوهات انستا لبوتات واتس",
