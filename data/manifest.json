@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "Add-Meta-in-Group",
+      "title": "اضافة ميتا لي الجروب ",
+      "description": "اضافة ميتا ",
+      "language": "js",
+      "author": "Prototype",
+      "author_avatar": "https://nezukouploads.servegame.net/file/rQ3GS.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-07-27T21:42:28.386Z"
+    },
+    {
       "filename": "deepseek",
       "title": "سكرب deepseek  المفكر ",
       "description": "Deepseek ",
