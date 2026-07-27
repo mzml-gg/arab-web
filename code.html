@@ -9,17 +9,68 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<style>
+  /* تنسيقات تقليل حجم حاوية الكود والمحتوى */
+  .container {
+    max-width: 700px; /* تحديد العرض الأقصى لصفحة عرض الكود */
+    margin: 0 auto;
+    padding: 15px;
+  }
+
+  .code-view {
+    max-width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .code-view pre {
+    max-height: 450px; /* تقليل ارتفاع مربع الكود مع إضافة سكرول */
+    overflow: auto;
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  /* تنسيق ملف صاحب الكود والصورة الشخصية */
+  .author-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+    font-weight: 600;
+  }
+
+  .author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid #3b82f6;
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+</style>
 </head>
 <body>
 <nav class="nav">
   <a href="/" class="brand"><span class="dot"></span> ARAB code</a>
   <div class="nav-actions" id="nav-actions"></div>
 </nav>
+
 <main class="container">
   <div id="header"></div>
-  <div class="code-actions" id="actions"></div>
+  <div class="code-actions" id="actions" style="margin: 15px 0;"></div>
   <div class="code-view"><pre><code id="code" class="hljs">تحميل...</code></pre></div>
 </main>
+
 <script src="/app.js"></script>
 <script>
 (async () => {
@@ -30,7 +81,7 @@
   const rawUrl = `/api/raw?file=${encodeURIComponent(filename)}`;
   const ghRaw = `https://raw.githubusercontent.com/mzml-gg/arab-web/main/codes/${encodeURIComponent(filename)}`;
 
-  let meta = { title: filename, author: 'unknown', language: (filename.split('.').pop()||'txt') };
+  let meta = { title: filename, author: 'unknown', avatar: '', language: (filename.split('.').pop()||'txt') };
   try {
     const { codes } = await api('/api/list');
     meta = codes.find(c => c.filename === filename) || meta;
@@ -38,17 +89,29 @@
   const me = await loadMe();
   const isOwner = me && me.username.toLowerCase() === (meta.author||'').toLowerCase();
 
-  const badge = meta.admin_added ? verifiedBadge() : '';
+  const badge = meta.admin_added ? (typeof verifiedBadge === 'function' ? verifiedBadge() : '✓') : '';
+  
+  // دالة مخصصة لعرض رابط وصورة الناشر
+  const renderAuthor = (m) => {
+    const avatarUrl = m.avatar || m.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.author || 'U')}&background=random`;
+    return `
+      <a href="/user/${encodeURIComponent(m.author || 'unknown')}" class="author-badge">
+        <img src="${avatarUrl}" alt="${esc(m.author)}" class="author-avatar" onError="this.src='https://ui-avatars.com/api/?name=U'">
+        <span>@${esc(m.author || 'مجهول')}</span>
+      </a>
+    `;
+  };
+
   document.getElementById('header').innerHTML = `
     <div class="code-header">
       <div>
-        <h2>${esc(meta.title)} ${badge}</h2>
+        <h2 style="margin:0 0 10px 0;">${esc(meta.title)} ${badge}</h2>
         <div class="meta-row">
-          ${authorLink(meta)}
+          ${renderAuthor(meta)}
           <span>·</span>
           <span class="lang-tag">${esc(meta.language||'txt')}</span>
           <span>·</span>
-          <span>${esc(filename)}</span>
+          <span style="opacity:0.7;">${esc(filename)}</span>
         </div>
       </div>
     </div>`;
