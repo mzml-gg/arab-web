@@ -138,7 +138,6 @@
 function getAvatarUrl(code) {
   let url = code.avatar || code.avatar_url || code.author_avatar || code.photoURL;
   if (url) {
-    // كسر الكاش للصورة عشان إذا تغيرت تظهر فوراً
     return url.includes('?') ? `${url}&v=${Date.now()}` : `${url}?v=${Date.now()}`;
   }
   
@@ -150,7 +149,18 @@ function renderCustomCard(code) {
   const authorName = code.author || 'مجهول';
   const avatarUrl = getAvatarUrl(code);
   
-  const isVerified = code.admin_added || code.is_admin || code.verified || authorName.toLowerCase() === 'ziad';
+  // فحص شامل لكل حقول التوثيق المحتملة من الداتابيز
+  const isVerified = Boolean(
+    code.is_verified || 
+    code.is_verified_badge || 
+    code.verified || 
+    code.verified_badge || 
+    code.user_verified || 
+    code.admin_added || 
+    code.is_admin || 
+    authorName.toLowerCase() === 'ziad'
+  );
+
   const badgeHtml = isVerified 
     ? (typeof verifiedBadge === 'function' ? verifiedBadge() : (typeof verifiedIcon === 'function' ? verifiedIcon() : '✓')) 
     : '';
@@ -178,7 +188,6 @@ function renderCustomCard(code) {
 // دالة جلب الأكواد وتحديث القائمة بدون إعادة تحميل الصفحة
 async function fetchAndRenderCodes() {
   try {
-    // إضافة timestamp لمنع كاش Vercel من تقديم بيانات قديمة
     const { codes } = await api(`/api/list?_t=${Date.now()}`);
     const box = document.getElementById('codes');
     
@@ -197,10 +206,9 @@ async function fetchAndRenderCodes() {
 
 (async () => {
   await renderNav();
-  // التحميل لأول مرة
   await fetchAndRenderCodes();
   
-  // تحديث القائمة تلقائياً كل 60 ثانية (دقيقة واحدة)
+  // تحديث القائمة تلقائياً كل دقيقة
   setInterval(fetchAndRenderCodes, 60000);
 })();
 </script>
