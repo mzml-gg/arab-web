@@ -134,12 +134,13 @@
 
 <script src="/app.js"></script>
 <script>
-// جلب صورة البروفايل الحقيقية أو عمل افتراضية من أول حرفين
+// جلب صورة البروفايل الحقيقية مع منع كاش الصور القديمة
 function getAvatarUrl(code) {
-  if (code.avatar) return code.avatar;
-  if (code.avatar_url) return code.avatar_url;
-  if (code.author_avatar) return code.author_avatar;
-  if (code.photoURL) return code.photoURL;
+  let url = code.avatar || code.avatar_url || code.author_avatar || code.photoURL;
+  if (url) {
+    // كسر الكاش للصورة عشان إذا تغيرت تظهر فوراً
+    return url.includes('?') ? `${url}&v=${Date.now()}` : `${url}?v=${Date.now()}`;
+  }
   
   const name = code.author || 'User';
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&length=2&background=random&color=fff&rounded=true`;
@@ -149,7 +150,6 @@ function renderCustomCard(code) {
   const authorName = code.author || 'مجهول';
   const avatarUrl = getAvatarUrl(code);
   
-  // شارة التوثيق الأصليّة
   const isVerified = code.admin_added || code.is_admin || code.verified || authorName.toLowerCase() === 'ziad';
   const badgeHtml = isVerified 
     ? (typeof verifiedBadge === 'function' ? verifiedBadge() : (typeof verifiedIcon === 'function' ? verifiedIcon() : '✓')) 
@@ -175,20 +175,33 @@ function renderCustomCard(code) {
   `;
 }
 
-(async () => {
-  await renderNav();
+// دالة جلب الأكواد وتحديث القائمة بدون إعادة تحميل الصفحة
+async function fetchAndRenderCodes() {
   try {
-    const { codes } = await api('/api/list');
+    // إضافة timestamp لمنع كاش Vercel من تقديم بيانات قديمة
+    const { codes } = await api(`/api/list?_t=${Date.now()}`);
     const box = document.getElementById('codes');
+    
     if (!codes || !codes.length) { 
       document.getElementById('empty').style.display = 'block'; 
+      box.innerHTML = '';
       return; 
     }
     
+    document.getElementById('empty').style.display = 'none';
     box.innerHTML = codes.map(renderCustomCard).join('');
   } catch (e) { 
-    console.error(e); 
+    console.error('Error fetching fresh codes:', e); 
   }
+}
+
+(async () => {
+  await renderNav();
+  // التحميل لأول مرة
+  await fetchAndRenderCodes();
+  
+  // تحديث القائمة تلقائياً كل 60 ثانية (دقيقة واحدة)
+  setInterval(fetchAndRenderCodes, 60000);
 })();
 </script>
 </body>
