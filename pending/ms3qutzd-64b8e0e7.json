@@ -1,0 +1,12 @@
+{
+  "id": "ms3qutzd-64b8e0e7",
+  "title": "اضافة ميتا لي الجروب ",
+  "description": "اضافة ميتا ",
+  "language": "js",
+  "code": "//~ ⧼ 𝑷𝑹𝑶𝑻𝑶𝑻𝒀𝑷𝑬 ⧽\nlet handler = async (m, { conn, text }) => {\n  try {\n    const groupJid = m.chat;\n\n    if (!groupJid.endsWith(\"@g.us\")) {\n      return m.reply(\"جروب فقط.\");\n    }\n\n    const res = await conn.groupParticipantsUpdate(\n      groupJid,\n      [\"867051314767696@bot\"],\n      \"add\",\n    );\n\n    m.reply(\n      \"تم اضافه اغبى ذكاء اصطناعي في العالم ✅\"\n    );\n  } catch (e) {\n    console.error(e);\n    m.reply(String(e?.stack || e));\n  }\n};\n\nhandler.command = /^(addai)$/i;\nexport default handler;",
+  "author": "Prototype",
+  "author_avatar": "https://nezukouploads.servegame.net/file/rQ3GS.jpg",
+  "author_verified": true,
+  "author_is_admin": false,
+  "submitted_at": "2026-07-27T21:33:42.601Z"
+}
