@@ -24,17 +24,45 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 
-  /* تصغير حجم خط الكود وضبط المسافات */
-  .code-view pre code {
-    font-size: 0.78rem !important; /* تقليل حجم الخط هنا */
-    line-height: 1.4;
-    padding: 12px;
+  /* تنسيق مربع الكود (خلفية سوداء، منع السحب الجانبي، والاتجاه من اليسار لليمين) */
+  .code-view pre {
+    background-color: #000000 !important; /* لون أسود */
+    direction: ltr; /* ضبط الكود من اليسار لليمين */
+    text-align: left;
+    margin: 0;
+    padding: 15px 0;
+    max-height: 450px;
+    overflow-y: auto; /* سكرول عمودي فقط إذا الكود طويل */
+    overflow-x: hidden !important; /* منع السكرول الجانبي */
   }
 
-  .code-view pre {
-    max-height: 420px;
-    overflow: auto;
-    margin: 0;
+  .code-view pre code {
+    background-color: transparent !important;
+    white-space: pre-wrap !important; /* التفاف السطور الطويلة */
+    word-break: break-word !important; /* كسر الكلمات الطويلة */
+    font-size: 0.8rem !important;
+    line-height: 1.5;
+    padding: 0 10px;
+    display: block;
+    counter-reset: line; /* تجهيز عداد الأسطر */
+  }
+
+  /* تنسيق أرقام الأسطر */
+  .code-view .ln {
+    counter-increment: line;
+    display: inline-block;
+    width: 25px;
+    min-width: 25px;
+    color: #666; /* لون الرقم */
+    text-align: right;
+    margin-right: 15px;
+    user-select: none; /* منع نسخ الأرقام عند نسخ الكود */
+    border-right: 1px solid #333;
+    padding-right: 8px;
+  }
+  
+  .code-view .ln::before {
+    content: counter(line);
   }
 
   /* تنسيق شارة البروفايل للناشر */
@@ -100,12 +128,10 @@
   const me = await loadMe();
   const isOwner = me && me.username.toLowerCase() === (meta.author||'').toLowerCase();
 
-  // أيقونة التوثيق التي ستظهر بجانب اسم الناشر
   const badgeHtml = meta.admin_added 
     ? (typeof verifiedBadge === 'function' ? verifiedBadge() : '<svg class="verified-icon" viewBox="0 0 24 24" fill="#3b82f6"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>') 
     : '';
   
-  // دالة عرض البروفايل (بدون @ وبوجود التوثيق بجانب الاسم)
   const renderAuthor = (m) => {
     const avatarUrl = m.avatar || m.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.author || 'U')}&background=random`;
     const authorName = esc(m.author || 'مجهول');
@@ -147,7 +173,15 @@
     const codeEl = document.getElementById('code');
     codeEl.textContent = t;
     codeEl.className = 'hljs language-' + (meta.language || 'plaintext');
+    
+    // تفعيل التلوين أولاً
     if (window.hljs) hljs.highlightElement(codeEl);
+    
+    // إضافة ترقيم الأسطر
+    let htmlLines = codeEl.innerHTML.split(/\r?\n/);
+    if (htmlLines[htmlLines.length - 1].trim() === '') htmlLines.pop(); // إزالة السطر الأخير إذا كان فارغاً
+    codeEl.innerHTML = htmlLines.map(line => `<span class="ln"></span>${line}`).join('\n');
+    
   } catch (e) {
     document.getElementById('code').textContent = 'تعذّر تحميل الكود';
   }
