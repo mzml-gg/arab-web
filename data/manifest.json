@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "deepseek",
+      "title": "سكرب deepseek  المفكر ",
+      "description": "Deepseek ",
+      "language": "js",
+      "author": "Prototype",
+      "author_avatar": "https://nezukouploads.servegame.net/file/rQ3GS.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-07-27T21:41:49.912Z"
+    },
+    {
       "filename": "gmine-chat",
       "title": "جيمناوي",
       "description": "",
