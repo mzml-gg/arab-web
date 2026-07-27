@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "ig-downloader.js",
+      "title": "ig-downloader",
+      "description": "تحميل فيديوهات انستا لبوتات واتس",
+      "language": "js",
+      "author": "Monte",
+      "author_avatar": "https://nezukouploads.servegame.net/file/O1IRO.jpg",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-07-27T11:14:54.435Z"
+    },
+    {
       "filename": "tik-tok-dl.js",
       "title": "tik-tok-dl",
       "description": "تحميل فيديوهات تيك توك جوده HD ",
