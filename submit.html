@@ -71,9 +71,9 @@ document.getElementById('form').onsubmit = async (e) => {
   const msg = document.getElementById('msg'); msg.className='msg'; msg.textContent='';
   const body = Object.fromEntries(new FormData(e.target).entries());
   try {
-    await api('/api/submit', { method:'POST', body: JSON.stringify(body) });
-    msg.className='msg ok'; msg.textContent='✓ تم الإرسال. سيراجعه الأدمن.';
-    e.target.reset();
+    const r = await api('/api/submit', { method:'POST', body: JSON.stringify(body) });
+    if (r.published) { msg.className='msg ok'; msg.textContent='✓ تم نشر الكود مباشرة.'; setTimeout(()=>{ location.href = r.url; }, 900); }
+    else { msg.className='msg ok'; msg.textContent='✓ تم الإرسال. سيراجعه الأدمن.'; e.target.reset(); }
   } catch (err) { msg.className='msg err'; msg.textContent=err.message; }
 };
 </script>

@@ -171,6 +171,9 @@
     </div>`;
 
   const actions = document.getElementById('actions');
+  const isVerifiedOwner = isOwner && (me.is_verified_badge || me.is_admin);
+  const canDirectDelete = me && (me.is_admin || isVerifiedOwner);
+
   actions.innerHTML = `
     <button class="btn primary" id="copyBtn" onclick="copyCode()">
       <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -178,7 +181,7 @@
     </button>
     <a class="btn" href="${ghRaw}" target="_blank">Raw</a>
     <a class="btn" href="/submit?fork=${encodeURIComponent(filename)}">🍴 Fork</a>
-    ${isOwner ? `<button class="btn danger" onclick="requestDelete()">طلب حذف</button>` : ''}
+    ${canDirectDelete ? `<button class="btn danger" onclick="directDelete('${esc(filename)}')">حذف</button>` : (isOwner ? `<button class="btn danger" onclick="requestDelete()">طلب حذف</button>` : '')}
   `;
 
   try {
@@ -231,6 +234,15 @@ async function requestDelete() {
   try {
     await api('/api/delete-request', { method:'POST', body: JSON.stringify({ filename, reason }) });
     alert('تم إرسال طلب الحذف للإدارة ✓');
+  } catch (e) { alert(e.message); }
+}
+
+async function directDelete(filename) {
+  if (!confirm('حذف الكود نهائياً؟ لا يمكن التراجع.')) return;
+  try {
+    await api('/api/delete-code', { method:'POST', body: JSON.stringify({ filename }) });
+    alert('تم حذف الكود ✓');
+    location.href = '/';
   } catch (e) { alert(e.message); }
 }
 </script>
