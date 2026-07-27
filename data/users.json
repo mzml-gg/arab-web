@@ -88,7 +88,7 @@
       "password_hash": "$2a$10$usn7aiBiGeG/o81Z7eLR7eB7sXB3M8.nnF6t86bI9BqU5THe/MTZi",
       "display_name": "Prototype",
       "verified": true,
-      "is_verified_badge": false,
+      "is_verified_badge": true,
       "verification_token": null,
       "created_at": "2026-07-27T21:21:12.791Z",
       "avatar_url": "https://nezukouploads.servegame.net/file/rQ3GS.jpg"
