@@ -32,9 +32,9 @@
       "phone": "+96879361317",
       "password_hash": "$2a$10$NVURYpjq9WnvPnodIm9lvOWTmgyRplSbny6vvlDY5gzGyjtPOM4Na",
       "display_name": "zhenya",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "e802d73a5347c0d430860e04acbf40c275c4ec79c3045163",
+      "verification_token": null,
       "created_at": "2026-07-27T11:52:50.847Z"
     }
   ]
