@@ -8,6 +8,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
+<style>
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .tabs button{padding:8px 16px;border-radius:999px;border:1px solid var(--border);background:var(--panel);color:var(--gold-2);font-weight:700;cursor:pointer;font-size:13px}
+  .tabs button.active{background:linear-gradient(135deg,#f4c400,#e6a900);color:#2a1f00;border-color:transparent}
+  .pane{display:none}
+  .pane.active{display:block}
+  .user-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:18px;background:var(--panel);margin-bottom:8px;flex-wrap:wrap}
+  .user-row .who{display:flex;align-items:center;gap:10px;flex:1;min-width:180px}
+  .user-row .email{color:var(--muted);font-size:12px}
+  .user-row .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .user-row .role-tag{background:var(--soft);color:var(--gold-2);padding:2px 10px;border-radius:999px;font-size:11px;border:1px solid var(--border)}
+</style>
 </head>
 <body>
 <nav class="nav">
@@ -15,14 +27,38 @@
   <div class="nav-actions" id="nav-actions"></div>
 </nav>
 <main class="container">
-  <h2 style="color:var(--gold-2)">طلبات في الانتظار</h2>
+  <div class="tabs">
+    <button data-tab="pending" class="active">طلبات في الانتظار</button>
+    <button data-tab="deletes">طلبات حذف</button>
+    <button data-tab="verified">الحسابات الموثقة</button>
+    <button data-tab="users">كل الحسابات</button>
+  </div>
   <div id="msg" class="msg"></div>
-  <div id="list" class="pending-list"></div>
-  <p id="empty" style="color:var(--muted);text-align:center;display:none">لا توجد طلبات.</p>
 
-  <h2 style="color:var(--gold-2);margin-top:34px">طلبات حذف</h2>
-  <div id="del-list" class="pending-list"></div>
-  <p id="del-empty" style="color:var(--muted);text-align:center;display:none">لا طلبات حذف.</p>
+  <section class="pane active" id="pane-pending">
+    <h3 style="color:var(--gold-2);margin:4px 0 10px">طلبات في الانتظار</h3>
+    <div id="list" class="pending-list"></div>
+    <p id="empty" style="color:var(--muted);text-align:center;display:none">لا توجد طلبات.</p>
+  </section>
+
+  <section class="pane" id="pane-deletes">
+    <h3 style="color:var(--gold-2);margin:4px 0 10px">طلبات حذف الأكواد</h3>
+    <div id="del-list" class="pending-list"></div>
+    <p id="del-empty" style="color:var(--muted);text-align:center;display:none">لا طلبات حذف.</p>
+  </section>
+
+  <section class="pane" id="pane-verified">
+    <h3 style="color:var(--gold-2);margin:4px 0 10px">الحسابات الموثقة</h3>
+    <p style="color:var(--muted);font-size:13px;margin:0 0 10px">الحسابات الموثقة تنشر الأكواد مباشرة وتحذفها بدون موافقة الإدارة.</p>
+    <div id="ver-list"></div>
+    <p id="ver-empty" style="color:var(--muted);text-align:center;display:none">لا حسابات موثقة.</p>
+  </section>
+
+  <section class="pane" id="pane-users">
+    <h3 style="color:var(--gold-2);margin:4px 0 10px">كل الحسابات</h3>
+    <div id="all-list"></div>
+    <p id="all-empty" style="color:var(--muted);text-align:center;display:none">لا حسابات.</p>
+  </section>
 </main>
 <script src="/app.js"></script>
 <script>
@@ -30,11 +66,16 @@
   await renderNav();
   const me = await loadMe();
   if (!me || !me.is_admin) { location.href='/auth'; return; }
-  await load();
-  await loadDeletes();
+  document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+  await Promise.all([loadPending(), loadDeletes(), loadUsers('verified'), loadUsers('all')]);
 })();
 
-async function load() {
+function switchTab(t) {
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab===t));
+  document.querySelectorAll('.pane').forEach(p => p.classList.toggle('active', p.id === 'pane-'+t));
+}
+
+async function loadPending() {
   const list = document.getElementById('list');
   list.innerHTML = '<p style="color:var(--muted)">تحميل...</p>';
   try {
@@ -54,6 +95,51 @@ async function loadDeletes() {
     document.getElementById('del-empty').style.display='none';
     list.innerHTML = items.map(renderDel).join('');
   } catch (e) { list.innerHTML = `<p style="color:var(--danger)">${esc(e.message)}</p>`; }
+}
+
+async function loadUsers(kind) {
+  const path = kind === 'verified' ? '/api/users?filter=verified' : '/api/users?filter=all';
+  const targetId = kind === 'verified' ? 'ver-list' : 'all-list';
+  const emptyId = kind === 'verified' ? 'ver-empty' : 'all-empty';
+  const el = document.getElementById(targetId);
+  el.innerHTML = '<p style="color:var(--muted)">تحميل...</p>';
+  try {
+    const { users } = await api(path);
+    if (!users.length) { el.innerHTML=''; document.getElementById(emptyId).style.display='block'; return; }
+    document.getElementById(emptyId).style.display='none';
+    el.innerHTML = users.map(u => renderUser(u, kind)).join('');
+  } catch (e) { el.innerHTML = `<p style="color:var(--danger)">${esc(e.message)}</p>`; }
+}
+
+function renderUser(u, kind) {
+  const badge = u.is_verified_badge ? verifiedBadge() : '';
+  const roleTag = u.is_admin ? '<span class="role-tag">أدمن</span>' : '';
+  const canToggle = !u.is_admin;
+  const btn = !canToggle
+    ? ''
+    : u.is_verified_badge
+      ? `<button class="btn danger sm" onclick="toggleVerify('${esc(u.username)}',false,this)">إزالة التوثيق</button>`
+      : `<button class="btn primary sm" onclick="toggleVerify('${esc(u.username)}',true,this)">توثيق</button>`;
+  return `<div class="user-row" data-u="${esc(u.username)}">
+    <div class="who">
+      ${avatarNode({ username: u.username, avatar_url: u.avatar_url })}
+      <a href="/u/${encodeURIComponent(u.username)}" class="author">
+        <span class="uname">${esc(u.username)}</span> ${badge}
+      </a>
+      ${roleTag}
+    </div>
+    <div class="email">${esc(u.email || '')}</div>
+    <div class="actions">${btn}</div>
+  </div>`;
+}
+
+async function toggleVerify(username, verified, btn) {
+  btn.disabled = true;
+  try {
+    await api('/api/toggle-verify', { method:'POST', body: JSON.stringify({ username, verified }) });
+    showMsg(verified ? 'تم توثيق الحساب' : 'تمت إزالة التوثيق', true);
+    await Promise.all([loadUsers('verified'), loadUsers('all')]);
+  } catch (e) { showMsg(e.message, false); btn.disabled = false; }
 }
 
 function renderItem(it) {

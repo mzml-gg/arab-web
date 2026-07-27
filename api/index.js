@@ -19,6 +19,9 @@ const routes = {
   'delete-request': require('./_h/delete-request'),
   'delete-requests': require('./_h/delete-requests'),
   'resolve-delete': require('./_h/resolve-delete'),
+  'delete-code': require('./_h/delete-code'),
+  users: require('./_h/users'),
+  'toggle-verify': require('./_h/toggle-verify'),
   raw: require('./_h/raw'),
 };
 
