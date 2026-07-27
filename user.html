@@ -30,7 +30,7 @@
 (async () => {
   await renderNav();
   const parts = location.pathname.split('/').filter(Boolean);
-  const username = decodeURIComponent(parts[1] || '');
+  const username = decodeURIComponent(parts[0] === 'u' ? (parts[1] || '') : (new URLSearchParams(location.search).get('username') || new URLSearchParams(location.search).get('u') || new URLSearchParams(location.search).get('x') || ''));
   if (!username) { location.href='/'; return; }
   let data;
   try {
