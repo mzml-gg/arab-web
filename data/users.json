@@ -47,6 +47,17 @@
       "is_verified_badge": false,
       "verification_token": "396b7f6dcd4296a7752345158b58a6afd8f568f9cde6952e",
       "created_at": "2026-07-27T17:33:44.816Z"
+    },
+    {
+      "username": "zna",
+      "email": "zna@hotmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$/mNYLPKDwgR7BDtnyhjupOMVr5Uj498nK79TwAAow9xeym9wvV8s.",
+      "display_name": "zna",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "ca7e19b93f9c69db9fd27a05c455400b3663f07d8d4846ec",
+      "created_at": "2026-07-27T17:34:41.005Z"
     }
   ]
 }
