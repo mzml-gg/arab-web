@@ -11,9 +11,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
 <style>
-  /* تنسيقات تقليل حجم حاوية الكود والمحتوى */
   .container {
-    max-width: 700px; /* تحديد العرض الأقصى لصفحة عرض الكود */
+    max-width: 750px;
     margin: 0 auto;
     padding: 15px;
   }
@@ -25,29 +24,41 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 
-  .code-view pre {
-    max-height: 450px; /* تقليل ارتفاع مربع الكود مع إضافة سكرول */
-    overflow: auto;
-    margin: 0;
-    font-size: 0.9rem;
+  /* تصغير حجم خط الكود وضبط المسافات */
+  .code-view pre code {
+    font-size: 0.78rem !important; /* تقليل حجم الخط هنا */
+    line-height: 1.4;
+    padding: 12px;
   }
 
-  /* تنسيق ملف صاحب الكود والصورة الشخصية */
+  .code-view pre {
+    max-height: 420px;
+    overflow: auto;
+    margin: 0;
+  }
+
+  /* تنسيق شارة البروفايل للناشر */
   .author-badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     text-decoration: none;
     color: inherit;
     font-weight: 600;
   }
 
   .author-avatar {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1.5px solid #3b82f6;
+  }
+
+  .verified-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
   }
 
   .meta-row {
@@ -89,15 +100,20 @@
   const me = await loadMe();
   const isOwner = me && me.username.toLowerCase() === (meta.author||'').toLowerCase();
 
-  const badge = meta.admin_added ? (typeof verifiedBadge === 'function' ? verifiedBadge() : '✓') : '';
+  // أيقونة التوثيق التي ستظهر بجانب اسم الناشر
+  const badgeHtml = meta.admin_added 
+    ? (typeof verifiedBadge === 'function' ? verifiedBadge() : '<svg class="verified-icon" viewBox="0 0 24 24" fill="#3b82f6"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>') 
+    : '';
   
-  // دالة مخصصة لعرض رابط وصورة الناشر
+  // دالة عرض البروفايل (بدون @ وبوجود التوثيق بجانب الاسم)
   const renderAuthor = (m) => {
     const avatarUrl = m.avatar || m.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.author || 'U')}&background=random`;
+    const authorName = esc(m.author || 'مجهول');
     return `
       <a href="/user/${encodeURIComponent(m.author || 'unknown')}" class="author-badge">
-        <img src="${avatarUrl}" alt="${esc(m.author)}" class="author-avatar" onError="this.src='https://ui-avatars.com/api/?name=U'">
-        <span>@${esc(m.author || 'مجهول')}</span>
+        <img src="${avatarUrl}" alt="${authorName}" class="author-avatar" onError="this.src='https://ui-avatars.com/api/?name=U'">
+        <span>${authorName}</span>
+        ${badgeHtml}
       </a>
     `;
   };
@@ -105,7 +121,7 @@
   document.getElementById('header').innerHTML = `
     <div class="code-header">
       <div>
-        <h2 style="margin:0 0 10px 0;">${esc(meta.title)} ${badge}</h2>
+        <h2 style="margin:0 0 10px 0;">${esc(meta.title)}</h2>
         <div class="meta-row">
           ${renderAuthor(meta)}
           <span>·</span>
@@ -155,3 +171,4 @@ async function requestDelete() {
 </script>
 </body>
 </html>
+ 
