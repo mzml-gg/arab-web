@@ -87,10 +87,11 @@
   }
 
   .author-avatar {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     object-fit: cover;
+    border: 1px solid #e5e7eb;
   }
 
   .lang-badge {
@@ -123,11 +124,22 @@
 
 <script src="/app.js"></script>
 <script>
+// جلب صورة البروفايل الحقيقية أو عمل افتراضية من أول حرفين
+function getAvatarUrl(code) {
+  if (code.avatar) return code.avatar;
+  if (code.avatar_url) return code.avatar_url;
+  if (code.author_avatar) return code.author_avatar;
+  if (code.photoURL) return code.photoURL;
+  
+  const name = code.author || 'User';
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&length=2&background=random&color=fff&rounded=true`;
+}
+
 function renderCustomCard(code) {
   const authorName = code.author || 'مجهول';
-  const avatarUrl = code.avatar || code.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=random`;
+  const avatarUrl = getAvatarUrl(code);
   
-  // التحقق واستدعاء دالة verifiedBadge الأصلية من النظام
+  // شارة التوثيق الأصليّة
   const isVerified = code.admin_added || code.is_admin || code.verified || authorName.toLowerCase() === 'ziad';
   const badgeHtml = isVerified 
     ? (typeof verifiedBadge === 'function' ? verifiedBadge() : (typeof verifiedIcon === 'function' ? verifiedIcon() : '✓')) 
@@ -143,7 +155,7 @@ function renderCustomCard(code) {
       </div>
       <div class="card-footer">
         <a href="/u/${encodeURIComponent(authorName)}" class="author-info" onclick="event.stopPropagation();">
-          <img src="${avatarUrl}" alt="${esc(authorName)}" class="author-avatar" onError="this.src='https://ui-avatars.com/api/?name=U'">
+          <img src="${avatarUrl}" alt="${esc(authorName)}" class="author-avatar" onError="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&length=2'">
           <span>${esc(authorName)}</span>
           ${badgeHtml}
         </a>
@@ -163,6 +175,7 @@ function renderCustomCard(code) {
       return; 
     }
     
+    // إجبار الصفحة على استخدام دالة البناء الجديدة الخاصة بنا لتجاوز دالة codeCard القديمة
     box.innerHTML = codes.map(renderCustomCard).join('');
   } catch (e) { 
     console.error(e); 
@@ -171,4 +184,3 @@ function renderCustomCard(code) {
 </script>
 </body>
 </html>
- 
