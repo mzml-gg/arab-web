@@ -93,12 +93,6 @@
     object-fit: cover;
   }
 
-  .verified-icon {
-    width: 15px;
-    height: 15px;
-    vertical-align: middle;
-  }
-
   .lang-badge {
     background: #fdf6e2;
     color: #d97706;
@@ -129,15 +123,14 @@
 
 <script src="/app.js"></script>
 <script>
-// دالة بناء بطاقة الكود لتكون المعلومات داخل الإطار تماماً
 function renderCustomCard(code) {
   const authorName = code.author || 'مجهول';
   const avatarUrl = code.avatar || code.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=random`;
   
-  // التحقق من توثيق الحساب أو إذا كان أدمن
+  // التحقق واستدعاء دالة verifiedBadge الأصلية من النظام
   const isVerified = code.admin_added || code.is_admin || code.verified || authorName.toLowerCase() === 'ziad';
   const badgeHtml = isVerified 
-    ? '<svg class="verified-icon" viewBox="0 0 24 24" fill="#3b82f6"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>' 
+    ? (typeof verifiedBadge === 'function' ? verifiedBadge() : (typeof verifiedIcon === 'function' ? verifiedIcon() : '✓')) 
     : '';
 
   const fileUrl = `/c/${encodeURIComponent(code.filename || code.title)}`;
@@ -170,7 +163,6 @@ function renderCustomCard(code) {
       return; 
     }
     
-    // استخدام دالة البناء الجديدة للبطاقات
     box.innerHTML = codes.map(renderCustomCard).join('');
   } catch (e) { 
     console.error(e); 
@@ -179,3 +171,4 @@ function renderCustomCard(code) {
 </script>
 </body>
 </html>
+ 
