@@ -136,15 +136,19 @@
   const me = await loadMe();
   const isOwner = me && me.username.toLowerCase() === (meta.author||'').toLowerCase();
 
-  const badgeHtml = meta.admin_added 
-    ? (typeof verifiedBadge === 'function' ? verifiedBadge() : '<svg class="verified-icon" viewBox="0 0 24 24" fill="#3b82f6"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>') 
+  // فحص شارة التوثيق (سواء من الدالة القديمة أو إذا كان أدمن/موثق أو باسم زياد)
+  const isVerifiedAuthor = meta.admin_added || meta.is_admin || meta.verified || (meta.author && meta.author.toLowerCase() === 'ziad');
+  
+  const badgeHtml = isVerifiedAuthor 
+    ? (typeof verifiedBadge === 'function' ? verifiedBadge() : '<svg class="verified-icon" viewBox="0 0 24 24" fill="#3b82f6"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>') 
     : '';
   
+  // تعديل رابط المستخدم ليكون /u/ بدلاً من /user/
   const renderAuthor = (m) => {
     const avatarUrl = m.avatar || m.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.author || 'U')}&background=random`;
     const authorName = esc(m.author || 'مجهول');
     return `
-      <a href="/user/${encodeURIComponent(m.author || 'unknown')}" class="author-badge">
+      <a href="/u/${encodeURIComponent(m.author || 'unknown')}" class="author-badge">
         <img src="${avatarUrl}" alt="${authorName}" class="author-avatar" onError="this.src='https://ui-avatars.com/api/?name=U'">
         <span>${authorName}</span>
         ${badgeHtml}
@@ -166,7 +170,6 @@
       </div>
     </div>`;
 
-  // هنا أضفت أيقونة الـ SVG داخل زر النسخ وأعطيته id عشان نتحكم فيه
   const actions = document.getElementById('actions');
   actions.innerHTML = `
     <button class="btn primary" id="copyBtn" onclick="copyCode()">
@@ -197,20 +200,17 @@
   }
 })();
 
-// دالة النسخ الجديدة بدون Alert
 async function copyCode() {
   const btn = document.getElementById('copyBtn');
-  const originalHtml = btn.innerHTML; // نحفظ الشكل الأصلي للزر
+  const originalHtml = btn.innerHTML;
 
   try { 
     await navigator.clipboard.writeText(window.__codeText || ''); 
-    // نغير شكل الزر ونضيف علامة الصح
     btn.innerHTML = `
       <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
       تم النسخ
     `;
     
-    // نرجع الزر لشكله الطبيعي بعد ثانيتين
     setTimeout(() => {
       btn.innerHTML = originalHtml;
     }, 2000);
