@@ -19,7 +19,7 @@
       "password_hash": "$2a$10$d7dlm6EoIN3MRDo49DBSeOuYR4wYgn6XhyG913Jg0Kr8cYCWM0Y.a",
       "display_name": "Monte",
       "verified": true,
-      "is_verified_badge": true,
+      "is_verified_badge": false,
       "verification_token": null,
       "created_at": "2026-07-25T12:57:53.775Z",
       "reset_token": null,
