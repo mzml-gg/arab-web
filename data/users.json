@@ -160,6 +160,17 @@
       "is_verified_badge": false,
       "verification_token": "e41c5bea7197a3bfce27fa455e60e5477639cc5958a8a59d",
       "created_at": "2026-07-28T11:34:00.787Z"
+    },
+    {
+      "username": "Yory275",
+      "email": "h59461987@gmail.com",
+      "phone": "+58 416-3448724",
+      "password_hash": "$2a$10$fhYFmkZb9UC3tTebBAJzuOjlSQ9GyT.7VwuW2sA0eE4TAR6rqCaRi",
+      "display_name": "Yory275",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "7e8b4113f4a778d7edb7b6d02deec3e3ea2d87c47967edab",
+      "created_at": "2026-07-28T16:35:03.312Z"
     }
   ]
 }
