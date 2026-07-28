@@ -114,6 +114,17 @@
       "is_verified_badge": false,
       "verification_token": "e94239c37367356658c29ff1f4a7a0559e040d2e7e91304a",
       "created_at": "2026-07-28T02:19:50.537Z"
+    },
+    {
+      "username": "Haider",
+      "email": "Haider@gmail.com",
+      "phone": "+20 10 32548312",
+      "password_hash": "$2a$10$jQLcQ/H2HRObSD/6cEiPCOfsdPKItSSKSOCMQR1wW3BY7ArGp.M82",
+      "display_name": "Haider",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "b8832d5f01ba16e316b915ae26ab7f3e534ff2c91f1a95c3",
+      "created_at": "2026-07-28T05:22:50.983Z"
     }
   ]
 }
