@@ -149,6 +149,17 @@
       "created_at": "2026-07-28T11:29:28.874Z",
       "reset_token": "28582347928bb29895414c6f244dd8c16cfbeac848a15eb661d9ac5cf6cc6371",
       "reset_expires": 1785241897470
+    },
+    {
+      "username": "Echo",
+      "email": "a44716922@gmail.com",
+      "phone": "01010195210",
+      "password_hash": "$2a$10$X.ug/xcWWybpstyxi2d55e9b/tzIMfeo9u7iz8qndb2h8vCM.w.Qy",
+      "display_name": "Echo",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "e41c5bea7197a3bfce27fa455e60e5477639cc5958a8a59d",
+      "created_at": "2026-07-28T11:34:00.787Z"
     }
   ]
 }
