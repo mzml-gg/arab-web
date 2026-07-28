@@ -125,6 +125,17 @@
       "is_verified_badge": false,
       "verification_token": "b8832d5f01ba16e316b915ae26ab7f3e534ff2c91f1a95c3",
       "created_at": "2026-07-28T05:22:50.983Z"
+    },
+    {
+      "username": "Axious",
+      "email": "mostafa13khalid@gmail.com",
+      "phone": "+201284042708",
+      "password_hash": "$2a$10$HXa3QEWNgPESlIOadmkuM.lMzBHNWVxq3XaDcSoxqosUNKQX0AEE6",
+      "display_name": "Axious",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "2ed8302cea410044513738140c095048b47446064ab08418",
+      "created_at": "2026-07-28T11:23:24.604Z"
     }
   ]
 }
