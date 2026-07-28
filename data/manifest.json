@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": ".Telegram-sticker",
+      "title": "تحميل ملصقات من تيليجرام",
+      "description": "عدلو لو عايزو يبعث حزمة كاملة لانو بيبعث ملصق ملصق",
+      "language": "js",
+      "author": "Axious",
+      "author_avatar": null,
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-07-28T12:51:01.646Z"
+    },
+    {
       "filename": "Made-Pictures",
       "title": "انشاء صور بستايلات ثابتة",
       "description": "أصنع صور بأفضل الستايلات ",
