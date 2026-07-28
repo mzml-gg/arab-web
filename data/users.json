@@ -147,19 +147,8 @@
       "is_verified_badge": false,
       "verification_token": "0f17d679f398fb9120c826d07fcd56b42484d10bda1be6d7",
       "created_at": "2026-07-28T11:29:28.874Z",
-      "reset_token": "e6b50e9c5ef7f5557ecb8fe1a6322aae557ad5d1848a9bf6b91637ea99cf7ef6",
-      "reset_expires": 1785241891499
-    },
-    {
-      "username": "izana_dev",
-      "email": "anas2181978@gmail.com",
-      "phone": "+201222784295",
-      "password_hash": "$2a$10$xdr9En879Us5zSNx4D85Bu8wL2vfWW7vm65CgKuqczzAqFv88fO5.",
-      "display_name": "izana_dev",
-      "verified": false,
-      "is_verified_badge": false,
-      "verification_token": "9d6ee61f4cd66fc2cb782dc46fa7ebef45f461c9407decab",
-      "created_at": "2026-07-28T11:31:36.530Z"
+      "reset_token": "28582347928bb29895414c6f244dd8c16cfbeac848a15eb661d9ac5cf6cc6371",
+      "reset_expires": 1785241897470
     }
   ]
 }
