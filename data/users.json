@@ -176,14 +176,14 @@
       "username": "hadi",
       "email": "hadihaker56@gmail.com",
       "phone": "",
-      "password_hash": "$2a$10$L92kuRvzg895AhsnrVIfUetIh33CpbqR5.SXvCFEKaLPQNZky2sCS",
+      "password_hash": "$2a$10$7FZhGp/Amxg8jNsWGkWgiuLd1lrC1xHt38fHgifP.Mw7mj4KlX/mW",
       "display_name": "hadi",
       "verified": false,
       "is_verified_badge": false,
       "verification_token": "73411747f18e188f931c01ea5ec46f51805d9d5dd4099cef",
       "created_at": "2026-07-28T21:47:16.685Z",
-      "reset_token": "770d4a287718d240aa3017298972be2c7b19cf7135d5e2c89ed253df91ada806",
-      "reset_expires": 1785278879899
+      "reset_token": null,
+      "reset_expires": null
     }
   ]
 }
