@@ -184,6 +184,17 @@
       "created_at": "2026-07-28T21:47:16.685Z",
       "reset_token": null,
       "reset_expires": null
+    },
+    {
+      "username": "Ibrahim",
+      "email": "ibrahimahmedomer99@gmail.com",
+      "phone": "+201150030123",
+      "password_hash": "$2a$10$2/upQsuL0l8v0.jKIUKKp.2gD1DSMp5QYyPTxtbzktaR8I8YYiL2C",
+      "display_name": "Ibrahim",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "87a8713a622576b2e7d7730c57e1d4e47652735aedb4bb05",
+      "created_at": "2026-07-28T21:52:39.858Z"
     }
   ]
 }
