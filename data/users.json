@@ -147,8 +147,8 @@
       "is_verified_badge": false,
       "verification_token": "0f17d679f398fb9120c826d07fcd56b42484d10bda1be6d7",
       "created_at": "2026-07-28T11:29:28.874Z",
-      "reset_token": "c032884ab4677dc94a92a7a6c84be0a814182e45b2af0369d2fc20d4fe6686cf",
-      "reset_expires": 1785241835278
+      "reset_token": "171556cd11791ff6ba7152c3fba0c33295814394f5f3254dad931c450ee613cf",
+      "reset_expires": 1785241840959
     }
   ]
 }
