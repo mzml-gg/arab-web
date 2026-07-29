@@ -195,6 +195,17 @@
       "is_verified_badge": false,
       "verification_token": "87a8713a622576b2e7d7730c57e1d4e47652735aedb4bb05",
       "created_at": "2026-07-28T21:52:39.858Z"
+    },
+    {
+      "username": "kira_",
+      "email": "kyrabwt25@gmail.com",
+      "phone": "01044404895",
+      "password_hash": "$2a$10$RIR8S9mZ6vtLB6xqd02uI.BHP6ypuOgT53esrRxw/jcQmMx7YTeRi",
+      "display_name": "kira_",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "8822478dac8383f763a128156ae8abd3a4390fd2247e4914",
+      "created_at": "2026-07-29T01:10:30.132Z"
     }
   ]
 }
