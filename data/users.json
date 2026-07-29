@@ -225,9 +225,9 @@
       "phone": "+972592032557",
       "password_hash": "$2a$10$uRvffVe7lXkHbxVa.zyGv.1f53QmH9warEmQzvVMCc7RvTD7ee1gy",
       "display_name": "Ghazi",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "bca6c8e11c8580c5f270951d41f3d240a36ee2fd068f33fc",
+      "verification_token": null,
       "created_at": "2026-07-29T09:31:20.746Z"
     }
   ]
