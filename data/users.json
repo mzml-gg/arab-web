@@ -213,9 +213,9 @@
       "phone": "",
       "password_hash": "$2a$10$Bo9Ukfjd4PqA5SSt9JshnuCnptFebmaYQBJNOm3r5kWpVP/ivxhmi",
       "display_name": "Ahmed5",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "20b2cfc11508e5c3a4c30d30499ee209839c7bdcc33a829f",
+      "verification_token": null,
       "created_at": "2026-07-29T05:26:29.742Z"
     }
   ]
