@@ -1,0 +1,12 @@
+{
+  "id": "ms5nm66s-d57bcd1f",
+  "title": "نظام مراقبة نشاط أعضاء الجروب",
+  "description": "يقوم بعدّ رسائل كل عضو داخل الجروب وعرض ترتيب أكثر الأعضاء نشاطًا عند استخدام أمر (.سجل)، مع إمكانية تشغيل أو إيقاف المراقبة باستخدام أمر (.مراقبه).",
+  "language": "js",
+  "code": "const getG = (chatId) => {\n    if (!global._gs) global._gs = {};\n    if (!global._gs[chatId]) global._gs[chatId] = {};\n\n    if (!global._gs[chatId].counter)\n        global._gs[chatId].counter = {};\n\n    return global._gs[chatId];\n};\n\nconst handler = async (m, { conn, command }) => {\n    const g = getG(m.chat);\n\n    if (command === 'مراقبه') {\n        g.monitor = !g.monitor;\n\n        if (g.monitor && !g.counter)\n            g.counter = {};\n\n        return m.reply(\n            g.monitor\n                ? '*✅ تم تفعيل مراقبة الرسائل*'\n                : '*❌ تم إيقاف مراقبة الرسائل*'\n        );\n    }\n\n    if (command === 'سجل') {\n        const counter = g.counter || {};\n\n        const data = Object.entries(counter)\n            .sort((a, b) => b[1] - a[1]);\n\n        if (!data.length)\n            return m.reply('*📋 لا توجد رسائل مسجلة*');\n\n        let text = '🏆 *ترتيب نشاط أعضاء الجروب*\\n\\n';\n\n        for (let i = 0; i < Math.min(data.length, 30); i++) {\n            const [jid, count] = data[i];\n            const name = await conn.getName(jid);\n\n            text += `${i + 1}. ${name}\\n`;\n            text += `💬 الرسائل: ${count}\\n\\n`;\n        }\n\n        return conn.sendMessage(\n            m.chat,\n            { text },\n            { quoted: m }\n        );\n    }\n};\n\nhandler.before = async (m) => {\n    if (!m.isGroup) return false;\n\n    const g = getG(m.chat);\n\n    if (!g.monitor) return false;\n\n    g.counter[m.sender] = (g.counter[m.sender] || 0) + 1;\n\n    return false;\n};\n\nhandler.command = ['مراقبه', 'سجل'];\nhandler.usage = ['مراقبه', 'سجل'];\nhandler.category = 'admins';\nhandler.admin = true;\n\nexport default handler;",
+  "author": "Ahmed5",
+  "author_avatar": null,
+  "author_verified": false,
+  "author_is_admin": false,
+  "submitted_at": "2026-07-29T05:38:32.020Z"
+}
