@@ -269,9 +269,9 @@
       "phone": "+218945778513",
       "password_hash": "$2a$10$lrs9EpBaU8O9GB/lmUsqkePQH288/Flm.ijZ9vId5ZGB81G4Rdpui",
       "display_name": "Ahmed_abu",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "466d735cf3bc00a77f623933111a04f52c98136a3857b0da",
+      "verification_token": null,
       "created_at": "2026-07-29T20:38:52.174Z"
     }
   ]
