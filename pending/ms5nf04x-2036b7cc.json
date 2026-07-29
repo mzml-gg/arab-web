@@ -1,0 +1,12 @@
+{
+  "id": "ms5nf04x-2036b7cc",
+  "title": "أمر انذار ",
+  "description": "يعطي انذار لعضو في الجروب مخصص للادمن ",
+  "language": "js",
+  "code": "const handler = async (m, { conn }) => {\n  let targetLid = m.mentionedJid?.[0] || m.quoted?.sender;\n  let targetJid = m.lid2jid(targetLid);\n\n  if (!targetJid || !targetLid) return m.reply('⚠️ *يرجى منشن الشخص أو الرد على رسالته* ⚠️');\n\n  const user = (await conn.groupMetadata(m.chat)).participants.find(\n    p => p.id === targetLid || p.phoneNumber === targetJid\n  );\n\n  if (!user) return m.reply(\"❌ المستخدم غير موجود في الجروب\");\n\n  db.groups[m.chat] ??= {};\n  db.groups[m.chat].warnings ??= {};\n\n  const id = user.phoneNumber;\n  const jid = targetLid;\n\n  const warnCount = db.groups[m.chat].warnings[id] =\n    (db.groups[m.chat].warnings[id] || 0) + 1;\n\n  await conn.sendMessage(m.chat, {\n    text: `⚠️ تم إعطاء إنذار\n\n👤: @${id.split(\"@\")[0]}\n📊 عدد الإنذارات: ${warnCount}`,\n    mentions: [jid]\n  }, { quoted: global.reply_status });\n};\n\nhandler.before = async (m, { conn }) => {\n  const g = global.db?.groups?.[m.chat];\n  if (!g?.warnings) return false;\n\n  const user = m.sender;\n\n  if (!g.warnings[user]) return false;\n\n  if (g.warnings[user] >= 3) {\n    await conn.sendMessage(m.chat, {\n      text: `🚫 @${user.split(\"@\")[0]} انت خالفت القوانين، دلوقتي هنطردك`,\n      mentions: [user]\n    }, { quoted: global.reply_status });\n\n    await conn.groupParticipantsUpdate(m.chat, [user], \"remove\");\n    delete g.warnings[user];\n  }\n\n  return false;\n};\n\nhandler.command = [\"انذار\", \"تحذير\", \"warn\"];\nhandler.usage = ['انذار'];\nhandler.category = \"admin\";\nhandler.admin = true;\nhandler.botAdmin = true\n\nexport default handler;",
+  "author": "Ahmed5",
+  "author_avatar": null,
+  "author_verified": false,
+  "author_is_admin": false,
+  "submitted_at": "2026-07-29T05:32:57.586Z"
+}
