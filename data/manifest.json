@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "Warning",
+      "title": "أمر انذار ",
+      "description": "يعطي انذار لعضو في الجروب مخصص للادمن ",
+      "language": "js",
+      "author": "Ahmed5",
+      "author_avatar": null,
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-07-30T14:35:19.706Z"
+    },
+    {
       "filename": "group-Members",
       "title": "نظام مراقبة نشاط أعضاء الجروب",
       "description": "يقوم بعدّ رسائل كل عضو داخل الجروب وعرض ترتيب أكثر الأعضاء نشاطًا عند استخدام أمر (.سجل)، مع إمكانية تشغيل أو إيقاف المراقبة باستخدام أمر (.مراقبه).",
