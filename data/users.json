@@ -167,9 +167,9 @@
       "phone": "+58 416-3448724",
       "password_hash": "$2a$10$fhYFmkZb9UC3tTebBAJzuOjlSQ9GyT.7VwuW2sA0eE4TAR6rqCaRi",
       "display_name": "Yory275",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "7e8b4113f4a778d7edb7b6d02deec3e3ea2d87c47967edab",
+      "verification_token": null,
       "created_at": "2026-07-28T16:35:03.312Z",
       "reset_token": "10d4a13e69e9768296fa5112aaef43ae92a05b0e0b896b144b883492d029cdcb",
       "reset_expires": 1785536429676
