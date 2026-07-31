@@ -172,7 +172,8 @@
       "verification_token": null,
       "created_at": "2026-07-28T16:35:03.312Z",
       "reset_token": "10d4a13e69e9768296fa5112aaef43ae92a05b0e0b896b144b883492d029cdcb",
-      "reset_expires": 1785536429676
+      "reset_expires": 1785536429676,
+      "avatar_url": "https://nezukouploads.servegame.net/file/BrZZ0.jpg"
     },
     {
       "username": "hadi",
