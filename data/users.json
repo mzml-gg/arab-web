@@ -170,7 +170,9 @@
       "verified": false,
       "is_verified_badge": false,
       "verification_token": "7e8b4113f4a778d7edb7b6d02deec3e3ea2d87c47967edab",
-      "created_at": "2026-07-28T16:35:03.312Z"
+      "created_at": "2026-07-28T16:35:03.312Z",
+      "reset_token": "10d4a13e69e9768296fa5112aaef43ae92a05b0e0b896b144b883492d029cdcb",
+      "reset_expires": 1785536429676
     },
     {
       "username": "hadi",
