@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "img-genrator.js",
+      "title": "img genrator",
+      "description": "توليد صور 20 موديل",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T12:59:20.654Z"
+    },
+    {
       "filename": "code-2.js",
       "title": "سمسمي",
       "description": "شات مع سمسمي قليل الادب",
