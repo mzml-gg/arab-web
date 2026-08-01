@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "instagram-dl.js",
+      "title": "Instagram-dl",
+      "description": "تحميل من انستا",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T13:03:52.131Z"
+    },
+    {
       "filename": "img2prompt.js",
       "title": "img2prompt",
       "description": "وصف صور",
