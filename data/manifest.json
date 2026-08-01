@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "moviebox.js",
+      "title": "moviebox",
+      "description": "تحميل وبحث افلام ومسلسلات",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T13:09:36.555Z"
+    },
+    {
       "filename": "suno.js",
       "title": "suno/سونو",
       "description": "توليد اغاني بالذكاء الصناعي",
