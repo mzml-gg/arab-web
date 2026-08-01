@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "deepseek.js",
+      "title": "deepseek",
+      "description": "ديب سيك كامل شات وصور وبحث وتفكير وملفات",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T12:54:46.025Z"
+    },
+    {
       "filename": "pinterest-video.js",
       "title": "pinterest-video",
       "description": "بحث فيديو بينتريست",
