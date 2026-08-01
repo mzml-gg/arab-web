@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-4.js",
+      "title": "سبوتيفاي-تحميل",
+      "description": "تحميل من سبوتيفاي",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T13:03:05.574Z"
+    },
+    {
       "filename": "code-3.js",
       "title": "تحقق-رقم",
       "description": "حالة الارقام واتساب",
