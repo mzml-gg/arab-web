@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-10.js",
+      "title": "سبوتيفاي",
+      "description": "سبوتيفاي بحث وتحميل",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T13:08:36.632Z"
+    },
+    {
       "filename": "code-9.js",
       "title": "تيكتوك-بحث",
       "description": "تيكتوك بحث فيديو وصور ويوزر",
