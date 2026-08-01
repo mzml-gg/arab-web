@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-3.js",
+      "title": "تحقق-رقم",
+      "description": "حالة الارقام واتساب",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T13:02:34.023Z"
+    },
+    {
       "filename": "facebook-sh-dl.js",
       "title": "facebook-sh-dl",
       "description": "بحث وتحميل ريلزات من فيس",
