@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "upscale.js",
+      "title": "upscale/جودة",
+      "description": "رفع جودة الصور حتي 4k",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T12:56:14.832Z"
+    },
+    {
       "filename": "anime.js",
       "title": "anime",
       "description": "بحث وتحميل انمي",
