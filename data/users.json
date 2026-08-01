@@ -284,7 +284,7 @@
       "password_hash": "$2a$10$cT/59YVfnRdGDIQ3sjGebe4jm7rFLPD8cWXwiwDkDv5JQ1F1WP2Xq",
       "display_name": "izanadev",
       "verified": true,
-      "is_verified_badge": false,
+      "is_verified_badge": true,
       "verification_token": null,
       "created_at": "2026-08-01T12:00:40.457Z"
     }
