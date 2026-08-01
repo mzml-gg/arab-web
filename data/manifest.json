@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "youtube-1.js",
+      "title": "youtube",
+      "description": "بحث وتحميل من يوتيوب",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T13:10:53.372Z"
+    },
+    {
       "filename": "ytdl.js",
       "title": "ytdl",
       "description": "تحميل من يوتيوب",
