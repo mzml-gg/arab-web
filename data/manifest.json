@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "instagram-search.js",
+      "title": "Instagram-search",
+      "description": "بحث ريلزات انستا",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T13:00:55.713Z"
+    },
+    {
       "filename": "tts-elevenlab.js",
       "title": "tts-elevenlab",
       "description": "نص لصوت 165 صوت",
