@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-6.js",
+      "title": "ازالة-خلفية",
+      "description": "ازالة خلفية الصور",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T13:05:08.700Z"
+    },
+    {
       "filename": "code-5.js",
       "title": "عدسة-بينتريست",
       "description": "عدسة بينتريست بحث بالصور",
