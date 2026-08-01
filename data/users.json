@@ -276,6 +276,17 @@
       "is_verified_badge": false,
       "verification_token": null,
       "created_at": "2026-07-29T20:38:52.174Z"
+    },
+    {
+      "username": "izanadev",
+      "email": "anas2181978@gmail.com",
+      "phone": "+201222784295",
+      "password_hash": "$2a$10$cT/59YVfnRdGDIQ3sjGebe4jm7rFLPD8cWXwiwDkDv5JQ1F1WP2Xq",
+      "display_name": "izanadev",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "d572b9de6e195c82692410299b185e7353cf9add80a0a199",
+      "created_at": "2026-08-01T12:00:40.457Z"
     }
   ]
 }
