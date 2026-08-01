@@ -287,6 +287,17 @@
       "is_verified_badge": true,
       "verification_token": null,
       "created_at": "2026-08-01T12:00:40.457Z"
+    },
+    {
+      "username": "Abde3ali",
+      "email": "bdalalybwstt46@gmail.com",
+      "phone": "0772941308",
+      "password_hash": "$2a$10$JyQxUcndbyHbe751xngrdOxvDTb0/KKWloV6Ym3hv.F0k/BkLTpuy",
+      "display_name": "Abde3ali",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "5bea16582964a0b96508cb04fa8d6417a5f92947a7a4d769",
+      "created_at": "2026-08-01T22:52:33.544Z"
     }
   ]
 }
