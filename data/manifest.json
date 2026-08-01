@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "shazem.js",
+      "title": "شازم/shazem",
+      "description": "التعرف علي الاغاني",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T12:59:54.240Z"
+    },
+    {
       "filename": "img-genrator.js",
       "title": "img genrator",
       "description": "توليد صور 20 موديل",
