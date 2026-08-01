@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "terabox.js",
+      "title": "terabox",
+      "description": "تحميل من terabox",
+      "language": "js",
+      "author": "izanadev",
+      "author_avatar": null,
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-01T13:06:01.192Z"
+    },
+    {
       "filename": "code-7.js",
       "title": "مانهوا",
       "description": "تحميل وبحث فصول مانهوا",
