@@ -8,100 +8,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
-<!-- أيقونة الموقع الجديدة -->
 <link rel="icon" href="https://nezukouploads.servegame.net/file/cXNtl.jpg">
-
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
 <style>
-  /* استبدال النقطة/الكرة الصفراء الصغيرة بجانب اسم الموقع بالصورة الجديدة */
-  .brand .dot {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    background: url('https://nezukouploads.servegame.net/file/cXNtl.jpg') center/cover no-repeat !important;
-    border-radius: 50%;
-    vertical-align: middle;
-  }
-
-  /* تصميم شبكة البطاقات */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    margin-top: 15px;
-  }
-
-  /* تنسيق بطاقة الكود الموحدة والأنيقة */
-  .code-card {
-    background: #ffffff;
-    border: 1px solid #f0e6d2;
-    border-radius: 16px;
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    transition: transform 0.2s, box-shadow 0.2s;
-    text-decoration: none;
-    color: inherit;
-    overflow: hidden;
-  }
-
-  .code-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  }
-
-  .card-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #2b2b2b;
-    margin: 0 0 8px 0;
-  }
-
-  .card-desc {
-    font-size: 0.88rem;
-    color: #666;
-    margin: 0 0 15px 0;
-    line-height: 1.4;
-  }
-
-  /* قسم المعلومات والمؤلف داخل البطاقة */
-  .card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 12px;
-    border-top: 1px solid #f5f0e6;
-    margin-top: auto;
-  }
-
-  .author-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    color: #333;
-    font-weight: 600;
-    font-size: 0.85rem;
-  }
-
-  .author-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid #e5e7eb;
-  }
-
-  .lang-badge {
-    background: #fdf6e2;
-    color: #d97706;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-family: 'JetBrains Mono', monospace;
-  }
+  .brand .dot{background:url('https://nezukouploads.servegame.net/file/cXNtl.jpg') center/cover no-repeat !important}
 </style>
 </head>
 <body>
@@ -112,64 +23,138 @@
 
 <main class="container">
   <div id="profile"></div>
-  <div class="profile-grid">
-    <div>
-      <h3 style="color:var(--gold-2);margin:16px 0 12px">الأكواد المنشورة</h3>
-      <div id="codes" class="grid"></div>
-      <p id="empty" style="color:var(--muted);text-align:center;display:none;margin-top:20px">لا توجد أكواد بعد.</p>
-    </div>
-    <aside id="side-wrap"></aside>
-  </div>
+  <div id="editor-wrap"></div>
+  <div id="readme"></div>
+  <h3 style="color:var(--gold-2);margin:20px 0 10px">الأكواد المنشورة</h3>
+  <div id="codes" class="grid"></div>
+  <p id="empty" style="color:var(--muted);text-align:center;display:none;margin-top:20px">لا توجد أكواد بعد.</p>
+  <div id="side-wrap" style="margin-top:22px"></div>
 </main>
 
 <script src="/app.js"></script>
 <script>
-// جلب صورة البروفايل الحقيقية أو عمل افتراضية من أول حرفين
-function getAvatarUrl(userObj, fallbackName) {
-  let url = userObj?.avatar || userObj?.avatar_url || userObj?.author_avatar || userObj?.photoURL;
-  if (url) {
-    return url.includes('?') ? `${url}&v=${Date.now()}` : `${url}?v=${Date.now()}`;
-  }
-  const name = fallbackName || userObj?.username || userObj?.author || 'User';
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&length=2&background=random&color=fff&rounded=true`;
+let ME = null, USER = null;
+
+function mdToHtml(md) {
+  try {
+    const raw = window.marked ? marked.parse(md, { breaks: true, gfm: true }) : esc(md).replace(/\n/g, '<br>');
+    return window.DOMPurify ? DOMPurify.sanitize(raw, { ADD_ATTR: ['target'] }) : raw;
+  } catch { return esc(md); }
 }
 
-// دالة بناء بطاقة الكود الموحدة مع الحساب والأيقونة الموثقة داخل البطاقة
-function renderCustomCard(code, currentUser) {
-  const authorName = code.author || currentUser?.username || 'مجهول';
-  const avatarUrl = getAvatarUrl(code, authorName);
-  
-  const isVerified = code.admin_added || code.is_admin || code.verified || currentUser?.is_verified_badge || authorName.toLowerCase() === 'ziad';
-  const badgeHtml = isVerified 
-    ? (typeof verifiedBadge === 'function' ? verifiedBadge() : (typeof verifiedIcon === 'function' ? verifiedIcon() : '✓')) 
-    : '';
+function renderProfile(user, count) {
+  const badge = isVerified(user) ? verifiedBadge(user.is_admin ? 'حساب الإدارة الموثّق' : 'حساب موثّق') : '';
+  const banner = user.banner_url ? `style="background-image:url('${esc(user.banner_url)}')"` : '';
+  const links = (user.links || []).map(l =>
+    `<a class="btn sm" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.icon || '🔗')} ${esc(l.label)}</a>`
+  ).join('');
+  const self = ME && ME.username.toLowerCase() === user.username.toLowerCase();
+  const actions = self ? `
+    <div class="profile-actions">
+      <label class="btn sm primary" style="cursor:pointer">تغيير الصورة<input id="avatar-file" type="file" accept="image/*" hidden></label>
+      ${user.avatar_url ? '<button class="btn sm ghost" onclick="removeAvatar()">إزالة الصورة</button>' : ''}
+      <button class="btn sm" onclick="toggleEditor()">تعديل الملف الشخصي</button>
+    </div>` : '';
 
-  const fileUrl = `/c/${encodeURIComponent(code.filename || code.title)}`;
-
-  return `
-    <div class="code-card" onclick="location.href='${fileUrl}'" style="cursor:pointer;">
-      <div>
-        <h3 class="card-title">${esc(code.title || code.filename)}</h3>
-        <p class="card-desc">${esc(code.description || 'لا يوجد وصف لهذا الكود')}</p>
+  return `<section class="profile-card">
+    <div class="profile-banner" ${banner}></div>
+    <div class="profile-body">
+      ${avatarNode({ username: user.username, avatar_url: user.avatar_url }, 'xl')}
+      <div class="profile-name"><h2>${esc(user.display_name || user.username)}</h2>${badge}${user.is_admin ? '<span class="lang-badge">الإدارة</span>' : ''}</div>
+      <p class="profile-handle">@${esc(user.username)}${user.location ? ' · ' + esc(user.location) : ''}</p>
+      <div class="profile-stats">
+        <span><b>${count}</b> كود منشور</span>
+        <span>عضو منذ <b>${new Date(user.created_at).toLocaleDateString('ar')}</b></span>
+        ${user.website ? `<span><a href="${esc(user.website)}" target="_blank" rel="noopener">${esc(user.website.replace(/^https:\/\//, ''))}</a></span>` : ''}
       </div>
-      <div class="card-footer">
-        <a href="/u/${encodeURIComponent(authorName)}" class="author-info" onclick="event.stopPropagation();">
-          <img src="${avatarUrl}" alt="${esc(authorName)}" class="author-avatar" onError="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&length=2'">
-          <span>${esc(authorName)}</span>
-          ${badgeHtml}
-        </a>
-        <span class="lang-badge">${esc(code.language || 'txt')}</span>
-      </div>
+      ${links ? `<div class="profile-links">${links}</div>` : ''}
+      ${actions}
     </div>
-  `;
+  </section>`;
+}
+
+function renderReadme(user) {
+  const self = ME && ME.username.toLowerCase() === user.username.toLowerCase();
+  const body = user.bio
+    ? `<div class="readme-body">${mdToHtml(user.bio)}</div>`
+    : `<p class="readme-empty">${self ? 'لم تكتب ملف README بعد — اضغط "تعديل الملف الشخصي" وابدأ.' : 'لا يوجد README لهذا المطوّر.'}</p>`;
+  return `<section class="readme">
+    <div class="readme-head"><span>📄 ${esc(user.username)}/README.md</span>${self ? '<button class="btn sm ghost" onclick="toggleEditor()">تعديل</button>' : ''}</div>
+    ${body}
+  </section>`;
+}
+
+function linkRow(l = {}) {
+  return `<div class="link-row">
+    <input class="lk-icon" style="max-width:70px" placeholder="🔗" value="${esc(l.icon || '')}">
+    <input class="lk-label" placeholder="اسم الزر (مثال: GitHub)" value="${esc(l.label || '')}">
+    <input class="lk-url" placeholder="https://..." value="${esc(l.url || '')}">
+    <button class="btn sm danger" onclick="this.parentElement.remove()">حذف</button>
+  </div>`;
+}
+
+function renderEditor(user) {
+  return `<section class="editor" id="editor" style="display:none">
+    <h3 style="margin:0;color:var(--gold-2)">تعديل الملف الشخصي</h3>
+    <label>الاسم المعروض</label>
+    <input id="ed-name" value="${esc(user.display_name || user.username)}" maxlength="40">
+    <label>النبذة / الموقع الجغرافي</label>
+    <input id="ed-loc" value="${esc(user.location || '')}" maxlength="60" placeholder="مثال: السودان · مطوّر بوتات">
+    <label>الموقع الشخصي (https)</label>
+    <input id="ed-web" value="${esc(user.website || '')}" placeholder="https://example.com">
+    <label>رابط صورة الغلاف (https · اختياري)</label>
+    <input id="ed-banner" value="${esc(user.banner_url || '')}" placeholder="https://...jpg">
+    <label>الأزرار / الروابط</label>
+    <div id="links-box">${(user.links || []).map(linkRow).join('')}</div>
+    <button class="btn sm" onclick="addLink()">+ إضافة زر</button>
+    <label>README.md (يدعم Markdown)</label>
+    <textarea id="ed-bio" placeholder="# مرحباً 👋&#10;أنا مطوّر بوتات واتساب...&#10;&#10;- **لغتي:** JavaScript&#10;- [قناتي](https://...)">${esc(user.bio || '')}</textarea>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn primary" onclick="saveProfile(this)">حفظ</button>
+      <button class="btn ghost" onclick="toggleEditor()">إلغاء</button>
+    </div>
+    <p id="ed-msg" style="font-size:13px;margin:10px 0 0"></p>
+  </section>`;
+}
+
+function addLink() { document.getElementById('links-box').insertAdjacentHTML('beforeend', linkRow()); }
+function toggleEditor() {
+  const e = document.getElementById('editor');
+  if (!e) return;
+  e.style.display = e.style.display === 'none' ? 'block' : 'none';
+  if (e.style.display === 'block') e.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function saveProfile(btn) {
+  const msg = document.getElementById('ed-msg');
+  const links = [...document.querySelectorAll('#links-box .link-row')].map(r => ({
+    icon: r.querySelector('.lk-icon').value.trim(),
+    label: r.querySelector('.lk-label').value.trim(),
+    url: r.querySelector('.lk-url').value.trim(),
+  })).filter(l => l.label && l.url);
+  btn.disabled = true;
+  try {
+    await api('/api/update-profile', { method: 'POST', body: JSON.stringify({
+      display_name: document.getElementById('ed-name').value.trim(),
+      location: document.getElementById('ed-loc').value.trim(),
+      website: document.getElementById('ed-web').value.trim(),
+      banner_url: document.getElementById('ed-banner').value.trim(),
+      bio: document.getElementById('ed-bio').value,
+      links,
+    }) });
+    msg.style.color = 'green'; msg.textContent = 'تم الحفظ ✓';
+    setTimeout(() => location.reload(), 500);
+  } catch (e) { msg.style.color = 'var(--danger)'; msg.textContent = e.message; btn.disabled = false; }
 }
 
 (async () => {
   await renderNav();
+  ME = await loadMe();
   const parts = location.pathname.split('/').filter(Boolean);
-  const username = decodeURIComponent(parts[0] === 'u' ? (parts[1] || '') : (new URLSearchParams(location.search).get('username') || new URLSearchParams(location.search).get('u') || new URLSearchParams(location.search).get('x') || ''));
-  if (!username) { location.href='/'; return; }
-  
+  const q = new URLSearchParams(location.search);
+  const username = decodeURIComponent(parts[0] === 'u' ? (parts[1] || '') : (q.get('username') || q.get('u') || q.get('x') || ''));
+  if (!username) { location.href = '/'; return; }
+
   let data;
   try {
     data = await api('/api/user?username=' + encodeURIComponent(username) + '&_t=' + Date.now());
@@ -177,50 +162,24 @@ function renderCustomCard(code, currentUser) {
     document.getElementById('profile').innerHTML = `<p style="color:var(--danger);text-align:center">${esc(e.message)}</p>`;
     return;
   }
-  
+
   const { user, codes, count, is_self, pending } = data;
+  USER = user;
+  document.getElementById('profile').innerHTML = renderProfile(user, count);
+  if (is_self) {
+    document.getElementById('editor-wrap').innerHTML = renderEditor(user);
+    document.getElementById('avatar-file')?.addEventListener('change', onAvatarPick);
+  }
+  document.getElementById('readme').innerHTML = renderReadme(user);
 
-  const badge = user.is_verified_badge ? (typeof verifiedBadge === 'function' ? verifiedBadge() : '✓') : '';
-  const editBtn = is_self ? `
-    <div class="avatar-edit">
-      <label class="btn sm ghost" style="cursor:pointer">
-        تغيير الصورة
-        <input id="avatar-file" type="file" accept="image/*" hidden>
-      </label>
-      ${user.avatar_url ? '<button class="btn sm ghost" onclick="removeAvatar()">إزالة</button>' : ''}
-    </div>` : '';
-
-  document.getElementById('profile').innerHTML = `
-    <div class="profile">
-      ${typeof avatarNode === 'function' ? avatarNode({ username: user.username, avatar_url: user.avatar_url }, 'lg') : `<img src="${getAvatarUrl(user)}" class="avatar lg">`}
-      <div class="info">
-        <h2>@${esc(user.username)} ${badge}</h2>
-        <p>عضو منذ ${new Date(user.created_at).toLocaleDateString('ar')} · ${count} كود منشور</p>
-      </div>
-      ${editBtn}
-    </div>`;
+  if (!codes || !codes.length) document.getElementById('empty').style.display = 'block';
+  else document.getElementById('codes').innerHTML = codes.map(codeCard).join('');
 
   if (is_self) {
-    document.getElementById('avatar-file')?.addEventListener('change', onAvatarPick);
     const pendingHtml = pending && pending.length
-      ? pending.map(p => `<div class="side-item"><span>${esc(p.title)}</span><span class="lang-tag">مراجعة</span></div>`).join('')
-      : '<p style="color:var(--muted);font-size:12px;margin:6px 0">لا شي في المراجعة.</p>';
-    document.getElementById('side-wrap').innerHTML = `
-      <div class="side">
-        <h4>أكوادي</h4>
-        ${codes.length ? codes.map(c => `<div class="side-item"><a href="/c/${encodeURIComponent(c.filename)}">${esc(c.title)}</a><button class="btn sm danger" onclick="reqDel('${esc(c.filename)}')">حذف</button></div>`).join('') : '<p style="color:var(--muted);font-size:12px;margin:6px 0">لم تنشر أي كود بعد.</p>'}
-      </div>
-      <div class="side" style="margin-top:12px">
-        <h4>قيد المراجعة</h4>
-        ${pendingHtml}
-      </div>`;
-  }
-
-  if (!codes || !codes.length) {
-    document.getElementById('empty').style.display = 'block';
-  } else {
-    // بناء الأكواد باستخدام الدالة المخصصة الموحدة لتفادي مشاكل البطاقات القديمة
-    document.getElementById('codes').innerHTML = codes.map(c => renderCustomCard(c, user)).join('');
+      ? pending.map(p => `<div class="side-item"><span>${esc(p.title)}</span><span class="lang-tag">قيد المراجعة</span></div>`).join('')
+      : '<p style="color:var(--muted);font-size:12px;margin:6px 0">لا شيء في المراجعة.</p>';
+    document.getElementById('side-wrap').innerHTML = `<div class="side"><h4>قيد المراجعة</h4>${pendingHtml}</div>`;
   }
 })();
 
@@ -231,8 +190,8 @@ async function onAvatarPick(e) {
   const reader = new FileReader();
   reader.onload = async () => {
     try {
-      const up = await api('/api/upload-avatar', { method:'POST', body: JSON.stringify({ data_url: reader.result, filename: file.name }) });
-      await api('/api/update-profile', { method:'POST', body: JSON.stringify({ avatar_url: up.url }) });
+      const up = await api('/api/upload-avatar', { method: 'POST', body: JSON.stringify({ data_url: reader.result, filename: file.name }) });
+      await api('/api/update-profile', { method: 'POST', body: JSON.stringify({ avatar_url: up.url }) });
       location.reload();
     } catch (err) { alert(err.message); }
   };
@@ -242,20 +201,10 @@ async function onAvatarPick(e) {
 async function removeAvatar() {
   if (!confirm('إزالة صورة البروفايل؟')) return;
   try {
-    await api('/api/update-profile', { method:'POST', body: JSON.stringify({ avatar_url: null }) });
+    await api('/api/update-profile', { method: 'POST', body: JSON.stringify({ avatar_url: null }) });
     location.reload();
-  } catch (e) { alert(e.message); }
-}
-
-async function reqDel(filename) {
-  const reason = prompt('سبب طلب الحذف (اختياري):');
-  if (reason === null) return;
-  try {
-    await api('/api/delete-request', { method:'POST', body: JSON.stringify({ filename, reason: reason || '' }) });
-    alert('تم إرسال الطلب للإدارة ✓');
   } catch (e) { alert(e.message); }
 }
 </script>
 </body>
 </html>
- 
