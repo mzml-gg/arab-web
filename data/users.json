@@ -368,6 +368,17 @@
       "is_verified_badge": false,
       "verification_token": "9ee4136a8798e487f11e5dd88c128293fc7bafca9bac16ae",
       "created_at": "2026-08-02T21:44:44.515Z"
+    },
+    {
+      "username": "hamo1",
+      "email": "hamotx430@gmail.com",
+      "phone": "+20 10 16642484",
+      "password_hash": "$2a$10$BIMyzAbpq/omCsOxRD/Z1O39TW9bSIrkkINiex2aetmWkRXhnEgsq",
+      "display_name": "hamo1",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "79a6963182c6f99a50f60119529ba812d865b8ae61405e5d",
+      "created_at": "2026-08-02T21:47:39.963Z"
     }
   ]
 }
