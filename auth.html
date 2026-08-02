@@ -8,6 +8,35 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
+<style>
+  /* إصلاح مشكلة تداخل وعدم القدرة على النقر على زر إنشاء حساب */
+  .switch {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-top: 25px !important;
+    padding: 10px !important;
+    width: 100% !important;
+    position: relative !important;
+    z-index: 10 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  
+  .switch span {
+    color: var(--muted, #666);
+    font-size: 0.95rem;
+  }
+
+  .switch a {
+    color: var(--gold, #d4af37) !important;
+    font-weight: 700 !important;
+    text-decoration: underline !important;
+    font-size: 0.95rem;
+    cursor: pointer !important;
+  }
+</style>
 </head>
 <body>
 <nav class="nav">
@@ -54,6 +83,7 @@ document.getElementById('forgot-btn').onclick = (e) => {
   e.preventDefault();
   const email = document.querySelector('input[name="email"]').value;
   if (!email) {
+    const msg = document.getElementById('msg');
     msg.className = 'msg err';
     msg.textContent = 'يرجى كتابة الإيميل أولاً';
     return;
@@ -61,10 +91,12 @@ document.getElementById('forgot-btn').onclick = (e) => {
   if (confirm('هل تريد إرسال رابط استعادة كلمة السر إلى ' + email + '؟')) {
     api('/api/forgot-password', { method: 'POST', body: JSON.stringify({ email }) })
       .then(() => {
+        const msg = document.getElementById('msg');
         msg.className = 'msg ok';
         msg.textContent = '✓ تم إرسال الرابط إلى بريدك.';
       })
       .catch(err => {
+        const msg = document.getElementById('msg');
         msg.className = 'msg err';
         msg.textContent = err.message;
       });
@@ -135,3 +167,4 @@ document.getElementById('form').onsubmit = async (e) => {
 </script>
 </body>
 </html>
+ 
