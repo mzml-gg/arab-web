@@ -75,6 +75,7 @@
     font-weight: 600;
   }
 
+  .author-badge .avatar{width:28px;height:28px}
   .author-avatar {
     width: 28px;
     height: 28px;
@@ -128,33 +129,20 @@
   const rawUrl = `/api/raw?file=${encodeURIComponent(filename)}`;
   const ghRaw = `https://raw.githubusercontent.com/mzml-gg/arab-web/main/codes/${encodeURIComponent(filename)}`;
 
-  let meta = { title: filename, author: 'unknown', avatar: '', language: (filename.split('.').pop()||'txt') };
+  let meta = { title: filename, author: 'unknown', language: (filename.split('.').pop()||'txt') };
   try {
-    const { codes } = await api('/api/list');
+    const { codes } = await api('/api/list?_t=' + Date.now());
     meta = codes.find(c => c.filename === filename) || meta;
   } catch {}
   const me = await loadMe();
   const isOwner = me && me.username.toLowerCase() === (meta.author||'').toLowerCase();
 
-  // فحص شارة التوثيق (سواء من الدالة القديمة أو إذا كان أدمن/موثق أو باسم زياد)
-  const isVerifiedAuthor = meta.admin_added || meta.is_admin || meta.verified || (meta.author && meta.author.toLowerCase() === 'ziad');
-  
-  const badgeHtml = isVerifiedAuthor 
-    ? (typeof verifiedBadge === 'function' ? verifiedBadge() : '<svg class="verified-icon" viewBox="0 0 24 24" fill="#3b82f6"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>') 
-    : '';
-  
-  // تعديل رابط المستخدم ليكون /u/ بدلاً من /user/
-  const renderAuthor = (m) => {
-    const avatarUrl = m.avatar || m.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.author || 'U')}&background=random`;
-    const authorName = esc(m.author || 'مجهول');
-    return `
+  const renderAuthor = (m) => `
       <a href="/u/${encodeURIComponent(m.author || 'unknown')}" class="author-badge">
-        <img src="${avatarUrl}" alt="${authorName}" class="author-avatar" onError="this.src='https://ui-avatars.com/api/?name=U'">
-        <span>${authorName}</span>
-        ${badgeHtml}
-      </a>
-    `;
-  };
+        ${avatarNode({ username: m.author, avatar_url: avatarUrl(m) })}
+        <span>${esc(m.author_display || m.author || 'مجهول')}</span>
+        ${isVerified(m) ? verifiedBadge() : ''}
+      </a>`;
 
   document.getElementById('header').innerHTML = `
     <div class="code-header">
