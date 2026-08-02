@@ -322,7 +322,12 @@
       "verification_token": null,
       "created_at": "2026-08-02T04:03:06.689Z",
       "avatar_url": "https://nezukouploads.servegame.net/file/B9EBL.jpg",
-      "profile_updated_at": "2026-08-02T11:15:44.570Z"
+      "profile_updated_at": "2026-08-02T11:18:55.048Z",
+      "banner_url": null,
+      "bio": "class Barhoum {\n  role = [\"🩺 Nurse\", \"💻 Web Developer\"];\n  stack = [\"HTML\", \"CSS\", \"JavaScript\"];\n  specialization = [\"Web Development\", \"WhatsApp Bots\"];\n\n  get status() {\n    return \"Always learning. Always building.\";\n  }\n}",
+      "location": "",
+      "website": "",
+      "links": []
     },
     {
       "username": "Hamza",
