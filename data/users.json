@@ -309,6 +309,17 @@
       "is_verified_badge": false,
       "verification_token": "cf60613e3f0ac11e48abf9b63ff478b136de86c1cb42e696",
       "created_at": "2026-08-02T04:03:06.689Z"
+    },
+    {
+      "username": "Hamza",
+      "email": "studio.sultan24@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$xkqBvEbDp2o9YfdRkJ6jtOXNfynMpHKhtlkQoCdxR4iKK9yX8a2Iu",
+      "display_name": "Hamza",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "b47b9a6e7c12824274937cac5dd31b8e23bcea235fcc392b",
+      "created_at": "2026-08-02T10:00:56.665Z"
     }
   ]
 }
