@@ -48,11 +48,14 @@ function publicUser(u) {
   const admin = isAdminEmail(u.email);
   return {
     username: u.username,
+    display_name: u.display_name || u.username,
     email: u.email,
     verified: !!u.verified,
     is_admin: admin,
     is_verified_badge: admin || !!u.is_verified_badge,
     avatar_url: u.avatar_url || null,
+    bio: u.bio || '',
+    links: Array.isArray(u.links) ? u.links : [],
     created_at: u.created_at,
   };
 }
