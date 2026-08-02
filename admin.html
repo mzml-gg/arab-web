@@ -29,6 +29,7 @@
 <main class="container">
   <div class="tabs">
     <button data-tab="pending" class="active">طلبات في الانتظار</button>
+    <button data-tab="settings">الإعدادات</button>
     <button data-tab="deletes">طلبات حذف</button>
     <button data-tab="verified">الحسابات الموثقة</button>
     <button data-tab="users">كل الحسابات</button>
@@ -39,6 +40,29 @@
     <h3 style="color:var(--gold-2);margin:4px 0 10px">طلبات في الانتظار</h3>
     <div id="list" class="pending-list"></div>
     <p id="empty" style="color:var(--muted);text-align:center;display:none">لا توجد طلبات.</p>
+  </section>
+
+  <section class="pane" id="pane-settings">
+    <h3 style="color:var(--gold-2);margin:4px 0 10px">إعدادات النشر والفلترة</h3>
+    <div class="switch-row">
+      <div>
+        <div class="t">القبول التلقائي للأكواد</div>
+        <div class="d">عند تفعيله يُنشر أي كود مباشرة بدون انتظار موافقتك (الفلترة تبقى شغّالة إن كانت مفعّلة).</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="sw-auto"><span></span></label>
+    </div>
+    <div class="switch-row">
+      <div>
+        <div class="t">فلترة المحتوى المخالف</div>
+        <div class="d">يرفض تلقائياً أي كود يحتوي كلمات مخالفة (إباحية / اختراق / محتوى شاذ) ويُرسل للناشر بريد رفض فيه أزرار التواصل مع الدعم.</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="sw-filter"><span></span></label>
+    </div>
+    <div class="editor" style="margin-top:14px">
+      <label>الكلمات الممنوعة (كلمة في كل سطر)</label>
+      <textarea id="banned" style="min-height:180px;font-family:'JetBrains Mono',monospace;font-size:13px"></textarea>
+      <div style="margin-top:12px"><button class="btn primary" onclick="saveSettings(this)">حفظ الإعدادات</button></div>
+    </div>
   </section>
 
   <section class="pane" id="pane-deletes">
@@ -67,7 +91,7 @@
   const me = await loadMe();
   if (!me || !me.is_admin) { location.href='/auth'; return; }
   document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
-  await Promise.all([loadPending(), loadDeletes(), loadUsers('verified'), loadUsers('all')]);
+  await Promise.all([loadPending(), loadDeletes(), loadUsers('verified'), loadUsers('all'), loadSettings()]);
 })();
 
 function switchTab(t) {
@@ -158,6 +182,13 @@ function renderItem(it) {
       <button class="btn primary" onclick="doApprove('${esc(it.id)}', this)">موافقة</button>
       <button class="btn danger" onclick="doReject('${esc(it.id)}', this)">رفض</button>
     </div>
+    <div class="reject-box" style="display:none;margin-top:10px">
+      <input type="text" class="reject-reason" placeholder="سبب الرفض (يُرسل للناشر بالبريد)" style="width:100%;padding:11px 14px;border-radius:14px;border:1px solid var(--border);background:var(--soft);color:var(--text)">
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <button class="btn danger sm" onclick="confirmReject('${esc(it.id)}', this)">تأكيد الرفض وإرسال الرسالة</button>
+        <button class="btn ghost sm" onclick="this.closest('.reject-box').style.display='none'">إلغاء</button>
+      </div>
+    </div>
   </div>`;
 }
 
@@ -189,12 +220,53 @@ async function doApprove(id, btn) {
     showMsg('تمت الموافقة: ' + r.url, true);
   } catch (e) { showMsg(e.message, false); btn.disabled=false; }
 }
-async function doReject(id, btn) {
-  if (!confirm('رفض هذا الطلب؟')) return;
-  btn.disabled=true;
-  try { await api('/api/reject', { method:'POST', body: JSON.stringify({ id }) }); btn.closest('.pending-item').remove(); showMsg('تم الرفض', true); }
-  catch (e) { showMsg(e.message, false); btn.disabled=false; }
+function doReject(id, btn) {
+  const box = btn.closest('.pending-item').querySelector('.reject-box');
+  box.style.display = 'block';
+  box.querySelector('.reject-reason').focus();
 }
+
+async function confirmReject(id, btn) {
+  const item = btn.closest('.pending-item');
+  const reason = item.querySelector('.reject-reason').value.trim();
+  btn.disabled = true;
+  try {
+    const r = await api('/api/reject', { method:'POST', body: JSON.stringify({ id, reason }) });
+    item.remove();
+    showMsg(r.mailed ? 'تم الرفض وأُرسلت رسالة للناشر ✓' : 'تم الرفض (تعذّر إرسال البريد)', true);
+  } catch (e) { showMsg(e.message, false); btn.disabled = false; }
+}
+
+async function loadSettings() {
+  try {
+    const { settings } = await api('/api/settings');
+    document.getElementById('sw-auto').checked = !!settings.auto_approve;
+    document.getElementById('sw-filter').checked = !!settings.filter_enabled;
+    document.getElementById('banned').value = (settings.banned_words || []).join('\n');
+  } catch (e) { showMsg(e.message, false); }
+}
+
+async function saveSettings(btn) {
+  btn.disabled = true;
+  try {
+    await api('/api/settings', { method:'POST', body: JSON.stringify({
+      auto_approve: document.getElementById('sw-auto').checked,
+      filter_enabled: document.getElementById('sw-filter').checked,
+      banned_words: document.getElementById('banned').value.split(/\r?\n/).map(s => s.trim()).filter(Boolean),
+    }) });
+    showMsg('تم حفظ الإعدادات ✓', true);
+  } catch (e) { showMsg(e.message, false); }
+  btn.disabled = false;
+}
+
+document.addEventListener('change', (e) => {
+  if (e.target.id === 'sw-auto' || e.target.id === 'sw-filter') {
+    api('/api/settings', { method:'POST', body: JSON.stringify({
+      auto_approve: document.getElementById('sw-auto').checked,
+      filter_enabled: document.getElementById('sw-filter').checked,
+    }) }).then(() => showMsg('تم التحديث ✓', true)).catch(err => showMsg(err.message, false));
+  }
+});
 async function doResolve(id, approve, btn) {
   if (!confirm(approve ? 'تأكيد حذف الكود؟' : 'رفض طلب الحذف؟')) return;
   btn.disabled=true;
