@@ -1,8 +1,39 @@
-const { currentUser, readBody, randomToken, isAdminEmail } = require('../_auth');
+const { currentUser, readBody, isAdminEmail } = require('../_auth');
 const { getFile, putFile, writeJson, readJson } = require('../_gh');
+const { getSettings, scanContent } = require('../_settings');
+const { sendRejection } = require('../_mail');
 
 function slugify(s) {
   return String(s || 'code').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'code';
+}
+
+async function publish({ title, description, language, code, u, isAdmin }) {
+  const lang = String(language || 'txt').slice(0, 20);
+  const base = slugify(title);
+  let filename = `${base}.${lang}`;
+  const { data: manifest } = await readJson('data/manifest.json', { codes: [] });
+  if (!manifest.codes) manifest.codes = [];
+  let i = 1;
+  while (manifest.codes.some((c) => c.filename === filename)) {
+    filename = `${base}-${i}.${lang}`;
+    i++;
+  }
+  const codePath = `codes/${filename}`;
+  const existing = await getFile(codePath);
+  await putFile(codePath, code, `publish: ${filename} by ${u.username}`, existing?.sha);
+  manifest.codes.unshift({
+    filename,
+    title: String(title).slice(0, 120),
+    description: String(description || '').slice(0, 600),
+    language: lang,
+    author: u.username,
+    author_avatar: u.avatar_url || null,
+    author_verified: isAdmin || !!u.is_verified_badge,
+    admin_added: isAdmin,
+    approved_at: new Date().toISOString(),
+  });
+  await writeJson('data/manifest.json', manifest, `manifest: +${filename}`);
+  return filename;
 }
 
 module.exports = async (req, res) => {
@@ -17,39 +48,29 @@ module.exports = async (req, res) => {
 
     const isAdmin = isAdminEmail(u.email);
     const isVerified = isAdmin || !!u.is_verified_badge;
+    const settings = await getSettings();
 
-    // Verified users publish directly, others go to pending queue
-    if (isVerified) {
-      const lang = String(language || 'txt').slice(0, 20);
-      let base = slugify(title);
-      let filename = `${base}.${lang}`;
-      const { data: manifest } = await readJson('data/manifest.json', { codes: [] });
-      if (!manifest.codes) manifest.codes = [];
-      // ensure unique filename
-      let i = 1;
-      while (manifest.codes.some((c) => c.filename === filename)) {
-        filename = `${base}-${i}.${lang}`;
-        i++;
+    // Content filter — auto reject violating submissions (admins are exempt)
+    if (settings.filter_enabled && !isAdmin) {
+      const hit = scanContent({ title, description, code }, settings.banned_words);
+      if (hit) {
+        const reason = `تم رصد محتوى مخالف لقواعد المنصة داخل الكود أو وصفه (الكلمة المرصودة: "${hit}").`;
+        try {
+          await sendRejection({ to: u.email, username: u.username, title, reason, auto: true });
+        } catch (e) { console.error('rejection mail failed:', e.message); }
+        return res.status(400).json({
+          error: `لقد اكتشفنا أن كودك (${title}) لديه انتهاكات في قواعد معينة وتم رفضه تلقائياً. راسل الدعم عبر البريد الأساسي.`,
+          filtered: true,
+        });
       }
-      const codePath = `codes/${filename}`;
-      const existing = await getFile(codePath);
-      await putFile(codePath, code, `publish: ${filename} by ${u.username}`, existing?.sha);
-      manifest.codes.unshift({
-        filename,
-        title: String(title).slice(0, 120),
-        description: String(description || '').slice(0, 600),
-        language: lang,
-        author: u.username,
-        author_avatar: u.avatar_url || null,
-        author_verified: true,
-        admin_added: isAdmin,
-        approved_at: new Date().toISOString(),
-      });
-      await writeJson('data/manifest.json', manifest, `manifest: +${filename}`);
+    }
+
+    if (isVerified || settings.auto_approve) {
+      const filename = await publish({ title, description, language, code, u, isAdmin });
       return res.status(200).json({ ok: true, published: true, url: `/c/${filename}` });
     }
 
-    const id = Date.now().toString(36) + '-' + randomToken(4);
+    const id = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
     const entry = {
       id,
       title: String(title).slice(0, 120),
