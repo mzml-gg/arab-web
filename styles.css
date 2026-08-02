@@ -70,6 +70,8 @@ input,textarea,select{font-family:inherit}
 .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--gold);background:#fff}
 .field textarea{font-family:'JetBrains Mono',Consolas,monospace;font-size:13px;resize:vertical}
 .submit{width:100%;padding:12px}
+
+/* التنسيق الخاص بقسم "ليس لديك حساب؟" تم تركه كما هو ليعمل بشكل سليم */
 .form .switch{text-align:center;margin-top:14px;font-size:13px;color:var(--muted)}
 .form .switch a{margin-inline-start:6px}
 
@@ -183,9 +185,11 @@ input,textarea,select{font-family:inherit}
 .switch-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;border:1px solid var(--border);border-radius:18px;background:var(--panel);margin-bottom:10px;flex-wrap:wrap}
 .switch-row .t{font-weight:700;color:var(--gold-2);font-size:14px}
 .switch-row .d{color:var(--muted);font-size:12px;margin-top:3px;max-width:520px;line-height:1.7}
-.switch{position:relative;width:52px;height:29px;flex-shrink:0}
-.switch input{opacity:0;width:0;height:0}
-.switch span{position:absolute;inset:0;background:#e6ddc0;border-radius:999px;transition:.2s;cursor:pointer}
-.switch span:before{content:"";position:absolute;width:23px;height:23px;top:3px;right:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
-.switch input:checked + span{background:linear-gradient(135deg,#f4c400,#e6a900)}
-.switch input:checked + span:before{transform:translateX(-23px)}
+
+/* تم تغيير الكلاس هنا إلى .toggle-switch لمنع التداخل مع كلاس صفحة الدخول */
+.toggle-switch{position:relative;width:52px;height:29px;flex-shrink:0;display:inline-block}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-switch span{position:absolute;inset:0;background:#e6ddc0;border-radius:999px;transition:.2s;cursor:pointer}
+.toggle-switch span:before{content:"";position:absolute;width:23px;height:23px;top:3px;right:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.toggle-switch input:checked + span{background:linear-gradient(135deg,#f4c400,#e6a900)}
+.toggle-switch input:checked + span:before{transform:translateX(-23px)}
