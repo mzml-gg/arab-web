@@ -389,7 +389,9 @@
       "verified": false,
       "is_verified_badge": false,
       "verification_token": "412a17b2b856fc96d50e0769529f194f73497a578e00d70a",
-      "created_at": "2026-08-03T02:08:24.095Z"
+      "created_at": "2026-08-03T02:08:24.095Z",
+      "reset_token": "7a7e2dd3495fe417eb93e5d9c54371d5f85acf4a0440052cb734c2adfcf65bc5",
+      "reset_expires": 1785726531294
     }
   ]
 }
