@@ -15,14 +15,22 @@ const DEFAULT_BANNED = [
 const DEFAULTS = {
   auto_approve: false,
   filter_enabled: true,
+  // When true, any user can delete their own code instantly (no admin request).
+  direct_delete: false,
+  // When false, the "طلب حذف" flow is disabled entirely.
+  delete_requests_enabled: true,
   banned_words: DEFAULT_BANNED,
 };
+
+const bool = (v, d) => (v === undefined ? d : !!v);
 
 async function getSettings() {
   const { data } = await readJson(PATH, {});
   return {
-    auto_approve: !!data.auto_approve,
-    filter_enabled: data.filter_enabled === undefined ? true : !!data.filter_enabled,
+    auto_approve: bool(data.auto_approve, false),
+    filter_enabled: bool(data.filter_enabled, true),
+    direct_delete: bool(data.direct_delete, false),
+    delete_requests_enabled: bool(data.delete_requests_enabled, true),
     banned_words: Array.isArray(data.banned_words) && data.banned_words.length
       ? data.banned_words
       : DEFAULT_BANNED,
