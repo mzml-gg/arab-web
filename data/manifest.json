@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-15.js",
+      "title": "امر يسوي سكرين شوت لاي موقع",
+      "description": ".سكرين + رابط ",
+      "language": "js",
+      "author": "aboud",
+      "author_avatar": "https://nezukouploads.servegame.net/file/zBpij.jpg",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-03T02:34:08.183Z"
+    },
+    {
       "filename": "code-14.js",
       "title": "يجيب الامر الي تبغاه من ملف الاوامر ",
       "description": ".هات + اسم الامر / يرسلك الكود بطريقة meta ai",
