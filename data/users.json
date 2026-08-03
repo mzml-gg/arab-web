@@ -385,7 +385,7 @@
       "email": "bdrhmanalzyyn@gmail.com",
       "phone": "",
       "password_hash": "$2a$10$jVQppgpIl0rEJO.g2ZYhxOJKr.vMYciOnaVIimPoJGytPXTLVci5m",
-      "display_name": "aboud",
+      "display_name": "عبود - aboud",
       "verified": true,
       "is_verified_badge": false,
       "verification_token": null,
@@ -393,7 +393,12 @@
       "reset_token": null,
       "reset_expires": null,
       "avatar_url": "https://nezukouploads.servegame.net/file/zBpij.jpg",
-      "profile_updated_at": "2026-08-03T02:18:09.786Z"
+      "profile_updated_at": "2026-08-03T02:19:09.694Z",
+      "banner_url": null,
+      "bio": "",
+      "location": "السعودية - هاوي ومطور بوتات",
+      "website": "",
+      "links": []
     }
   ]
 }
