@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-14.js",
+      "title": "يجيب الامر الي تبغاه من ملف الاوامر ",
+      "description": ".هات + اسم الامر / يرسلك الكود بطريقة meta ai",
+      "language": "js",
+      "author": "aboud",
+      "author_avatar": "https://nezukouploads.servegame.net/file/zBpij.jpg",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-03T02:31:39.111Z"
+    },
+    {
       "filename": "code-13.js",
       "title": "امر (.ج) ينفذ الأوامر في قروبات ثانية",
       "description": "امر لتنفيذ الأوامر عن بعد",
