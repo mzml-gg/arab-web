@@ -1,6 +1,8 @@
 {
   "auto_approve": true,
   "filter_enabled": true,
+  "direct_delete": true,
+  "delete_requests_enabled": true,
   "banned_words": [
     "porn",
     "porno",
