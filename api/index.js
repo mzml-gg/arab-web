@@ -22,6 +22,7 @@ const routes = {
   'delete-code': require('./_h/delete-code'),
   users: require('./_h/users'),
   settings: require('./_h/settings'),
+  'public-settings': require('./_h/public-settings'),
   'toggle-verify': require('./_h/toggle-verify'),
   raw: require('./_h/raw'),
 };
