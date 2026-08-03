@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
 <style>
@@ -117,6 +118,13 @@
   <div id="header"></div>
   <div class="code-actions" id="actions" style="margin: 15px 0;"></div>
   <div class="code-view"><pre><code id="code" class="hljs">تحميل...</code></pre></div>
+  <div id="preview-wrap" style="display:none;margin-top:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <strong style="color:var(--gold-2)">معاينة حيّة</strong>
+      <span style="font-size:12px;color:var(--muted)">تعمل داخل صندوق آمن (sandbox)</span>
+    </div>
+    <iframe id="preview" sandbox="allow-scripts allow-modals allow-popups" style="width:100%;height:420px;border:1px solid var(--border);border-radius:14px;background:#fff"></iframe>
+  </div>
 </main>
 
 <script src="/app.js"></script>
@@ -126,14 +134,19 @@
   const parts = location.pathname.split('/').filter(Boolean);
   const filename = decodeURIComponent(parts[0] === 'c' ? (parts[1] || '') : (new URLSearchParams(location.search).get('file') || new URLSearchParams(location.search).get('c') || new URLSearchParams(location.search).get('x') || ''));
   if (!filename) { location.href='/'; return; }
-  const rawUrl = `/api/raw?file=${encodeURIComponent(filename)}`;
-  const ghRaw = `https://raw.githubusercontent.com/mzml-gg/arab-web/main/codes/${encodeURIComponent(filename)}`;
-
-  let meta = { title: filename, author: 'unknown', language: (filename.split('.').pop()||'txt') };
+  const stripExt = (s) => String(s).replace(/\.[^.]+$/, '');
+  let meta = { title: filename, author: 'unknown', language: (filename.includes('.') ? filename.split('.').pop() : 'txt') };
   try {
     const { codes } = await api('/api/list?_t=' + Date.now());
-    meta = codes.find(c => c.filename === filename) || meta;
+    // Vercel cleanUrls strips ".html" from the URL, so fall back to a base-name match.
+    const found = codes.find(c => c.filename === filename)
+      || codes.find(c => stripExt(c.filename) === stripExt(filename))
+      || codes.find(c => c.filename.startsWith(filename + '.'));
+    if (found) { meta = found; filename = found.filename; }
   } catch {}
+  const rawUrl = `/api/raw?file=${encodeURIComponent(filename)}`;
+  const ghRaw = `https://raw.githubusercontent.com/mzml-gg/arab-web/main/codes/${encodeURIComponent(filename)}`;
+  window.__filename = filename;
   const me = await loadMe();
   const isOwner = me && me.username.toLowerCase() === (meta.author||'').toLowerCase();
 
@@ -159,8 +172,16 @@
     </div>`;
 
   const actions = document.getElementById('actions');
+  let siteSettings = { direct_delete:false, delete_requests_enabled:true };
+  try { siteSettings = (await api('/api/public-settings')).settings || siteSettings; } catch {}
   const isVerifiedOwner = isOwner && (me.is_verified_badge || me.is_admin);
-  const canDirectDelete = me && (me.is_admin || isVerifiedOwner);
+  const canDirectDelete = !!me && (me.is_admin || isVerifiedOwner || (isOwner && siteSettings.direct_delete));
+  const canRequestDelete = !!me && isOwner && !canDirectDelete && siteSettings.delete_requests_enabled;
+
+  // Languages that can be rendered live in a sandboxed preview
+  const ext = (filename.includes('.') ? filename.split('.').pop() : '').toLowerCase();
+  const previewable = ['html','htm','css','svg','md','markdown'].includes(ext)
+    || ['html','css','svg','markdown','md'].includes(String(meta.language||'').toLowerCase());
 
   actions.innerHTML = `
     <button class="btn primary" id="copyBtn" onclick="copyCode()">
@@ -169,7 +190,8 @@
     </button>
     <a class="btn" href="${ghRaw}" target="_blank">Raw</a>
     <a class="btn" href="/submit?fork=${encodeURIComponent(filename)}">🍴 Fork</a>
-    ${canDirectDelete ? `<button class="btn danger" onclick="directDelete('${esc(filename)}')">حذف</button>` : (isOwner ? `<button class="btn danger" onclick="requestDelete()">طلب حذف</button>` : '')}
+    ${previewable ? `<button class="btn" id="previewBtn" onclick="togglePreview()">▶ تشغيل / معاينة</button>` : ''}
+    ${canDirectDelete ? `<button class="btn danger" onclick="directDelete('${esc(filename)}')">حذف</button>` : (canRequestDelete ? `<button class="btn danger" onclick="requestDelete()">طلب حذف</button>` : '')}
   `;
 
   try {
@@ -178,9 +200,18 @@
     window.__codeText = t;
     const codeEl = document.getElementById('code');
     codeEl.textContent = t;
-    codeEl.className = 'hljs language-' + (meta.language || 'plaintext');
-    
-    if (window.hljs) hljs.highlightElement(codeEl);
+    const HL = { js:'javascript', mjs:'javascript', cjs:'javascript', ts:'typescript', py:'python',
+      html:'xml', htm:'xml', svg:'xml', md:'markdown', sh:'bash', yml:'yaml', rs:'rust',
+      cs:'csharp', cpp:'cpp', c:'c', kt:'kotlin', rb:'ruby', txt:'plaintext' };
+    const langKey = String(meta.language || ext || 'plaintext').toLowerCase();
+    const hlLang = HL[langKey] || langKey;
+    codeEl.className = 'hljs';
+    if (window.hljs) {
+      try {
+        const out = hljs.getLanguage(hlLang) ? hljs.highlight(t, { language: hlLang }) : hljs.highlightAuto(t);
+        codeEl.innerHTML = out.value;
+      } catch { codeEl.textContent = t; }
+    }
     
     let htmlLines = codeEl.innerHTML.split(/\r?\n/);
     if (htmlLines[htmlLines.length - 1].trim() === '') htmlLines.pop(); 
@@ -214,11 +245,40 @@ async function copyCode() {
   }
 }
 
+function buildPreviewDoc(text, ext) {
+  const e = String(ext || '').toLowerCase();
+  if (e === 'css') return `<!doctype html><meta charset="utf-8"><style>${text}</style>
+    <body style="font-family:system-ui;padding:16px">
+      <h1>عنوان تجريبي</h1><p>فقرة نصية لمعاينة تنسيقات CSS.</p>
+      <button>زر</button> <a href="#">رابط</a>
+      <div class="box card container" style="margin-top:12px">.box / .card / .container</div>
+    </body>`;
+  if (e === 'svg') return `<!doctype html><meta charset="utf-8"><body style="margin:0;display:grid;place-items:center;height:100vh">${text}</body>`;
+  if (e === 'md' || e === 'markdown') return `<!doctype html><meta charset="utf-8"><body style="font-family:system-ui;padding:16px;white-space:pre-wrap">${text.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</body>`;
+  return text; // html
+}
+
+function togglePreview() {
+  const wrap = document.getElementById('preview-wrap');
+  const btn = document.getElementById('previewBtn');
+  const open = wrap.style.display === 'none';
+  wrap.style.display = open ? 'block' : 'none';
+  btn.textContent = open ? '■ إيقاف المعاينة' : '▶ تشغيل / معاينة';
+  const frame = document.getElementById('preview');
+  if (open) {
+    const name = window.__filename || '';
+    const ext = name.includes('.') ? name.split('.').pop() : 'html';
+    frame.srcdoc = buildPreviewDoc(window.__codeText || '', ext);
+    wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } else {
+    frame.srcdoc = '';
+  }
+}
+
 async function requestDelete() {
   const reason = prompt('سبب طلب الحذف (اختياري):') || '';
   if (reason === null) return;
-  const parts = location.pathname.split('/').filter(Boolean);
-  const filename = decodeURIComponent(parts[0] === 'c' ? (parts[1] || '') : (new URLSearchParams(location.search).get('file') || new URLSearchParams(location.search).get('c') || new URLSearchParams(location.search).get('x') || ''));
+  const filename = window.__filename || '';
   try {
     await api('/api/delete-request', { method:'POST', body: JSON.stringify({ filename, reason }) });
     alert('تم إرسال طلب الحذف للإدارة ✓');
