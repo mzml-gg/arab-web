@@ -58,6 +58,20 @@
       </div>
       <label class="switch"><input type="checkbox" id="sw-filter"><span></span></label>
     </div>
+    <div class="switch-row">
+      <div>
+        <div class="t">الحذف المباشر للمستخدمين</div>
+        <div class="d">عند تفعيله يقدر أي مستخدم يحذف أكواده فوراً من صفحة الكود بدون إرسال طلب حذف للإدارة.</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="sw-direct-del"><span></span></label>
+    </div>
+    <div class="switch-row">
+      <div>
+        <div class="t">استقبال طلبات الحذف</div>
+        <div class="d">إيقافه يمنع المستخدمين من إرسال طلبات حذف جديدة للإدارة.</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="sw-del-req"><span></span></label>
+    </div>
     <div class="editor" style="margin-top:14px">
       <label>الكلمات الممنوعة (كلمة في كل سطر)</label>
       <textarea id="banned" style="min-height:180px;font-family:'JetBrains Mono',monospace;font-size:13px"></textarea>
@@ -242,6 +256,8 @@ async function loadSettings() {
     const { settings } = await api('/api/settings');
     document.getElementById('sw-auto').checked = !!settings.auto_approve;
     document.getElementById('sw-filter').checked = !!settings.filter_enabled;
+    document.getElementById('sw-direct-del').checked = !!settings.direct_delete;
+    document.getElementById('sw-del-req').checked = settings.delete_requests_enabled !== false;
     document.getElementById('banned').value = (settings.banned_words || []).join('\n');
   } catch (e) { showMsg(e.message, false); }
 }
@@ -252,6 +268,8 @@ async function saveSettings(btn) {
     await api('/api/settings', { method:'POST', body: JSON.stringify({
       auto_approve: document.getElementById('sw-auto').checked,
       filter_enabled: document.getElementById('sw-filter').checked,
+      direct_delete: document.getElementById('sw-direct-del').checked,
+      delete_requests_enabled: document.getElementById('sw-del-req').checked,
       banned_words: document.getElementById('banned').value.split(/\r?\n/).map(s => s.trim()).filter(Boolean),
     }) });
     showMsg('تم حفظ الإعدادات ✓', true);
@@ -260,10 +278,12 @@ async function saveSettings(btn) {
 }
 
 document.addEventListener('change', (e) => {
-  if (e.target.id === 'sw-auto' || e.target.id === 'sw-filter') {
+  if (['sw-auto','sw-filter','sw-direct-del','sw-del-req'].includes(e.target.id)) {
     api('/api/settings', { method:'POST', body: JSON.stringify({
       auto_approve: document.getElementById('sw-auto').checked,
       filter_enabled: document.getElementById('sw-filter').checked,
+      direct_delete: document.getElementById('sw-direct-del').checked,
+      delete_requests_enabled: document.getElementById('sw-del-req').checked,
     }) }).then(() => showMsg('تم التحديث ✓', true)).catch(err => showMsg(err.message, false));
   }
 });
