@@ -393,7 +393,7 @@
       "reset_token": null,
       "reset_expires": null,
       "avatar_url": "https://nezukouploads.servegame.net/file/zBpij.jpg",
-      "profile_updated_at": "2026-08-03T02:25:48.033Z",
+      "profile_updated_at": "2026-08-03T02:37:18.991Z",
       "banner_url": "https://h.uguu.se/WVbRmfNB.jpg",
       "bio": "وظننتني  شخصاً يستهان به.. لا، والذي جعل الكرامة في دمي، أنا لا أُذلّ ولا أُهان، ولا أنحني، أنا كالشمس أعميك، ولا أنحني..",
       "location": "السعودية - هاوي ومطور بوتات",
@@ -402,6 +402,11 @@
         {
           "label": "واتساب",
           "url": "https://wa.me/966573945450",
+          "icon": ""
+        },
+        {
+          "label": "قناة - واتساب",
+          "url": "https://whatsapp.com/channel/0029VbCqgIdHbFVCbKjlzU1b",
           "icon": ""
         }
       ]
