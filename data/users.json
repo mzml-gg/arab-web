@@ -386,9 +386,9 @@
       "phone": "",
       "password_hash": "$2a$10$jVQppgpIl0rEJO.g2ZYhxOJKr.vMYciOnaVIimPoJGytPXTLVci5m",
       "display_name": "aboud",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "412a17b2b856fc96d50e0769529f194f73497a578e00d70a",
+      "verification_token": null,
       "created_at": "2026-08-03T02:08:24.095Z",
       "reset_token": null,
       "reset_expires": null
