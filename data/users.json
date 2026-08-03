@@ -432,6 +432,17 @@
       "is_verified_badge": false,
       "verification_token": "007842da18bcd5d4dea6dd584c1384ee6cdd00928767a017",
       "created_at": "2026-08-03T17:28:38.065Z"
+    },
+    {
+      "username": "darkshinra15mm",
+      "email": "elg40140@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$4EsGjD.Rlx487D8kqkZIKOo5fJgI3iYVi7BcljhfnHoT7vui2FP7e",
+      "display_name": "darkshinra15mm",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "40ea1e29b5a87bcb60f74f387a79a7bde7a2115ec7754640",
+      "created_at": "2026-08-03T17:29:48.625Z"
     }
   ]
 }
