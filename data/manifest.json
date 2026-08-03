@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "them-html.html",
+      "title": "them-html",
+      "description": "ثيم برمجي شكل حلو لغه html ",
+      "language": "html",
+      "author": "ziad",
+      "author_avatar": "https://nezukouploads.servegame.net/file/qwjuA.jpg",
+      "author_verified": true,
+      "admin_added": true,
+      "approved_at": "2026-08-03T17:55:18.000Z"
+    },
+    {
       "filename": "code.html",
       "title": "صفحة تسجيل دخول",
       "description": "صفحة تسجيل دخول لموقعك تحتوي علي حقول البريد وكلمة مرور وبعض مواقع تواصل الاجتماعي للتسجيل سريع، ملف html مكتوب بالغة HTML و CSS يمكنك تغير الوان من خلفية بيضاء و بني داكن الى اي شيء يعجبك",
