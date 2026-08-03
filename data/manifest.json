@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-13.js",
+      "title": "امر (.ج) ينفذ الأوامر في قروبات ثانية",
+      "description": "امر لتنفيذ الأوامر عن بعد",
+      "language": "js",
+      "author": "aboud",
+      "author_avatar": "https://nezukouploads.servegame.net/file/zBpij.jpg",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-03T02:28:15.715Z"
+    },
+    {
       "filename": "code-12.js",
       "title": "يجيب وصف المجموعة ",
       "description": "امر .وصف وحط معه الرابط",
