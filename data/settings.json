@@ -1,5 +1,5 @@
 {
-  "auto_approve": false,
+  "auto_approve": true,
   "filter_enabled": true,
   "banned_words": [
     "porn",
