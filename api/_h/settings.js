@@ -16,9 +16,12 @@ module.exports = async (req, res) => {
   try {
     const body = await readBody(req);
     const cur = await getSettings();
+    const pick = (k) => (body[k] === undefined ? cur[k] : !!body[k]);
     const next = {
-      auto_approve: body.auto_approve === undefined ? cur.auto_approve : !!body.auto_approve,
-      filter_enabled: body.filter_enabled === undefined ? cur.filter_enabled : !!body.filter_enabled,
+      auto_approve: pick('auto_approve'),
+      filter_enabled: pick('filter_enabled'),
+      direct_delete: pick('direct_delete'),
+      delete_requests_enabled: pick('delete_requests_enabled'),
       banned_words: Array.isArray(body.banned_words)
         ? body.banned_words.map((w) => String(w).trim()).filter(Boolean).slice(0, 400)
         : cur.banned_words,
