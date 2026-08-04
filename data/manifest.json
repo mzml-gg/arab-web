@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "quran-web.html",
+      "title": "Quran-web",
+      "description": "موقع قران كريم مميز ب أصوات قارئين و كل سور القرأن الكريم ",
+      "language": "html",
+      "author": "ziad",
+      "author_avatar": "https://nezukouploads.servegame.net/file/qwjuA.jpg",
+      "author_verified": true,
+      "admin_added": true,
+      "approved_at": "2026-08-04T07:55:07.186Z"
+    },
+    {
       "filename": "remvalai.js",
       "title": "RemvalAi",
       "description": "كود nodejs لإزالة الخلفية من الصور بشكل شفاف، يمكن استخدامه في أوامر بوتات واتساب أو مواقع، أو حسب الشيء الذي تريده :)",
