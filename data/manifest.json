@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "remvalai.js",
+      "title": "RemvalAi",
+      "description": "كود nodejs لإزالة الخلفية من الصور بشكل شفاف، يمكن استخدامه في أوامر بوتات واتساب أو مواقع، أو حسب الشيء الذي تريده :)",
+      "language": "js",
+      "author": "gin",
+      "author_avatar": "https://nezukouploads.servegame.net/file/gWe1S.png",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-04T07:30:09.515Z"
+    },
+    {
       "filename": "them-html.html",
       "title": "them-html",
       "description": "ثيم برمجي شكل حلو لغه html ",
