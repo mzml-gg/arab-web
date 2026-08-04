@@ -1,17 +1,6 @@
 {
   "codes": [
     {
-      "filename": "python-goku.py",
-      "title": "python-Goku",
-      "description": "اداه تطبع في الترمنل ب لغه ASCII غوكو",
-      "language": "py",
-      "author": "ziad",
-      "author_avatar": "https://nezukouploads.servegame.net/file/qwjuA.jpg",
-      "author_verified": true,
-      "admin_added": true,
-      "approved_at": "2026-08-04T00:17:14.121Z"
-    },
-    {
       "filename": "them-html.html",
       "title": "them-html",
       "description": "ثيم برمجي شكل حلو لغه html ",
