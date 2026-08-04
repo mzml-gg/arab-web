@@ -450,9 +450,9 @@
       "phone": "+966553357953",
       "password_hash": "$2a$10$Fz6i3sb8po6dX6bDYqALxezuMWG5UfbJFXrzyNno3CLR6p3BYSQ0S",
       "display_name": "gin",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "206497793aec85c1fae9f2d29e9435e85a440016699d0d76",
+      "verification_token": null,
       "created_at": "2026-08-04T04:11:05.004Z"
     }
   ]
