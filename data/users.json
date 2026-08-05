@@ -487,9 +487,9 @@
       "phone": "+201157009451",
       "password_hash": "$2a$10$JWYfN4djpwfYVmuLpkmFQelbjhLH2hW7igN9in4h.9PVWfpYNk9wS",
       "display_name": "NM1",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "7052c296613ebfa2a66aa2fa4495a5e97cb84dbe4bdeecc3",
+      "verification_token": null,
       "created_at": "2026-08-05T07:35:53.956Z"
     },
     {
