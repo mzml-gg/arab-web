@@ -1,9 +1,12 @@
 const { bcrypt, EMAIL_RE, USERNAME_RE, loadUsers, saveUsers, readBody, randomToken, ADMIN_EMAIL } = require('../_auth');
 const { sendVerification } = require('../_mail');
+const { getSettings } = require('../_settings');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   try {
+    const _s = await getSettings();
+    if (_s.signup_enabled === false) return res.status(403).json({ error: 'التسجيل الجديد متوقف مؤقتاً' });
     let { username, email, password, phone } = await readBody(req);
     username = (username || '').trim();
     email = (email || '').trim();

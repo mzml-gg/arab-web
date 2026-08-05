@@ -25,6 +25,10 @@ const routes = {
   'public-settings': require('./_h/public-settings'),
   'toggle-verify': require('./_h/toggle-verify'),
   raw: require('./_h/raw'),
+  broadcast: require('./_h/broadcast'),
+  stats: require('./_h/stats'),
+  google: require('./_h/google').start,
+  'google-callback': require('./_h/google').callback,
 };
 
 module.exports = async (req, res) => {
