@@ -480,6 +480,17 @@
       "created_at": "2026-08-04T15:32:07.522Z",
       "reset_token": "fa45cba8dcc3bc0fa3deb404cba8b8d6921360639eda46af19850e484fe596ea",
       "reset_expires": 1785861183119
+    },
+    {
+      "username": "NM1",
+      "email": "ahmedeopop@gmail.com",
+      "phone": "+201157009451",
+      "password_hash": "$2a$10$JWYfN4djpwfYVmuLpkmFQelbjhLH2hW7igN9in4h.9PVWfpYNk9wS",
+      "display_name": "NM1",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "7052c296613ebfa2a66aa2fa4495a5e97cb84dbe4bdeecc3",
+      "created_at": "2026-08-05T07:35:53.956Z"
     }
   ]
 }
