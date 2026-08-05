@@ -498,9 +498,9 @@
       "phone": "+201157009451",
       "password_hash": "$2a$10$aPYSlV8TcUQd788i8zLaB.j5/ipWIvxnecyFSVqq0ZSzZZJJM9Dfi",
       "display_name": "pixeldev",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "3e4a5ab71961a224308bae70988ca23cb85fd9f2f9a19568",
+      "verification_token": null,
       "created_at": "2026-08-05T07:36:33.209Z"
     }
   ]
