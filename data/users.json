@@ -503,7 +503,18 @@
       "verification_token": null,
       "created_at": "2026-08-05T07:36:33.209Z",
       "avatar_url": "https://nezukouploads.servegame.net/file/K6hDk.jpg",
-      "profile_updated_at": "2026-08-05T07:41:36.147Z"
+      "profile_updated_at": "2026-08-05T07:46:07.118Z",
+      "banner_url": null,
+      "bio": "⟬ 𝗣𝗜𝗫𝗘𝗟 ⌬ 𝗗𝗘𝗩 ⟭ https://whatsapp.com/channel/0029VbDDbMwDeON7YXdZrL20\nقناتي الرسمية 💌",
+      "location": "مصر",
+      "website": "https://demonnix.com",
+      "links": [
+        {
+          "label": "موقعي الشخصي",
+          "url": "https://demonnix.com",
+          "icon": "http"
+        }
+      ]
     }
   ]
 }
