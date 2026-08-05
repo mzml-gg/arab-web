@@ -3,7 +3,43 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>كود · ARAB code</title>
+<title>كود · ARAB code | منصة الأكواد البرمجية العربية المفتوحة</title>
+
+<!-- إعدادات الـ SEO الأساسية -->
+<meta name="description" content="منصة ARAB CODE (عرب كود) هي المنصة العربية الأولى لمشاركة وتصفح الأكواد البرمجية والمشاريع مفتوحة المصدر. اكتشف أكواد جاهزة في HTML, CSS, JavaScript, Python وغيرها.">
+<meta name="keywords" content="ARAB CODE, عرب كود, اكواد برمجية, منصة برمجية, أكواد مفتوحة المصدر, برمجة, تطوير المواقع, JavaScript, HTML, CSS, Python, مشاركة الكود, مكتبة البرمجة العربية">
+<meta name="author" content="ARAB CODE">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / Facebook / Telegram -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="كود · ARAB code | منصة الأكواد البرمجية المفتوحة">
+<meta property="og:description" content="منصة ARAB CODE لمشاركة واستعراض الأكواد البرمجية مفتوحة المصدر. انضم للمجتمع العربي للمبرمجين وشارك مشاريعك الآن.">
+<meta property="og:image" content="https://files.catbox.moe/i5gf6h.jpg">
+<meta property="og:site_name" content="ARAB CODE">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="كود · ARAB code | منصة الأكواد البرمجية المفتوحة">
+<meta name="twitter:description" content="منصة ARAB CODE لمشاركة واستعراض الأكواد البرمجية مفتوحة المصدر والحلول البرمجية.">
+<meta name="twitter:image" content="https://files.catbox.moe/i5gf6h.jpg">
+
+<!-- Favicon الأيقونة في المتصفح -->
+<link rel="icon" type="image/jpeg" href="https://files.catbox.moe/i5gf6h.jpg">
+<link rel="apple-touch-icon" href="https://files.catbox.moe/i5gf6h.jpg">
+
+<!-- Schema.org JSON-LD للتعريف بالمنصة لمجركات البحث -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "ARAB CODE",
+  "alternateName": "عرب كود",
+  "url": "https://arab-web.vercel.app/",
+  "description": "منصة عربية شاملة لمشاركة الأكواد البرمجية والمشاريع المفتوحة المصدر"
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -12,6 +48,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
 <style>
+  /* تنسيق الصورة البديلة للكرة الصفراء */
+  .brand-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 10px rgba(240, 180, 0, 0.4);
+  }
+
   .container {
     max-width: 750px;
     margin: 0 auto;
@@ -110,7 +155,7 @@
 </head>
 <body>
 <nav class="nav">
-  <a href="/" class="brand"><span class="dot"></span> ARAB code</a>
+  <a href="/" class="brand"><img src="https://files.catbox.moe/i5gf6h.jpg" alt="ARAB CODE Logo" class="brand-logo"> ARAB code</a>
   <div class="nav-actions" id="nav-actions"></div>
 </nav>
 
@@ -144,6 +189,12 @@
       || codes.find(c => c.filename.startsWith(filename + '.'));
     if (found) { meta = found; filename = found.filename; }
   } catch {}
+  
+  // تحديث عنوان الصفحة ديناميكياً لخدمة الـ SEO
+  if (meta.title) {
+    document.title = `${meta.title} · ARAB code | كود برمجي`;
+  }
+
   const rawUrl = `/api/raw?file=${encodeURIComponent(filename)}`;
   const ghRaw = `https://raw.githubusercontent.com/mzml-gg/arab-web/main/codes/${encodeURIComponent(filename)}`;
   window.__filename = filename;
@@ -296,4 +347,3 @@ async function directDelete(filename) {
 </script>
 </body>
 </html>
- 
