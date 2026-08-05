@@ -120,4 +120,54 @@ async function sendRejection({ to, username, title, reason, auto }) {
   });
 }
 
-module.exports = { sendVerification, sendMail, sendRejection, rejectionHtml, shell };
+function welcomeCredentialsHtml({ display, email, username, password, loginUrl }) {
+  const row = (label, value) =>
+    `<tr>
+      <td style="padding:9px 12px;color:#a08454;font-size:13px;white-space:nowrap;">${escapeHtml(label)}</td>
+      <td style="padding:9px 12px;color:#f2c675;font-size:14px;font-weight:bold;direction:ltr;text-align:left;word-break:break-all;">${escapeHtml(value)}</td>
+    </tr>`;
+  return shell(`
+    <h2 style="margin:0 0 10px;color:#f2c675;font-size:20px;">مرحباً بك في منصة ARAB CODE يا ${escapeHtml(display)} 👋</h2>
+    <p style="margin:0 0 16px;line-height:1.9;color:#d8c9a3;font-size:15px;">
+      تم إنشاء حسابك عبر <b style="color:#f2c675;">تسجيل الدخول بجوجل</b>، وأنشأنا لك كلمة سر تلقائية حتى تقدر تدخل بالبريد وكلمة السر مباشرة أيضاً.
+    </p>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#150f04;border:1px solid #3a2a10;border-radius:12px;overflow:hidden;">
+      ${row('ايميل حسابك :', email)}
+      ${row('يوزرك :', username)}
+      ${row('كلمه السر :', password)}
+    </table>
+    <div style="text-align:center;margin:22px 0 6px;">
+      <a href="${loginUrl}" style="display:inline-block;padding:13px 36px;background:linear-gradient(135deg,#e6a44a,#c67a1e);color:#0a0a0a;text-decoration:none;font-weight:bold;border-radius:10px;font-size:15px;">الدخول إلى المنصة</a>
+    </div>
+    <p style="margin:14px 0 0;color:#a08454;font-size:13px;line-height:1.8;">
+      يمكنك تغيير كلمة السر في أي وقت من صفحة "نسيت كلمة السر" أو من إعدادات حسابك، ويمكنك أيضاً الدخول تلقائياً بزر جوجل.
+    </p>
+    <p style="margin:14px 0 0;color:#6a5a3a;font-size:12px;">احتفظ بهذه الرسالة في مكان آمن ولا تشاركها مع أحد.</p>
+  `);
+}
+
+async function sendWelcomeCredentials({ to, display, username, password, loginUrl }) {
+  return sendMail({
+    to,
+    subject: '🎉 مرحباً بك في منصة ARAB CODE — بيانات حسابك',
+    html: welcomeCredentialsHtml({ display, email: to, username, password, loginUrl }),
+  });
+}
+
+// Admin broadcast: plain text (with line breaks) rendered in the branded shell.
+function broadcastHtml({ heading, body, username }) {
+  const safeBody = escapeHtml(body).replace(/\r?\n/g, '<br>');
+  return shell(`
+    ${heading ? `<h2 style="margin:0 0 12px;color:#f2c675;font-size:20px;">${escapeHtml(heading)}</h2>` : ''}
+    ${username ? `<p style="margin:0 0 10px;color:#a08454;font-size:13px;">مرحباً ${escapeHtml(username)} 👋</p>` : ''}
+    <div style="color:#d8c9a3;font-size:15px;line-height:2;">${safeBody}</div>
+    <p style="margin:22px 0 0;color:#6a5a3a;font-size:12px;">هذه رسالة من إدارة منصة ARAB code.</p>
+  `);
+}
+
+async function sendBroadcast({ to, subject, heading, body, username }) {
+  return sendMail({ to, subject, html: broadcastHtml({ heading, body, username }) });
+}
+
+module.exports = { sendVerification, sendMail, sendRejection, rejectionHtml, shell, sendWelcomeCredentials, welcomeCredentialsHtml, sendBroadcast, broadcastHtml };
+

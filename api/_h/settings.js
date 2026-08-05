@@ -22,6 +22,8 @@ module.exports = async (req, res) => {
       filter_enabled: pick('filter_enabled'),
       direct_delete: pick('direct_delete'),
       delete_requests_enabled: pick('delete_requests_enabled'),
+      google_login_enabled: pick('google_login_enabled'),
+      signup_enabled: pick('signup_enabled'),
       banned_words: Array.isArray(body.banned_words)
         ? body.banned_words.map((w) => String(w).trim()).filter(Boolean).slice(0, 400)
         : cur.banned_words,
