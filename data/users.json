@@ -549,9 +549,9 @@
       "phone": "",
       "password_hash": "$2a$10$ygIC3umyn1uTe3KYUJlmH.T.fDxFDShDS4TnLZT8YRwG5PZ7UcfBq",
       "display_name": "nigga3",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "d7230d97e3912c7d313ed7d8a9233abcd21f2e471ed81644",
+      "verification_token": null,
       "created_at": "2026-08-06T13:09:23.323Z"
     }
   ]
