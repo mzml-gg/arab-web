@@ -520,6 +520,17 @@
           "icon": "🔗"
         }
       ]
+    },
+    {
+      "username": "nigga",
+      "email": "nour-dev@nour-dev.xyz",
+      "phone": "",
+      "password_hash": "$2a$10$BIpIRGxNDp3gBYvI0VsxkOc4uO3FZzMkMQcIaMgRVwfNdVwAkYo0y",
+      "display_name": "nigga",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "8bb2d2c21874ede3e68d13aa8b7c3b2f86abeae63d5d9210",
+      "created_at": "2026-08-06T13:07:32.091Z"
     }
   ]
 }
