@@ -27,6 +27,10 @@ const routes = {
   raw: require('./_h/raw'),
   broadcast: require('./_h/broadcast'),
   stats: require('./_h/stats'),
+  'change-email': require('./_h/account').changeEmail,
+  'confirm-email': require('./_h/account').confirmEmail,
+  'change-username': require('./_h/account').changeUsername,
+  'delete-account': require('./_h/account').deleteAccount,
   google: require('./_h/google').start,
   'google-callback': require('./_h/google').callback,
 };
