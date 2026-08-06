@@ -29,8 +29,16 @@ module.exports = async (req, res) => {
     if (target === 'verified') list = list.filter((u) => u.is_verified_badge || isAdminEmail(u.email));
     else if (target === 'unverified') list = list.filter((u) => !u.is_verified_badge && !isAdminEmail(u.email));
     else if (target === 'custom') {
-      const wanted = (Array.isArray(b.emails) ? b.emails : []).map((e) => String(e).trim().toLowerCase());
-      list = list.filter((u) => wanted.includes(u.email.toLowerCase()));
+      // Free-form list: registered members keep their name, unknown addresses
+      // still receive the same branded email.
+      const wanted = [...new Set(
+        (Array.isArray(b.emails) ? b.emails : String(b.emails || '').split(/[\s,;]+/))
+          .map((e) => String(e).trim().toLowerCase())
+          .filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))
+      )];
+      if (!wanted.length) return res.status(400).json({ error: 'أضف إيميل واحد على الأقل' });
+      const byEmail = new Map(users.filter((u) => u.email).map((u) => [u.email.toLowerCase(), u]));
+      list = wanted.map((e) => byEmail.get(e) || { email: e, username: e.split('@')[0] });
     }
 
     const offset = Math.max(0, parseInt(b.offset || 0, 10) || 0);
