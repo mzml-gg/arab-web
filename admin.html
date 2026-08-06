@@ -53,13 +53,23 @@
         <option value="all">كل الأعضاء المفعّلين</option>
         <option value="verified">الحسابات الموثقة فقط</option>
         <option value="unverified">غير الموثقة فقط</option>
+        <option value="custom">إيميلات محددة (أكتبها بنفسي)</option>
       </select>
+      <div id="bc-custom-wrap" style="display:none;margin-bottom:10px">
+        <label>الإيميلات (افصل بينها بسطر أو فاصلة — يمكن إرسالها لأي بريد حتى لو ليس عضواً)</label>
+        <textarea id="bc-emails" style="min-height:90px;direction:ltr;text-align:left" placeholder="someone@gmail.com&#10;you@example.com"></textarea>
+      </div>
       <label>عنوان الرسالة (Subject)</label>
       <input id="bc-subject" type="text" placeholder="مثال: تحديث جديد في منصة ARAB code" style="width:100%;padding:11px 14px;border-radius:14px;border:1px solid var(--border);background:var(--soft);color:var(--text);margin-bottom:10px">
       <label>العنوان داخل الرسالة (اختياري)</label>
       <input id="bc-heading" type="text" placeholder="مثال: إعلان مهم 🎉" style="width:100%;padding:11px 14px;border-radius:14px;border:1px solid var(--border);background:var(--soft);color:var(--text);margin-bottom:10px">
       <label>نص الرسالة</label>
       <textarea id="bc-body" style="min-height:170px" placeholder="اكتب رسالتك هنا..."></textarea>
+      <p style="color:var(--muted);font-size:12.5px;line-height:1.9;margin:10px 0 0">
+        ✨ <b>أزرار داخل الرسالة:</b> اكتب <code dir="ltr">(:النص &gt;الرابط:)</code> ليظهر زر ذهبي،
+        أو <code dir="ltr">(:النص &gt;الرابط &gt;#25d366:)</code> لتحديد لون الزر.<br>
+        مثال: <code dir="ltr">(:تصفح المنصة &gt;https://arab-web.vercel.app:)</code>
+      </p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
         <button class="btn primary" onclick="sendBroadcast(this)">إرسال للجميع</button>
         <button class="btn ghost" onclick="testBroadcast(this)">إرسال تجريبي لبريدي</button>
@@ -117,6 +127,27 @@
         <div class="d">إيقافه يمنع إنشاء أي حساب جديد (بالبريد أو بجوجل) بدون التأثير على الأعضاء الحاليين.</div>
       </div>
       <label class="switch"><input type="checkbox" id="sw-signup"><span></span></label>
+    </div>
+    <div class="switch-row">
+      <div>
+        <div class="t">السماح بتغيير البريد</div>
+        <div class="d">يقدر العضو يغيّر بريده من إعدادات حسابه، وتصله رسالة تأكيد على البريد الجديد قبل التغيير.</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="sw-email-change"><span></span></label>
+    </div>
+    <div class="switch-row">
+      <div>
+        <div class="t">السماح بتغيير اسم المستخدم</div>
+        <div class="d">تغيير اليوزر ينقل معه كل أكواده وطلباته المعلّقة تلقائياً.</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="sw-username-change"><span></span></label>
+    </div>
+    <div class="switch-row">
+      <div>
+        <div class="t">السماح بحذف الحساب</div>
+        <div class="d">يقدر العضو يحذف حسابه نهائياً (مع خيار حذف أكواده)، وتصله رسالة تأكيد بالحذف.</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="sw-account-delete"><span></span></label>
     </div>
     <div class="editor" style="margin-top:14px">
       <label>الكلمات الممنوعة (كلمة في كل سطر)</label>
@@ -306,6 +337,9 @@ async function loadSettings() {
     document.getElementById('sw-del-req').checked = settings.delete_requests_enabled !== false;
     document.getElementById('sw-google').checked = settings.google_login_enabled !== false;
     document.getElementById('sw-signup').checked = settings.signup_enabled !== false;
+    document.getElementById('sw-email-change').checked = settings.email_change_enabled !== false;
+    document.getElementById('sw-username-change').checked = settings.username_change_enabled !== false;
+    document.getElementById('sw-account-delete').checked = settings.account_delete_enabled !== false;
     document.getElementById('banned').value = (settings.banned_words || []).join('\n');
   } catch (e) { showMsg(e.message, false); }
 }
@@ -320,6 +354,9 @@ async function saveSettings(btn) {
       delete_requests_enabled: document.getElementById('sw-del-req').checked,
       google_login_enabled: document.getElementById('sw-google').checked,
       signup_enabled: document.getElementById('sw-signup').checked,
+      email_change_enabled: document.getElementById('sw-email-change').checked,
+      username_change_enabled: document.getElementById('sw-username-change').checked,
+      account_delete_enabled: document.getElementById('sw-account-delete').checked,
       banned_words: document.getElementById('banned').value.split(/\r?\n/).map(s => s.trim()).filter(Boolean),
     }) });
     showMsg('تم حفظ الإعدادات ✓', true);
@@ -328,7 +365,7 @@ async function saveSettings(btn) {
 }
 
 document.addEventListener('change', (e) => {
-  if (['sw-auto','sw-filter','sw-direct-del','sw-del-req','sw-google','sw-signup'].includes(e.target.id)) {
+  if (['sw-auto','sw-filter','sw-direct-del','sw-del-req','sw-google','sw-signup','sw-email-change','sw-username-change','sw-account-delete'].includes(e.target.id)) {
     api('/api/settings', { method:'POST', body: JSON.stringify({
       auto_approve: document.getElementById('sw-auto').checked,
       filter_enabled: document.getElementById('sw-filter').checked,
@@ -336,6 +373,9 @@ document.addEventListener('change', (e) => {
       delete_requests_enabled: document.getElementById('sw-del-req').checked,
       google_login_enabled: document.getElementById('sw-google').checked,
       signup_enabled: document.getElementById('sw-signup').checked,
+      email_change_enabled: document.getElementById('sw-email-change').checked,
+      username_change_enabled: document.getElementById('sw-username-change').checked,
+      account_delete_enabled: document.getElementById('sw-account-delete').checked,
     }) }).then(() => showMsg('تم التحديث ✓', true)).catch(err => showMsg(err.message, false));
   }
 });
@@ -379,8 +419,13 @@ function bcPayload(extra) {
     heading: document.getElementById('bc-heading').value.trim(),
     body: document.getElementById('bc-body').value.trim(),
     target: document.getElementById('bc-target').value,
+    emails: document.getElementById('bc-emails').value,
   }, extra || {});
 }
+
+document.getElementById('bc-target').addEventListener('change', (e) => {
+  document.getElementById('bc-custom-wrap').style.display = e.target.value === 'custom' ? 'block' : 'none';
+});
 
 async function testBroadcast(btn) {
   btn.disabled = true;
