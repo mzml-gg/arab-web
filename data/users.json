@@ -553,6 +553,17 @@
       "is_verified_badge": false,
       "verification_token": null,
       "created_at": "2026-08-06T13:09:23.323Z"
+    },
+    {
+      "username": "dante",
+      "email": "ma3rftaxnsmi9@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$C6HPoXiHnExNuivnTo8dEuWdE4ypgUJ0qNMWeyurqz4eZ3YdeH45e",
+      "display_name": "dante",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "f8ef93ca36ee31876f4b2e9017913b6771afe09dcadaa21b",
+      "created_at": "2026-08-06T17:22:54.717Z"
     }
   ]
 }
