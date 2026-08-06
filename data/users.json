@@ -531,6 +531,17 @@
       "is_verified_badge": false,
       "verification_token": "8bb2d2c21874ede3e68d13aa8b7c3b2f86abeae63d5d9210",
       "created_at": "2026-08-06T13:07:32.091Z"
+    },
+    {
+      "username": "nigga2",
+      "email": "nourdin.dev133@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$S0GnBZQHfdMA50qvw4Vj4.hBbAmx.qH/E1GkmnV5BB0aZsgr8rRKS",
+      "display_name": "nigga2",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "1e69b52e2dad0e2646ed90d94ad1293ca2a86bc5df37ec26",
+      "created_at": "2026-08-06T13:08:12.898Z"
     }
   ]
 }
