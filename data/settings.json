@@ -3,8 +3,11 @@
   "filter_enabled": true,
   "direct_delete": true,
   "delete_requests_enabled": true,
-  "google_login_enabled": false,
+  "google_login_enabled": true,
   "signup_enabled": true,
+  "email_change_enabled": true,
+  "username_change_enabled": true,
+  "account_delete_enabled": true,
   "banned_words": [
     "porn",
     "porno",
