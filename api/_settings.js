@@ -23,6 +23,10 @@ const DEFAULTS = {
   google_login_enabled: true,
   // Master switch for new account creation (email + google).
   signup_enabled: true,
+  // Account self-service features.
+  email_change_enabled: true,
+  username_change_enabled: true,
+  account_delete_enabled: true,
   banned_words: DEFAULT_BANNED,
 };
 
@@ -37,6 +41,9 @@ async function getSettings() {
     delete_requests_enabled: bool(data.delete_requests_enabled, true),
     google_login_enabled: bool(data.google_login_enabled, true),
     signup_enabled: bool(data.signup_enabled, true),
+    email_change_enabled: bool(data.email_change_enabled, true),
+    username_change_enabled: bool(data.username_change_enabled, true),
+    account_delete_enabled: bool(data.account_delete_enabled, true),
     banned_words: Array.isArray(data.banned_words) && data.banned_words.length
       ? data.banned_words
       : DEFAULT_BANNED,
