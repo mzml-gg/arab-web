@@ -154,9 +154,26 @@ async function sendWelcomeCredentials({ to, display, username, password, loginUr
   });
 }
 
+
+// Rich body: escapes everything, then turns (:النص >الرابط:) or
+// (:النص >الرابط >#25d366:) into a styled button, and newlines into <br>.
+function renderRichBody(body) {
+  let html = escapeHtml(String(body || ''));
+  html = html.replace(/\(:\s*([^>|]+?)\s*&gt;\s*([^>|]+?)\s*(?:&gt;\s*([^:]+?)\s*)?:\)/g, (m, label, url, color) => {
+    const href = String(url).trim();
+    if (!/^(https?:\/\/|mailto:|tel:)/i.test(href)) return m;
+    const c = (color || '').trim();
+    const safe = /^#[0-9a-fA-F]{3,8}$/.test(c) ? c : '';
+    const bg = safe ? safe : 'linear-gradient(135deg,#e6a44a,#c67a1e)';
+    const fg = safe ? '#ffffff' : '#0a0a0a';
+    return `<a href="${href}" style="display:inline-block;margin:6px 4px;padding:12px 26px;background:${bg};color:${fg};text-decoration:none;font-weight:bold;border-radius:10px;font-size:14px;">${label}</a>`;
+  });
+  return html.replace(/\r?\n/g, '<br>');
+}
+
 // Admin broadcast: plain text (with line breaks) rendered in the branded shell.
 function broadcastHtml({ heading, body, username }) {
-  const safeBody = escapeHtml(body).replace(/\r?\n/g, '<br>');
+  const safeBody = renderRichBody(body);
   return shell(`
     ${heading ? `<h2 style="margin:0 0 12px;color:#f2c675;font-size:20px;">${escapeHtml(heading)}</h2>` : ''}
     ${username ? `<p style="margin:0 0 10px;color:#a08454;font-size:13px;">مرحباً ${escapeHtml(username)} 👋</p>` : ''}
@@ -169,5 +186,37 @@ async function sendBroadcast({ to, subject, heading, body, username }) {
   return sendMail({ to, subject, html: broadcastHtml({ heading, body, username }) });
 }
 
-module.exports = { sendVerification, sendMail, sendRejection, rejectionHtml, shell, sendWelcomeCredentials, welcomeCredentialsHtml, sendBroadcast, broadcastHtml };
+
+function changeEmailHtml({ username, confirmUrl, newEmail }) {
+  return shell(`
+    <h2 style="margin:0 0 12px;color:#f2c675;font-size:20px;">تأكيد بريدك الجديد ✉️</h2>
+    <p style="margin:0 0 16px;line-height:1.9;color:#d8c9a3;font-size:15px;">
+      مرحباً <b style="color:#f2c675;">${escapeHtml(username)}</b>، طلبت تغيير بريد حسابك إلى
+      <b style="color:#f2c675;direction:ltr;display:inline-block;">${escapeHtml(newEmail)}</b>.
+      اضغط الزر لتأكيد التغيير:
+    </p>
+    <div style="text-align:center;margin:22px 0;">
+      <a href="${confirmUrl}" style="display:inline-block;padding:14px 40px;background:linear-gradient(135deg,#e6a44a,#c67a1e);color:#0a0a0a;text-decoration:none;font-weight:bold;border-radius:10px;font-size:15px;">تأكيد البريد الجديد</a>
+    </div>
+    <p style="margin:0;color:#6a5a3a;font-size:12px;">إذا لم تطلب هذا التغيير تجاهل الرسالة، ولن يتغيّر شيء.</p>
+  `);
+}
+async function sendChangeEmail({ to, username, confirmUrl }) {
+  return sendMail({ to, subject: '✉️ تأكيد بريدك الجديد · ARAB code', html: changeEmailHtml({ username, confirmUrl, newEmail: to }) });
+}
+
+async function sendAccountNotice({ to, username, title, text }) {
+  return sendMail({
+    to,
+    subject: title + ' · ARAB code',
+    html: shell(`
+      <h2 style="margin:0 0 12px;color:#f2c675;font-size:20px;">${escapeHtml(title)}</h2>
+      <p style="margin:0 0 10px;color:#a08454;font-size:13px;">مرحباً ${escapeHtml(username)} 👋</p>
+      <div style="color:#d8c9a3;font-size:15px;line-height:2;">${escapeHtml(text).replace(/\r?\n/g, '<br>')}</div>
+      ${supportButtons()}
+    `),
+  });
+}
+
+module.exports = { sendVerification, sendMail, sendRejection, rejectionHtml, shell, sendWelcomeCredentials, welcomeCredentialsHtml, sendBroadcast, broadcastHtml, renderRichBody, sendChangeEmail, sendAccountNotice };
 
