@@ -566,6 +566,18 @@
       "created_at": "2026-08-06T17:22:54.717Z",
       "reset_token": "0189116c260a99a9c2dd2f71c4543724650629532cf78edc7c6f9037cef50fa5",
       "reset_expires": 1786040723837
+    },
+    {
+      "username": "montetopdev",
+      "email": "montetopdev@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$EJZSTJl0Ac/.Ks/8uhLts.FFuhHQSLUV94gaCU4Y/q2QCBDPN5pMK",
+      "display_name": "Монти Аль, Фатих",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocJLDyesYL3dYxh7YNyzYghMXKlgxYGTav4Qtd6lyhN7JZ5Jxg=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-07T16:11:58.800Z"
     }
   ]
 }
