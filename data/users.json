@@ -578,6 +578,18 @@
       "is_verified_badge": false,
       "provider": "google",
       "created_at": "2026-08-07T16:11:58.800Z"
+    },
+    {
+      "username": "ayoubechahidiyt0",
+      "email": "ayoubechahidi.yt0@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$pEeh84aug96NTZsmTUIqIOCj7aUw0RV..SN0gtbL2D2Xf1IWJsr0a",
+      "display_name": "Ayoube Chahidi",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocI5eK-8bCyX7u34nNIW1dObI75K38dEIkytI0MdbOklgzQelw=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-07T18:09:27.663Z"
     }
   ]
 }
