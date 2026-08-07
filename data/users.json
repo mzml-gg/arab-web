@@ -251,10 +251,11 @@
       "phone": "967736551354",
       "password_hash": "$2a$10$xqTJY8APf/Pneut2t9IeteHaP9puFfRmXPx0ewv70X.tGzz4Qf7Ju",
       "display_name": "Appod1234",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "40885e183071b8661e80c990e475fb2f564c85e5d242c0de",
-      "created_at": "2026-07-29T12:08:11.095Z"
+      "verification_token": null,
+      "created_at": "2026-07-29T12:08:11.095Z",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c"
     },
     {
       "username": "hadihaker",
