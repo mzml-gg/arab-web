@@ -598,7 +598,7 @@
       "phone": "",
       "password_hash": "$2a$10$C1BdFJ5tQFgbrhPiQcOTM.9cEzjGc.Mt9.DeWtH3.hWESZ9u8m.E2",
       "display_name": "SONG MD",
-      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocJf338d3wARgf5BUctEhAP6Qyz-Q31whw2KUmoJBlwzhwKq4g=s96-c",
+      "avatar_url": null,
       "verified": true,
       "is_verified_badge": false,
       "provider": "google",
@@ -608,7 +608,7 @@
       "location": "Owner",
       "website": "",
       "links": [],
-      "profile_updated_at": "2026-08-08T02:14:45.356Z"
+      "profile_updated_at": "2026-08-08T02:15:02.815Z"
     }
   ]
 }
