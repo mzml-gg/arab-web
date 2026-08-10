@@ -122,10 +122,11 @@
       "phone": "965047010",
       "password_hash": "$2a$10$kJ0FrsjIR8byrTuUdWnjLuTZ94Tozxla5K/0rwul1zVtsiKWTppYO",
       "display_name": "hkr_nuuf26",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "e94239c37367356658c29ff1f4a7a0559e040d2e7e91304a",
-      "created_at": "2026-07-28T02:19:50.537Z"
+      "verification_token": null,
+      "created_at": "2026-07-28T02:19:50.537Z",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocLkJK0Gg-Ct9Ux3kge7zAzKyhn8DlgXX_2hVwETEvgdzFja0A=s96-c"
     },
     {
       "username": "Haider",
