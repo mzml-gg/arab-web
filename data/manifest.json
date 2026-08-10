@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-16.js",
+      "title": "اعلان",
+      "description": "اعلان ترحيبي علي واتساب | الميزة يرسل اعلان من ارقام الاعضاء في الجروب",
+      "language": "js",
+      "author": "pixeldev",
+      "author_avatar": "https://nezukouploads.servegame.net/file/K6hDk.jpg",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-10T15:46:22.685Z"
+    },
+    {
       "filename": "pixeluipanel.js",
       "title": "pixelUIpanel",
       "description": "رسالة rich جديدة غير client حسب ال object بتاعك",
