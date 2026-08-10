@@ -499,7 +499,7 @@
       "username": "pixeldev",
       "email": "ahmedeopop2@gmail.com",
       "phone": "+201157009451",
-      "password_hash": "$2a$10$aPYSlV8TcUQd788i8zLaB.j5/ipWIvxnecyFSVqq0ZSzZZJJM9Dfi",
+      "password_hash": "$2a$10$pGXBWnVcYsWVoAHmCj0OZ.TMN..BH/aBDyV9h1A4.bKxOhHd0o0gy",
       "display_name": "pixeldev",
       "verified": true,
       "is_verified_badge": false,
@@ -523,8 +523,8 @@
           "icon": "🔗"
         }
       ],
-      "reset_token": "967c5dd2105610191e22853aca02a855c879cfa64fc4db63a44362fb57c7dc2f",
-      "reset_expires": 1786376861307
+      "reset_token": null,
+      "reset_expires": null
     },
     {
       "username": "nigga",
