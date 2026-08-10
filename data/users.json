@@ -491,7 +491,9 @@
       "verified": true,
       "is_verified_badge": false,
       "verification_token": null,
-      "created_at": "2026-08-05T07:35:53.956Z"
+      "created_at": "2026-08-05T07:35:53.956Z",
+      "reset_token": "3bfeeedc4c73a9d4042ace984b51f67b4b494fbf76d57ce17c8beff7d0057a01",
+      "reset_expires": 1786376821595
     },
     {
       "username": "pixeldev",
