@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-20.js",
+      "title": "كود ايميل ",
+      "description": "كود ل بوت يعطيك ايميل وهمي تستخدمه ",
+      "language": "js",
+      "author": "dnanbalwsh073",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIfJZmv8yybnu9Pww_MFg13dHjhZbZrmafWiNoN7w_4wh7YMKE=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-11T23:47:50.577Z"
+    },
+    {
       "filename": "code-19.js",
       "title": "كود حل مشكلة \"تسجيل الدخول غير متوفر\" ",
       "description": "كود ل بوت تليجرام بواسطه داكس المظ",
