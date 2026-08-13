@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-24.js",
+      "title": "امر \".عبود\" يجمع عدة دوال قد تحتاجها ",
+      "description": " يرسل رسالة تفاعلية غنية تحتوي على نصوص، صورة، فيديو، فقاعات اقتراحية، وجدول أزرار تفاعلية، مع ثلاث أزرار خارجية ",
+      "language": "js",
+      "author": "aboud",
+      "author_avatar": "https://nezukouploads.servegame.net/file/zBpij.jpg",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-13T14:14:32.424Z"
+    },
+    {
       "filename": "code-23.js",
       "title": "تنزيل من تيك",
       "description": "ينزل بسرعة/بدون علامة/ب بروتكول meta ai ،  اجحدوها",
