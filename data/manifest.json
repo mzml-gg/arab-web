@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-22.js",
+      "title": "ستوري للقروب",
+      "description": "الحلو انه مب لازم تكون ادمن ، شرط يكون الشات مفتوح",
+      "language": "js",
+      "author": "aboud",
+      "author_avatar": "https://nezukouploads.servegame.net/file/zBpij.jpg",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-13T13:35:59.995Z"
+    },
+    {
       "filename": "code-21.js",
       "title": "رفع ملفات",
       "description": "يرفع الصور/صوتيات/مقاطع لـ Uguu ويجيب الرابط",
