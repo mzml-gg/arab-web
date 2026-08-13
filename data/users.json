@@ -728,6 +728,18 @@
       "is_verified_badge": false,
       "provider": "google",
       "created_at": "2026-08-12T05:59:25.099Z"
+    },
+    {
+      "username": "yousefbgh240",
+      "email": "yousefbgh240@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$Seled4swUbnA/Wcq83hPNeLtNGW93faW3.iCki0mEjzH.n2c2.e02",
+      "display_name": "Yousef Bot",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocI7t3oCYv2uF3RPMPVoyT9sroM3PMKbmuWfazLfIPNYPN01nY4=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-13T04:00:36.789Z"
     }
   ]
 }
