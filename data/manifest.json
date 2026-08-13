@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-25.js",
+      "title": "تصدير",
+      "description": "نقل اي ملف لمجلدات البوت على السرفر عبر الواتساب",
+      "language": "js",
+      "author": "Appod1234",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-13T18:01:45.887Z"
+    },
+    {
       "filename": "code-24.js",
       "title": "امر \".عبود\" يجمع عدة دوال قد تحتاجها ",
       "description": " يرسل رسالة تفاعلية غنية تحتوي على نصوص، صورة، فيديو، فقاعات اقتراحية، وجدول أزرار تفاعلية، مع ثلاث أزرار خارجية ",
