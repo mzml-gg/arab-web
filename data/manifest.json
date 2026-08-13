@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-26.js",
+      "title": "تصدير",
+      "description": "يقوم بتصدير اي ملف من الواتساب  الى اي مجلد من مجلدات البوت",
+      "language": "js",
+      "author": "Appod1234",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-13T18:15:33.776Z"
+    },
+    {
       "filename": "code-25.js",
       "title": "تصدير",
       "description": "يقوم بتصدير اي ملف الى اي مجلد من مجلدات البوت",
