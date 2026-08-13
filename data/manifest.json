@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-21.js",
+      "title": "رفع ملفات",
+      "description": "يرفع الصور/صوتيات/مقاطع لـ Uguu ويجيب الرابط",
+      "language": "js",
+      "author": "aboud",
+      "author_avatar": "https://nezukouploads.servegame.net/file/zBpij.jpg",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-13T13:32:22.670Z"
+    },
+    {
       "filename": "code-20.js",
       "title": "كود ايميل ",
       "description": "كود ل بوت يعطيك ايميل وهمي تستخدمه ",
