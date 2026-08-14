@@ -765,6 +765,18 @@
       "created_at": "2026-08-14T19:22:59.932Z",
       "avatar_url": "https://nezukouploads.servegame.net/file/4UjSM.jpg",
       "profile_updated_at": "2026-08-14T19:31:35.223Z"
+    },
+    {
+      "username": "zozokzdids",
+      "email": "zozokzdids@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$9Q.gkjc4Sr6LAfPLZ5EKlOfi8Acb51m4p34.iJmLDsbkK9AjlHbrS",
+      "display_name": "Zdids Zozok",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocIF8pM40j_o6xIeB-FgB9TwlI3aZ-lYW6hD932JlPo-1SHn4A=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-14T23:25:07.982Z"
     }
   ]
 }
