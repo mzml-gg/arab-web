@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "azura-manga.js",
+      "title": " Azura-Manga",
+      "description": "بحث و تحميل المانهوا بصيغه pdf من ازورا مانجا ",
+      "language": "js",
+      "author": "Monte",
+      "author_avatar": "https://nezukouploads.servegame.net/file/9Fw91.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-14T18:26:56.913Z"
+    },
+    {
       "filename": "code-25.js",
       "title": "اضافة وازالة مطور ",
       "description": "تعديل كود اضاقة مطور لبوت 2Byoura فقط",
