@@ -777,6 +777,18 @@
       "is_verified_badge": false,
       "provider": "google",
       "created_at": "2026-08-14T23:25:07.982Z"
+    },
+    {
+      "username": "novalieusnovalie",
+      "email": "novalieusnovalieus@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$uYT7Y9S1/owdDPaVOb5Vs.fxPrrxuMbCOdA5tfa5dQclcnIfJXVW.",
+      "display_name": "NOVALIEUS17 NOVALIEUS17",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocLbRvqjiauh_XMuP6ixwHRXffHeA2Jzs6wiwE498_otlAYSvg=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-15T11:47:16.109Z"
     }
   ]
 }
