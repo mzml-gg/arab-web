@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-26.js",
+      "title": "نشيد",
+      "description": "يجلب نشيد عشوائي من يوتيوب ",
+      "language": "js",
+      "author": "gjllljgkpmlkvvho",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocJ10LH3Pu96QD5ANPDkSLT9aCH2kyIuTBy31HZ5xg5TyCLNmA=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-16T21:54:20.201Z"
+    },
+    {
       "filename": "azura-manga.js",
       "title": " Azura-Manga",
       "description": "بحث و تحميل المانهوا بصيغه pdf من ازورا مانجا ",
