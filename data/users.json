@@ -789,6 +789,17 @@
       "is_verified_badge": false,
       "provider": "google",
       "created_at": "2026-08-15T11:47:16.109Z"
+    },
+    {
+      "username": "MAXCH",
+      "email": "maxch430@gmail.com",
+      "phone": "+201031352362",
+      "password_hash": "$2a$10$Q0RaQSmZL3jUQaeFiEEQoubtY3OvW3Q2p3nW68E.QPu922xVsatny",
+      "display_name": "MAXCH",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "e9995fdec839c4f147b2bb18ea077b5a5903e7386d7eb75f",
+      "created_at": "2026-08-16T05:51:17.990Z"
     }
   ]
 }
