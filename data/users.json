@@ -796,10 +796,11 @@
       "phone": "+201031352362",
       "password_hash": "$2a$10$Q0RaQSmZL3jUQaeFiEEQoubtY3OvW3Q2p3nW68E.QPu922xVsatny",
       "display_name": "MAXCH",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "e9995fdec839c4f147b2bb18ea077b5a5903e7386d7eb75f",
-      "created_at": "2026-08-16T05:51:17.990Z"
+      "verification_token": null,
+      "created_at": "2026-08-16T05:51:17.990Z",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocKAnVgXNmb7gnY5X2zHuOn2BwK9wS0jQfAAUtabVPCh2YaFBg=s96-c"
     }
   ]
 }
