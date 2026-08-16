@@ -802,6 +802,18 @@
       "created_at": "2026-08-16T05:51:17.990Z",
       "avatar_url": "https://nezukouploads.servegame.net/file/atdXI.jpg",
       "profile_updated_at": "2026-08-16T05:55:02.559Z"
+    },
+    {
+      "username": "zoro123456789ff1",
+      "email": "zoro123456789ff123@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$jHY4YtScnNs4EzeqTTjGTem.f3gJo0Il8XSFn0XFpimafFGDtKuIS",
+      "display_name": "ZORO ZORO",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocJyB1o-t0pOOWdQ6Y5l1OyX4tFnSe2qIxaNutOBUC7LUzAeeQ=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-16T20:58:57.546Z"
     }
   ]
 }
