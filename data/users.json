@@ -874,7 +874,18 @@
       "is_verified_badge": false,
       "provider": "google",
       "created_at": "2026-08-17T14:23:15.632Z",
-      "profile_updated_at": "2026-08-17T20:52:29.040Z"
+      "profile_updated_at": "2026-08-17T20:55:04.136Z",
+      "banner_url": "https://i.postimg.cc/SNN169kT/orders.png",
+      "bio": "",
+      "location": "",
+      "website": "https://nexora-yx2o.vercel.app",
+      "links": [
+        {
+          "label": "location",
+          "url": "https://nexora-yx2o.vercel.app",
+          "icon": "موقع"
+        }
+      ]
     }
   ]
 }
