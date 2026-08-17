@@ -850,6 +850,18 @@
       "is_verified_badge": false,
       "provider": "google",
       "created_at": "2026-08-17T13:31:49.758Z"
+    },
+    {
+      "username": "razanbots",
+      "email": "razanbots@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$vOA.6i.sZxtIYvn1fnnpEOfyJ1Hahovux8CW1hSP8DG6FKHQ7cQna",
+      "display_name": "RAZAN Bot",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocI8UXeCn4GvFqgRsiagrcE1paiPJRR8LGF8QDZoLSONdCZx9Q=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-17T13:56:20.477Z"
     }
   ]
 }
