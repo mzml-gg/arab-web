@@ -869,11 +869,12 @@
       "phone": "",
       "password_hash": "$2a$10$UKBuL9hmnknNlQGZbWVzyuVWLW5qqr4nVjMJwL54jfnzVBWgzVZ4C",
       "display_name": "SOVEREIGN X",
-      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocLROwgmUSyKpdlMs6Qb_CHUqSvfUfs5OjMEk8wBvLxpywgVoIM=s96-c",
+      "avatar_url": "https://nezukouploads.servegame.net/file/Wzo36.png",
       "verified": true,
       "is_verified_badge": false,
       "provider": "google",
-      "created_at": "2026-08-17T14:23:15.632Z"
+      "created_at": "2026-08-17T14:23:15.632Z",
+      "profile_updated_at": "2026-08-17T20:52:29.040Z"
     }
   ]
 }
