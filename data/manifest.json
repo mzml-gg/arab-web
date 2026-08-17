@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-1.html",
+      "title": "صفحه تعريف ",
+      "description": "صفحه تعريف الي اي مبرمج تقدر تغير المعلومات و الأوان ",
+      "language": "html",
+      "author": "sovereignempirex",
+      "author_avatar": "https://nezukouploads.servegame.net/file/Wzo36.png",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-17T23:47:36.724Z"
+    },
+    {
       "filename": "code-27.js",
       "title": "ذكاء اصطناعي ميريان ",
       "description": "امر ذكاء اصطناعي ",
