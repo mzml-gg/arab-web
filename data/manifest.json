@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-27.js",
+      "title": "ذكاء اصطناعي ميريان ",
+      "description": "امر ذكاء اصطناعي ",
+      "language": "js",
+      "author": "sovereignempirex",
+      "author_avatar": "https://nezukouploads.servegame.net/file/Wzo36.png",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-17T23:22:21.379Z"
+    },
+    {
       "filename": "code-28.js",
       "title": "امر بحث ",
       "description": "امر بحث يجلب 5 الي 6 فيديوهات من اي موقع مع امكانيه تثبيتهم ",
