@@ -893,9 +893,9 @@
       "phone": "+201094708407",
       "password_hash": "$2a$10$GI2fOuxNxSGFor5p5fzn..Dw9bk0DN164.J0x82VAjIAlmt5AveJG",
       "display_name": "devNoor",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "37e7548e2888b31637d5f0c495b5676499c4a894e6fc08a6",
+      "verification_token": null,
       "created_at": "2026-08-18T07:38:00.891Z"
     }
   ]
