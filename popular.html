@@ -49,13 +49,22 @@ async function fetchAndRenderCodes() {
       return;
     }
     document.getElementById('empty').style.display = 'none';
+    // Merge with full metadata from /api/list (top response may lack author fields)
+    let listResp;
+    try { listResp = await api('/api/list'); } catch { listResp = { codes: [] }; }
+    const byName = new Map((listResp.codes || []).map((c) => [c.filename, c]));
     // Fetch like totals for every code
     const totals = {};
     await Promise.all(codes.map(async (c) => {
-      try { totals[c.filename] = (await api('/api/likes?code=' + encodeURIComponent(c.filename))).total || 0; }
-      catch { totals[c.filename] = 0; }
+      const name = c.filename || c.code;
+      try { totals[name] = (await api('/api/likes?code=' + encodeURIComponent(name))).total || 0; }
+      catch { totals[name] = 0; }
     }));
-    box.innerHTML = codes.map((c) => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
+    const merged = codes.map((c) => {
+      const full = byName.get(c.filename || c.code) || {};
+      return { filename: c.filename || c.code, ...full, ...c };
+    });
+    box.innerHTML = merged.map((c) => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
     const devs = new Set(codes.map(c => (c.author || '').toLowerCase()).filter(Boolean));
     const totalLikes = Object.values(totals).reduce((a, b) => a + (b || 0), 0);
     document.getElementById('stats').innerHTML =
