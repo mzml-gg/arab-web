@@ -1,8 +1,8 @@
 {
   "manustest88": {
-    "banned": true,
-    "reason": "فاشل",
+    "banned": false,
+    "reason": "راجعوا نشاطك و لقيناه سليم",
     "banned_at": "2026-08-19T16:53:28.451Z",
-    "unbanned_at": null
+    "unbanned_at": "2026-08-19T17:44:41.715Z"
   }
 }
