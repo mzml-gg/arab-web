@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ARAB code · منصة نشر الأكواد العربية</title>
+<title>الأكثر إعجابًا · ARAB code</title>
 <meta name="description" content="منصة ARAB code لنشر ومشاركة الأكواد العربية المفتوحة">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,21 +25,23 @@
 
 <header class="hero">
   <div class="sphere"></div>
-  <h1>ARAB code</h1>
-  <p class="tag">منصة نشر الأكواد ARAB CODE</p>
+  <h1>🔥 الأكثر إعجابًا</h1>
+  <p class="tag">أكواد اختارها المجتمع بالاعجاب</p>
   <div class="stats-bar" id="stats"></div>
 </header>
 
 <main class="container">
   <div id="codes" class="grid"></div>
-  <p id="empty" style="text-align:center;color:var(--muted);display:none;margin-top:40px">لا توجد أكواد منشورة بعد.</p>
+  <p id="empty" style="text-align:center;color:var(--muted);display:none;margin-top:40px">لا توجد أكواد بإعجابات بعد. كن أول من يضع إعجابًا!</p>
 </main>
 
 <script src="/app.js"></script>
 <script>
 async function fetchAndRenderCodes() {
+  // Top liked codes
   try {
-    const { codes } = await api(`/api/list?_t=${Date.now()}`);
+    const topResp = await api(`/api/likes?top=1&_t=${Date.now()}`);
+    const codes = topResp.codes || [];
     const box = document.getElementById('codes');
     if (!codes || !codes.length) {
       document.getElementById('empty').style.display = 'block';
@@ -55,8 +57,9 @@ async function fetchAndRenderCodes() {
     }));
     box.innerHTML = codes.map((c) => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
     const devs = new Set(codes.map(c => (c.author || '').toLowerCase()).filter(Boolean));
+    const totalLikes = Object.values(totals).reduce((a, b) => a + (b || 0), 0);
     document.getElementById('stats').innerHTML =
-      `<div><b>${codes.length}</b> كود منشور</div><div><b>${devs.size}</b> مطوّر</div>`;
+      `<div><b>${codes.length}</b> كود بمُتصدّرة</div><div><b>${totalLikes}</b> إجمالي الإعجابات</div><div><b>${devs.size}</b> مطوّر</div>`;
   } catch (e) {
     console.error('Error fetching codes:', e);
   }

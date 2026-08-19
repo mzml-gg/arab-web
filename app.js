@@ -58,7 +58,7 @@ function authorLink(entry, opts = {}) {
 }
 
 async function loadMe() {
-  try { const { user } = await api('/api/me'); return user; } catch { return null; }
+  try { const { user, ban } = await api('/api/me'); if (user) user.ban = ban || null; return user; } catch { return null; }
 }
 
 async function renderNav() {
@@ -110,8 +110,12 @@ async function runSearch() {
   } catch (e) { box.innerHTML = `<p style="color:var(--danger)">${esc(e.message)}</p>`; }
 }
 
-function codeCard(c) {
+function codeCard(c, opts = {}) {
   const file = c.filename || c.title;
+  const likes = opts.likes != null ? opts.likes : (c.like_count != null ? c.like_count : null);
+  const likeBadge = likes !== null
+    ? `<span style="color:${likes > 0 ? '#e05252' : 'var(--muted)'};font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:4px;">${heartSvg(likes > 0)} ${likes}</span>`
+    : '';
   return `<article class="code-card" onclick="location.href='/c/${encodeURIComponent(file)}'">
     <div>
       <h3 class="card-title">${esc(c.title || file)}${c.admin_added ? ' <span class="admin-mark" title="مضاف من الإدارة">' + verifiedBadge('مضاف من الإدارة') + '</span>' : ''}</h3>
@@ -120,6 +124,7 @@ function codeCard(c) {
     <div class="card-footer">
       ${authorLink(c)}
       <span class="lang-badge">${esc(c.language || 'txt')}</span>
+      ${likeBadge}
     </div>
   </article>`;
 }
@@ -129,3 +134,53 @@ window.avatarNode = avatarNode; window.avatarUrl = avatarUrl; window.isVerified 
 window.renderNav = renderNav; window.doLogout = doLogout;
 window.openSearch = openSearch; window.closeSearch = closeSearch;
 window.codeCard = codeCard; window.loadMe = loadMe;
+
+// --- Interaction helpers (comments / likes / reports / ban overlay) ---
+function heartSvg(filled) {
+  return `<svg viewBox="0 0 24 24" width="16" height="16" fill="${filled ? '#e05252' : 'none'}" stroke="${filled ? '#e05252' : 'currentColor'}" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+}
+async function loadLike(code) {
+  try { return await api('/api/likes?code=' + encodeURIComponent(code)); } catch { return { like: false, total: 0 }; }
+}
+async function toggleLike(code) {
+  return api('/api/likes', { method: 'POST', body: JSON.stringify({ code }) });
+}
+async function loadComments(code) {
+  try { const r = await api('/api/comments?code=' + encodeURIComponent(code)); return r.comments || []; } catch { return []; }
+}
+// Warning check BEFORE sending a comment/report. Returns { ok } or { ok:false, warning }.
+async function checkProfanity(text) {
+  try {
+    await api('/api/report-check', { method: 'POST', body: JSON.stringify({ text }) });
+    return { ok: true };
+  } catch (e) {
+    let msg = e.message;
+    try { const d = JSON.parse(msg.replace(/^HTTP \d+:\s*/, '')); msg = d.warning || d.error || msg; } catch {}
+    return { ok: false, warning: msg };
+  }
+}
+async function submitReport(text) {
+  return api('/api/reports', { method: 'POST', body: JSON.stringify({ text }) });
+}
+async function renderBanOverlay(me) {
+  if (!me || !me.ban) return;
+  if (document.getElementById('ban-overlay')) return;
+  const div = document.createElement('div');
+  div.id = 'ban-overlay';
+  div.innerHTML = `<div style="position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:20px;background:rgba(5,5,5,.92);">
+    <div style="max-width:460px;width:100%;background:#12100a;border:2px solid #e05252;border-radius:22px;padding:34px 28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+      <div style="width:74px;height:74px;margin:0 auto 16px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#e05252 0%,#5c1212 100%);display:grid;place-items:center;font-size:34px;">🚫</div>
+      <h2 style="margin:0 0 12px;color:#e05252;font-size:22px;">تم إغلاق هذا الحساب</h2>
+      <p style="margin:0 0 8px;color:#d8c9a3;font-size:15px;line-height:1.9;">لقد تم غلق هذا الحساب لأسباب أمنية${me.ban.reason ? ' (<b>' + esc(me.ban.reason) + '</b>)' : ''}.</p>
+      <p style="margin:14px 0 0;color:#a08454;font-size:13.5px;line-height:1.8;">يمكنك التواصل مع الدعم عبر تطبيق واتساب لإعادة تفعيل حسابك، اضغط على الزر أدناه.</p>
+      <div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <a href="https://wa.me/249918614328" style="display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:linear-gradient(135deg,#5ce18b,#25d366);color:#0a0a0a;text-decoration:none;font-weight:800;border-radius:12px;font-size:15px;">💬 واتساب — التواصل مع الدعم</a>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(div);
+  document.body.style.overflow = 'hidden';
+}
+window.heartSvg = heartSvg; window.loadLike = loadLike; window.toggleLike = toggleLike;
+window.loadComments = loadComments; window.checkProfanity = checkProfanity;
+window.submitReport = submitReport; window.renderBanOverlay = renderBanOverlay;

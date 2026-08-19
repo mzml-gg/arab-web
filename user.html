@@ -243,6 +243,7 @@ async function saveProfile(btn) {
 (async () => {
   await renderNav();
   ME = await loadMe();
+  await renderBanOverlay(ME);
   try { SETTINGS = (await api('/api/public-settings')).settings || {}; } catch { SETTINGS = {}; }
   const parts = location.pathname.split('/').filter(Boolean);
   const q = new URLSearchParams(location.search);
