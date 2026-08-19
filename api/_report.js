@@ -1,10 +1,10 @@
 // Reporting + pre-publish profanity check.
 // POST /api/report-check  { text } -> { blocked, matched }   (warning before send)
 // POST /api/report        { text } ->  stores report + notifies admin by mail
-const { currentUser, isAdminEmail, readBody } = require('../_auth');
-const { loadInteractions, saveInteractions, nextId, scanForCurses } = require('../_interact');
-const { getSettings } = require('../_settings');
-const { sendMail, shell, escapeHtml } = require('../_mail');
+const { currentUser, isAdminEmail, readBody } = require('./_auth');
+const { loadInteractions, saveInteractions, nextId, scanForCurses } = require('./_interact');
+const { getSettings } = require('./_settings');
+const { sendMail, shell, escapeHtml } = require('./_mail');
 
 const route = {}; // filled below; keeps handler names distinct from helpers
 
