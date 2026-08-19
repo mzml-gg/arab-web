@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-31.js",
+      "title": "كود بوت بحث في مواقع",
+      "description": "كود بوت بحث في مواقع لحد ما تجيب بحث بتاعك ",
+      "language": "js",
+      "author": "sovereignempirex",
+      "author_avatar": "https://nezukouploads.servegame.net/file/Wzo36.png",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-19T00:48:32.279Z"
+    },
+    {
       "filename": "code-30.js",
       "title": "كود تحويل فيديو تيك توك ل صوت كان البوت الي مسجل ريك",
       "description": "تحويل صوت فيديو الي ريك متسجل",
