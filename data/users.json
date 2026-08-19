@@ -939,7 +939,7 @@
       "phone": "",
       "password_hash": "$2a$10$GU9fPo2G0DJcnC9HWuYQXOYBqI1QTEZngfFKMG/4CLhg1qq6bjmT2",
       "display_name": "manustest88",
-      "verified": false,
+      "verified": true,
       "is_verified_badge": false,
       "verification_token": "376fb90bdf51001ab1e3061f24a88238cd87354400ff1887",
       "created_at": "2026-08-19T14:53:16.884Z"
