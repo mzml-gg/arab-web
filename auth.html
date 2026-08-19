@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تسجيل الدخول / إنشاء حساب · ARAB code | منصة الأكواد البرمجية</title>
+
+<!-- إعدادات SEO الشاملة -->
+<meta name="description" content="قم بتسجيل الدخول أو إنشاء حساب جديد في منصة ARAB CODE (عرب كود). انضم لمجتمع المبرمجين العرب وشارك أكوادك ومشاريعك مفتوحة المصدر.">
+<meta name="keywords" content="تسجيل دخول عرب كود, إنشاء حساب ARAB CODE, منصة المبرمجين العرب, أكواد برمجية, مجتمع البرمجة العربي, حساب مبرمج">
+<meta name="author" content="ARAB CODE">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / Facebook / Telegram -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="تسجيل الدخول · ARAB code">
+<meta property="og:description" content="انضم إلى منصة ARAB CODE لتصفح ومشاركة الأكواد البرمجية والمشاريع المفتوحة المصدر.">
+<meta property="og:image" content="https://files.catbox.moe/i5gf6h.jpg">
+<meta property="og:site_name" content="ARAB CODE">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="تسجيل الدخول · ARAB code">
+<meta name="twitter:description" content="قم بتسجيل الدخول إلى حسابك في منصة ARAB CODE للمبرمجين.">
+<meta name="twitter:image" content="https://files.catbox.moe/i5gf6h.jpg">
+
+<!-- Favicon الأيقونة -->
+<link rel="icon" type="image/jpeg" href="https://files.catbox.moe/i5gf6h.jpg">
+<link rel="apple-touch-icon" href="https://files.catbox.moe/i5gf6h.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+
+<style>
+  /* تنسيق الصورة بدلاً من الكرة الصفراء */
+  .brand-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 10px rgba(240, 180, 0, 0.4);
+  }
+
+  /* إصلاح مشكلة تداخل وعدم القدرة على النقر على زر إنشاء حساب */
+  .switch {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-top: 25px !important;
+    padding: 10px !important;
+    width: 100% !important;
+    position: relative !important;
+    z-index: 10 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  
+  .switch span {
+    color: var(--muted, #666);
+    font-size: 0.95rem;
+  }
+
+  .google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px 16px;border-radius:14px;border:1px solid var(--border,#e6e6e6);background:#fff;color:#222;font-weight:700;font-size:.95rem;text-decoration:none;transition:.18s;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .google-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.12)}
+  .or-line{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--muted,#888);font-size:.85rem}
+  .or-line:before,.or-line:after{content:'';flex:1;height:1px;background:var(--border,#e6e6e6)}
+
+  .switch a {
+    color: var(--gold, #d4af37) !important;
+    font-weight: 700 !important;
+    text-decoration: underline !important;
+    font-size: 0.95rem;
+    cursor: pointer !important;
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="brand"><img src="https://files.catbox.moe/i5gf6h.jpg" alt="ARAB CODE Logo" class="brand-logo"> ARAB code</a>
+  <div class="nav-actions" id="nav-actions"></div>
+</nav>
+<main>
+  <form class="form" id="form">
+    <h2 id="title">دخول</h2>
+    <p class="sub" id="sub">أهلاً بعودتك</p>
+    <div id="msg" class="msg"></div>
+
+    <div id="google-wrap" style="display:none">
+      <a href="/api/google" class="google-btn" id="google-btn">
+        <svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.2.5 24 .5 14.6.5 6.5 5.9 2.6 13.8l7.8 6.1C12.3 13.6 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.9 7.2l7.6 5.9c4.4-4.1 7.1-10.2 7.1-17.6z"/><path fill="#FBBC05" d="M10.4 28.1a14.6 14.6 0 0 1 0-9.2l-7.8-6.1a24 24 0 0 0 0 21.4l7.8-6.1z"/><path fill="#34A853" d="M24 47.5c6.2 0 11.4-2 15.2-5.5l-7.6-5.9c-2.1 1.4-4.8 2.3-7.6 2.3-6.4 0-11.7-4.1-13.6-9.8l-7.8 6.1C6.5 42.1 14.6 47.5 24 47.5z"/></svg>
+        <span>المتابعة باستخدام جوجل</span>
+      </a>
+      <div class="or-line"><span>أو</span></div>
+    </div>
+
+    <div id="fields-signup" style="display:none">
+      <div class="field"><label>اسم المستخدم</label><input name="username" autocomplete="username" maxlength="20"/></div>
+      <div class="field"><label>رقم واتساب <span style="color:var(--muted);font-size:.8em">(اختياري)</span></label><input name="phone" placeholder="+9665... أو اتركه فارغاً" autocomplete="tel"/></div>
+    </div>
+    <div class="field"><label>الإيميل</label><input type="email" name="email" autocomplete="email" required/></div>
+    <div class="field"><label>كلمة السر</label><input type="password" name="password" autocomplete="current-password" required minlength="8"/></div>
+    <div id="forgot-link" style="text-align:left;margin-top:-10px;margin-bottom:10px;">
+      <a href="#" id="forgot-btn" style="font-size:0.85rem;color:var(--gold);">نسيت كلمة السر؟</a>
+    </div>
+
+    <button type="submit" class="btn primary submit" id="submit-btn">دخول</button>
+    <div class="switch">
+      <span id="switch-text">ليس لديك حساب؟</span>
+      <a href="#" id="toggle">إنشاء حساب</a>
+    </div>
+  </form>
+</main>
+<script src="/app.js"></script>
+<script>
+renderNav();
+let mode = 'login';
+
+// Google button visibility follows the admin setting.
+api('/api/public-settings').then(({ settings }) => {
+  if (settings && settings.google_login_enabled !== false) {
+    document.getElementById('google-wrap').style.display = '';
+  }
+}).catch(() => { document.getElementById('google-wrap').style.display = ''; });
+
+const params = new URLSearchParams(location.search);
+if (params.get('mode') === 'signup') setMode('signup');
+if (params.get('mode') === 'reset') setMode('reset');
+if (params.get('error')) {
+  const m = document.getElementById('msg');
+  m.className = 'msg err';
+  m.textContent = params.get('error');
+}
+
+document.getElementById('toggle').onclick = (e) => {
+  e.preventDefault();
+  setMode(mode === 'login' ? 'signup' : 'login');
+};
+
+document.getElementById('forgot-btn').onclick = (e) => {
+  e.preventDefault();
+  const email = document.querySelector('input[name="email"]').value;
+  if (!email) {
+    const msg = document.getElementById('msg');
+    msg.className = 'msg err';
+    msg.textContent = 'يرجى كتابة الإيميل أولاً';
+    return;
+  }
+  if (confirm('هل تريد إرسال رابط استعادة كلمة السر إلى ' + email + '؟')) {
+    api('/api/forgot-password', { method: 'POST', body: JSON.stringify({ email }) })
+      .then(() => {
+        const msg = document.getElementById('msg');
+        msg.className = 'msg ok';
+        msg.textContent = '✓ تم إرسال الرابط إلى بريدك.';
+      })
+      .catch(err => {
+        const msg = document.getElementById('msg');
+        msg.className = 'msg err';
+        msg.textContent = err.message;
+      });
+  }
+};
+
+function setMode(m) {
+  mode = m;
+  const isSignup = m === 'signup';
+  const isReset = m === 'reset';
+  
+  document.getElementById('title').textContent = isReset ? 'تعيين كلمة السر' : (isSignup ? 'إنشاء حساب' : 'دخول');
+  document.getElementById('sub').textContent = isReset ? 'أدخل كلمة السر الجديدة' : (isSignup ? 'انضم إلى ARAB code' : 'أهلاً بعودتك');
+  document.getElementById('fields-signup').style.display = isSignup ? '' : 'none';
+  document.getElementById('submit-btn').textContent = isReset ? 'تغيير كلمة السر' : (isSignup ? 'إنشاء الحساب' : 'دخول');
+  document.getElementById('switch-text').textContent = isSignup ? 'لديك حساب؟' : 'ليس لديك حساب؟';
+  document.getElementById('toggle').textContent = isSignup ? 'دخول' : 'إنشاء حساب';
+  
+  if (isReset) {
+    document.querySelector('input[name="email"]').readOnly = true;
+    document.querySelector('input[name="email"]').value = params.get('email') || '';
+    document.getElementById('forgot-link').style.display = 'none';
+    document.querySelector('.switch').style.display = 'none';
+  } else {
+    document.querySelector('input[name="email"]').readOnly = false;
+    document.querySelector('.switch').style.display = '';
+    document.getElementById('forgot-link').style.display = isSignup ? 'none' : '';
+  }
+
+  document.querySelectorAll('#fields-signup input').forEach(i => {
+    if (i.name !== 'phone') i.required = isSignup;
+  });
+}
+
+document.getElementById('form').onsubmit = async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('msg');
+  msg.className = 'msg'; msg.textContent = '';
+  const fd = new FormData(e.target);
+  const body = Object.fromEntries(fd.entries());
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; const old = btn.textContent; btn.textContent = '...';
+  try {
+    if (mode === 'signup') {
+      const r = await api('/api/signup', { method: 'POST', body: JSON.stringify(body) });
+      msg.className = 'msg ok';
+      msg.textContent = r.needs_verification ? '✓ تم الإنشاء. تحقق من بريدك لتفعيل الحساب.' : '✓ تم إنشاء حساب الأدمن. سجّل الدخول.';
+      setTimeout(() => setMode('login'), 2000);
+    } else if (mode === 'reset') {
+      const resetBody = { ...body, token: params.get('token') };
+      await api('/api/reset-password', { method: 'POST', body: JSON.stringify(resetBody) });
+      msg.className = 'msg ok';
+      msg.textContent = '✓ تم تغيير كلمة السر بنجاح. يمكنك الدخول الآن.';
+      setTimeout(() => {
+        location.search = ''; // back to login
+      }, 2000);
+    } else {
+      const r = await api('/api/login', { method: 'POST', body: JSON.stringify(body) });
+      location.href = r.user.is_admin ? '/admin' : '/';
+    }
+  } catch (err) {
+    msg.className = 'msg err';
+    msg.textContent = err.message;
+  } finally {
+    btn.disabled = false; btn.textContent = old;
+  }
+};
+</script>
+</body>
+</html>
+ 

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إضافة كود · ARAB code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="brand"><span class="dot"></span> ARAB code</a>
+  <div class="nav-actions" id="nav-actions"></div>
+</nav>
+<main>
+  <form class="form" id="form" style="max-width:640px">
+    <h2 id="form-title">إضافة كود</h2>
+    <p class="sub">راح يُراجَع من الإدارة قبل النشر</p>
+    <div id="msg" class="msg"></div>
+    <div class="field"><label>العنوان</label><input name="title" required maxlength="120"/></div>
+    <div class="field"><label>وصف قصير</label><input name="description" maxlength="300"/></div>
+    <div class="field"><label>اللغة</label>
+      <select name="language">
+        <option value="js">JavaScript</option>
+        <option value="html">HTML</option>
+        <option value="css">CSS</option>
+        <option value="py">Python</option>
+        <option value="php">PHP</option>
+        <option value="java">Java</option>
+        <option value="cpp">C++</option>
+        <option value="cs">C#</option>
+        <option value="ts">TypeScript</option>
+        <option value="go">Go</option>
+        <option value="rs">Rust</option>
+        <option value="txt">أخرى</option>
+      </select>
+    </div>
+    <div class="field"><label>الكود</label><textarea name="code" rows="14" required></textarea></div>
+    <button type="submit" class="btn primary submit">إرسال للمراجعة</button>
+  </form>
+</main>
+<script src="/app.js"></script>
+<script>
+(async () => {
+  await renderNav();
+  const me = await loadMe();
+  if (!me) { location.href = '/auth?mode=login'; return; }
+
+  const fork = new URLSearchParams(location.search).get('fork');
+  if (fork) {
+    document.getElementById('form-title').textContent = 'Fork: ' + fork;
+    try {
+      const { codes } = await api('/api/list');
+      const meta = codes.find(c => c.filename === fork);
+      if (meta) {
+        document.querySelector('[name=title]').value = 'Fork of ' + meta.title;
+        document.querySelector('[name=description]').value = meta.description || '';
+        const langSel = document.querySelector('[name=language]');
+        if (meta.language) [...langSel.options].forEach(o => { if (o.value === meta.language) o.selected = true; });
+      }
+      const r = await fetch('/api/raw?file=' + encodeURIComponent(fork));
+      if (r.ok) document.querySelector('[name=code]').value = await r.text();
+    } catch (e) { console.error(e); }
+  }
+})();
+
+document.getElementById('form').onsubmit = async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('msg'); msg.className='msg'; msg.textContent='';
+  const body = Object.fromEntries(new FormData(e.target).entries());
+  try {
+    const r = await api('/api/submit', { method:'POST', body: JSON.stringify(body) });
+    if (r.published) { msg.className='msg ok'; msg.textContent='✓ تم نشر الكود مباشرة.'; setTimeout(()=>{ location.href = r.url; }, 900); }
+    else { msg.className='msg ok'; msg.textContent='✓ تم الإرسال. سيراجعه الأدمن.'; e.target.reset(); }
+  } catch (err) { msg.className='msg err'; msg.textContent=err.message; }
+};
+</script>
+</body>
+</html>
