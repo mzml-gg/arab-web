@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "fork-of.js",
+      "title": "Fork of كود ترفية اختراق",
+      "description": "اختراق وهمي للمقالب",
+      "language": "js",
+      "author": "Appod1234",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-20T10:21:05.737Z"
+    },
+    {
       "filename": "code-33.js",
       "title": "حذف_اساسي",
       "description": "يحذف البوت المعين اساسي ويرجع الامور لطبيعتها",
