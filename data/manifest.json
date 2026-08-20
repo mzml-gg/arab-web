@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "team-x.js",
+      "title": "Team-X",
+      "description": "بحث و تحميل المانهوا من موقع تيم اكس امر لبوت واتس اب ",
+      "language": "js",
+      "author": "Monte",
+      "author_avatar": "https://nezukouploads.servegame.net/file/9Fw91.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-20T15:28:32.078Z"
+    },
+    {
       "filename": "fork-of.js",
       "title": "Fork of كود ترفية اختراق",
       "description": "اختراق وهمي للمقالب",
