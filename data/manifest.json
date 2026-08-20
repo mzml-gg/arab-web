@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-32.js",
+      "title": "تعيين_اساسي",
+      "description": "تعيين بوت ليرد على الاوامر",
+      "language": "js",
+      "author": "Appod1234",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-20T10:14:52.077Z"
+    },
+    {
       "filename": "code.cpp",
       "title": "محرك العب مصغر",
       "description": "محرك اللعب",
