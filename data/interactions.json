@@ -15,7 +15,8 @@
   "likes": {
     "ziad|team-x.js": true,
     "ahmed5|team-x.js": true,
-    "montetopdev|team-x.js": true
+    "montetopdev|team-x.js": true,
+    "appod1234|3-0.js": true
   },
   "reports": [
     {
@@ -30,6 +31,7 @@
     }
   ],
   "likeTotals": {
-    "team-x.js": 3
+    "team-x.js": 3,
+    "3-0.js": 1
   }
 }
