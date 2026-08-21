@@ -3,13 +3,13 @@
 // POST /api/likes                          -> { code } toggle like
 const { currentUser, readBody } = require('../_auth');
 const { loadInteractions, saveInteractions, requireAuth } = require('../_interact');
-const { listDir, getFile } = require('../_gh');
+const { readJson, listDir, getFile } = require('../_gh');
 const { enrichCodes } = require('../_enrich');
-const manifest = require('../../data/manifest.json');
 
-function manifestMeta() {
+async function manifestMeta() {
+  const { data } = await readJson('data/manifest.json', { codes: [] });
   const codes = [];
-  const items = (manifest && manifest.codes) || [];
+  const items = (data && data.codes) || [];
   for (const it of items) {
     const code = typeof it === 'string' ? { filename: it } : it;
     codes.push({ filename: code.filename, title: code.title || code.filename, description: code.description || '', language: code.language || '' });
@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
     if (top === '1') {
       const interaction = await loadInteractions();
       const totals = interaction.likeTotals || {};
-      const codes = manifestMeta();
+      const codes = await manifestMeta();
       const enriched = await enrichCodes(codes);
       const rows = enriched
         .filter((c) => (totals[c.filename] || 0) > 0)
