@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-35.js",
+      "title": "المدير الخارق ",
+      "description": "خمس في كود واحد  ",
+      "language": "js",
+      "author": "Appod1234",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-21T20:57:15.057Z"
+    },
+    {
       "filename": "all-media-download.js",
       "title": "All-Media-download ",
       "description": "يحمل فيديوهات من جميع المنصات by prototype ",
