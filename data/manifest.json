@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "all-media-download.js",
+      "title": "All-Media-download ",
+      "description": "يحمل فيديوهات من جميع المنصات by prototype ",
+      "language": "js",
+      "author": "Monte",
+      "author_avatar": "https://nezukouploads.servegame.net/file/9Fw91.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-21T18:32:45.888Z"
+    },
+    {
       "filename": "code-34.js",
       "title": "مارد",
       "description": "لعبة مارد تخمين شخصية ",
