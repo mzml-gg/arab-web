@@ -14,10 +14,11 @@
   ],
   "likes": {
     "ziad|team-x.js": true,
-    "ahmed5|team-x.js": true
+    "ahmed5|team-x.js": true,
+    "montetopdev|team-x.js": true
   },
   "reports": [],
   "likeTotals": {
-    "team-x.js": 2
+    "team-x.js": 3
   }
 }
