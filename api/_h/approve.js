@@ -30,6 +30,7 @@ module.exports = async (req, res) => {
       author_avatar: entry.author_avatar || null,
       author_verified: !!entry.author_verified,
       admin_added: !!entry.author_is_admin,
+      video_url: entry.video_url || null,
       approved_at: new Date().toISOString(),
     });
     await writeJson('data/manifest.json', manifest, `manifest: +${filename}`);
