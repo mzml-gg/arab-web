@@ -1,5 +1,17 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "id": "mt2ty4dke0nguv",
+      "code": "team-x.js",
+      "author": "ziad",
+      "display_name": "arab top",
+      "avatar_url": "https://nezukouploads.servegame.net/file/qwjuA.jpg",
+      "is_verified_badge": true,
+      "text": "هع مونتي عسل 🐦",
+      "line": null,
+      "created_at": "2026-08-21T10:52:11.048Z"
+    }
+  ],
   "likes": {
     "ziad|team-x.js": true
   },
