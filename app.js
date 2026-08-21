@@ -239,6 +239,7 @@ window.submitReport = submitReport; window.renderBanOverlay = renderBanOverlay;
 })();
 
 
+
 // --- Advanced Visual Effects: Falcon & Fire ---
 (function() {
   const isCodePage = window.location.pathname.includes('/c/');
@@ -247,126 +248,149 @@ window.submitReport = submitReport; window.renderBanOverlay = renderBanOverlay;
 
   const style = document.createElement('style');
   style.textContent = `
-    .falcon-anim {
+    .falcon-container {
       position: fixed;
-      width: 80px;
-      height: 80px;
-      z-index: 10000;
+      width: 100px;
+      height: 100px;
+      z-index: 10001;
       pointer-events: none;
-      filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
-      transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0;
-      transform: translate(-100px, 50vh) rotate(30deg);
+      transition: opacity 0.5s;
     }
-    @keyframes falcon-fly {
-      0% { opacity: 0; transform: translate(-100px, 60vh) rotate(20deg) scale(0.5); }
-      20% { opacity: 1; transform: translate(20vw, 20vh) rotate(-10deg) scale(1.2); }
-      50% { transform: translate(60vw, 40vh) rotate(10deg) scale(1); }
-      100% { opacity: 1; transform: translate(var(--tx), var(--ty)) rotate(0deg) scale(var(--s, 1)); }
+    .falcon-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+    }
+    @keyframes falcon-fly-path {
+      0% { transform: translate(-150px, 80vh) rotate(15deg) scale(0.6); opacity: 0; }
+      10% { opacity: 1; }
+      40% { transform: translate(30vw, 20vh) rotate(-5deg) scale(1.1); }
+      70% { transform: translate(70vw, 50vh) rotate(5deg) scale(0.9); }
+      100% { transform: translate(var(--tx), var(--ty)) rotate(0deg) scale(var(--sc, 1)); opacity: 1; }
     }
     .falcon-active {
-      animation: falcon-fly 3.5s forwards ease-in-out;
+      animation: falcon-fly-path 4s forwards cubic-bezier(0.45, 0.05, 0.55, 0.95);
     }
     .falcon-shrink {
-      transform: translate(var(--tx), var(--ty)) scale(0.4) !important;
-      opacity: 0.7;
+      transition: all 1.5s ease-in-out;
+      transform: translate(var(--tx), var(--ty)) scale(0.3) !important;
+      opacity: 0.8;
     }
-    .fire-container {
+
+    .fire-box {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 60px;
+      height: 50px;
       pointer-events: none;
-      z-index: 5;
-      background: linear-gradient(to top, rgba(255,69,0,0.2), transparent);
-      border-radius: 0 0 12px 12px;
+      z-index: 2;
+      overflow: hidden;
+      border-radius: 0 0 15px 15px;
     }
-    .fire-p {
+    .fire-flame {
       position: absolute;
-      bottom: -5px;
-      width: 8px;
-      height: 8px;
-      background: #ff4500;
-      border-radius: 50%;
-      filter: blur(2px);
-      animation: fire-rise var(--d) infinite ease-out;
+      bottom: -10px;
+      width: 12px;
+      height: 12px;
+      background: radial-gradient(circle, #ff6a00 20%, #ff2a00 60%, transparent 80%);
+      border-radius: 50% 50% 20% 20%;
+      filter: blur(1px);
+      animation: flame-rise var(--dur) infinite ease-in;
+      opacity: 0.7;
     }
-    @keyframes fire-rise {
-      0% { transform: translateY(0) scale(1); opacity: 0.9; background: #ff4500; }
-      50% { background: #ffa500; opacity: 0.6; }
-      100% { transform: translateY(-50px) scale(0); opacity: 0; background: #ffff00; }
+    @keyframes flame-rise {
+      0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0.8; }
+      50% { transform: translateY(-20px) scale(1.2) rotate(10deg); opacity: 0.5; }
+      100% { transform: translateY(-45px) scale(0.5) rotate(-10deg); opacity: 0; }
     }
   `;
   document.head.appendChild(style);
 
+  // Real Falcon SVG Path (More detailed)
   const falconSVG = `
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <path d="M50 15 L35 45 L10 50 L35 55 L50 85 L65 55 L90 50 L65 45 Z" fill="#2c3e50" stroke="#000" stroke-width="1"/>
-      <path d="M50 20 L40 45 L20 50 L40 55 L50 80 L60 55 L80 50 L60 45 Z" fill="#34495e"/>
-      <circle cx="50" cy="48" r="5" fill="#f1c40f"/>
-      <path d="M45 48 Q50 40 55 48" fill="none" stroke="#000" stroke-width="1"/>
-      <path d="M30 40 L15 35 M70 40 L85 35" stroke="#2c3e50" stroke-width="2" stroke-linecap="round"/>
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 40 L80 80 L30 90 L80 100 L70 150 L100 120 L130 150 L120 100 L170 90 L120 80 Z" fill="#333" stroke="#000" stroke-width="2"/>
+      <path d="M100 50 L90 80 L50 90 L90 100 L85 130 L100 115 L115 130 L110 100 L150 90 L110 80 Z" fill="#555"/>
+      <path d="M95 85 Q100 75 105 85" fill="none" stroke="#ffd700" stroke-width="3"/>
+      <circle cx="92" cy="88" r="2" fill="#fff"/>
+      <circle cx="108" cy="88" r="2" fill="#fff"/>
     </svg>
   `;
 
-  function spawnFalcon(x, y, shrink = false) {
-    const el = document.createElement('div');
-    el.className = 'falcon-anim';
-    el.innerHTML = falconSVG;
-    document.body.appendChild(el);
+  function startFalcon(tx, ty, shrink = false) {
+    const container = document.createElement('div');
+    container.className = 'falcon-container';
+    container.innerHTML = falconSVG;
+    document.body.appendChild(container);
+
+    container.style.setProperty('--tx', (tx - 50) + 'px');
+    container.style.setProperty('--ty', (ty - 50) + 'px');
     
-    // Force reflow
-    el.getBoundingClientRect();
-    el.style.setProperty('--tx', x + 'px');
-    el.style.setProperty('--ty', y + 'px');
-    el.classList.add('falcon-active');
+    requestAnimationFrame(() => {
+      container.classList.add('falcon-active');
+    });
 
     if (shrink) {
-      setTimeout(() => el.classList.add('falcon-shrink'), 3600);
+      setTimeout(() => container.classList.add('falcon-shrink'), 4200);
     }
   }
 
-  // Logic
-  if (isCodePage) {
-    setTimeout(() => {
-      const target = document.querySelector('pre') || document.querySelector('.code-content');
-      if (target) {
-        const r = target.getBoundingClientRect();
-        spawnFalcon(r.left + 50, r.top - 60);
-      }
-    }, 1500);
+  // Optimized Fire (Uses fewer particles and better CSS)
+  function applyFire(card) {
+    if (card.querySelector('.fire-box')) return;
+    const box = document.createElement('div');
+    box.className = 'fire-box';
+    for (let i = 0; i < 8; i++) {
+      const flame = document.createElement('div');
+      flame.className = 'fire-flame';
+      flame.style.left = (Math.random() * 90) + '%';
+      flame.style.setProperty('--dur', (0.8 + Math.random() * 0.7) + 's');
+      flame.style.animationDelay = (Math.random() * 1) + 's';
+      box.appendChild(flame);
+    }
+    card.style.position = 'relative';
+    card.appendChild(box);
   }
 
-  if (isProfilePage) {
-    setTimeout(() => {
-      const target = document.querySelector('.profile-avatar') || document.querySelector('.user-badge') || document.querySelector('h2');
-      if (target) {
-        const r = target.getBoundingClientRect();
-        spawnFalcon(r.left + (r.width/2) - 40, r.top - 20, true);
-      }
-    }, 1000);
-  }
+  // Initialization
+  window.addEventListener('load', () => {
+    if (isCodePage) {
+      setTimeout(() => {
+        const code = document.querySelector('pre') || document.querySelector('.code-content');
+        if (code) {
+          const rect = code.getBoundingClientRect();
+          startFalcon(rect.left + 60, rect.top + 20);
+        }
+      }, 1000);
+    }
+
+    if (isProfilePage) {
+      setTimeout(() => {
+        const avatar = document.querySelector('.profile-avatar') || document.querySelector('.user-badge');
+        if (avatar) {
+          const rect = avatar.getBoundingClientRect();
+          startFalcon(rect.left + (rect.width/2), rect.top + (rect.height/2), true);
+        }
+      }, 800);
+    }
+  });
 
   if (isHomePage) {
-    const addFire = () => {
-      document.querySelectorAll('.code-card').forEach((card, i) => {
-        if (i >= 5 && i <= 7 && !card.querySelector('.fire-container')) {
-          const c = document.createElement('div');
-          c.className = 'fire-container';
-          for(let j=0; j<20; j++) {
-            const p = document.createElement('div');
-            p.className = 'fire-p';
-            p.style.left = Math.random()*100 + '%';
-            p.style.setProperty('--d', (0.6 + Math.random()*0.8) + 's');
-            p.style.animationDelay = Math.random() + 's';
-            c.appendChild(p);
-          }
-          card.style.position = 'relative';
-          card.appendChild(c);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const cards = Array.from(document.querySelectorAll('.code-card'));
+          cards.forEach((card, idx) => {
+            if (idx >= 5 && idx <= 7) applyFire(card);
+          });
         }
       });
-    };
-    setInterval(addFire, 1000);
+    }, { threshold: 0.1 });
+
+    const container = document.querySelector('.codes-grid') || document.body;
+    observer.observe(container);
   }
 })();
