@@ -184,3 +184,56 @@ async function renderBanOverlay(me) {
 window.heartSvg = heartSvg; window.loadLike = loadLike; window.toggleLike = toggleLike;
 window.loadComments = loadComments; window.checkProfanity = checkProfanity;
 window.submitReport = submitReport; window.renderBanOverlay = renderBanOverlay;
+
+/* --- Visual Effects (Falcon & Fire) --- */
+(function() {
+    const css = `
+    .falcon-container { position: fixed; top: -150px; left: -150px; width: 100px; height: 100px; z-index: 10000; pointer-events: none; }
+    .falcon-svg { width: 100%; height: 100%; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4)); }
+    @keyframes flyIn {
+        0% { transform: translate(-100px, -100px) rotate(20deg) scale(1.5); opacity: 0; }
+        30% { transform: translate(40vw, 20vh) rotate(-10deg) scale(1.2); opacity: 1; }
+        100% { transform: translate(var(--target-x), var(--target-y)) rotate(0deg) scale(0.6); opacity: 1; }
+    }
+    .falcon-active { animation: flyIn 3.5s forwards cubic-bezier(0.4, 0, 0.2, 1); }
+    .fire-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; overflow: hidden; pointer-events: none; border-radius: 0 0 12px 12px; }
+    .fire-particle { position: absolute; bottom: -10px; width: 6px; height: 6px; background: #ff4500; border-radius: 50%; filter: blur(2px); animation: rise 1s infinite ease-in; }
+    @keyframes rise { 0% { transform: translateY(0) scale(1); opacity: 0.8; } 100% { transform: translateY(-40px) scale(0); opacity: 0; } }
+    .fire-glow { position: absolute; bottom: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(255,69,0,0.2), transparent); }
+    .code-card { position: relative; }
+    `;
+    const style = document.createElement('style');
+    style.innerHTML = css;
+    document.head.appendChild(style);
+
+    const FALCON_SVG = '<svg viewBox="0 0 100 100"><path d="M50 10 L70 40 L95 50 L70 60 L50 90 L30 60 L5 50 L30 40 Z" fill="#333"/><path d="M50 25 L60 45 L85 50 L60 55 L50 75 L40 55 L15 50 L40 45 Z" fill="#666"/></svg>';
+
+    window.addEventListener('load', () => {
+        const falcon = document.createElement('div');
+        falcon.className = 'falcon-container';
+        falcon.innerHTML = FALCON_SVG;
+        document.body.appendChild(falcon);
+        
+        const target = document.querySelector('.code-header') || document.querySelector('header');
+        if (target) {
+            const r = target.getBoundingClientRect();
+            falcon.style.setProperty('--target-x', (r.left + r.width/2 - 50) + 'px');
+            falcon.style.setProperty('--target-y', (r.top - 40) + 'px');
+        }
+        falcon.classList.add('falcon-active');
+
+        document.querySelectorAll('.code-card').forEach(card => {
+            const fire = document.createElement('div');
+            fire.className = 'fire-container';
+            fire.innerHTML = '<div class="fire-glow"></div>';
+            for(let i=0; i<15; i++) {
+                const p = document.createElement('div');
+                p.className = 'fire-particle';
+                p.style.left = (Math.random()*100) + '%';
+                p.style.animationDelay = (Math.random()) + 's';
+                fire.appendChild(p);
+            }
+            card.appendChild(fire);
+        });
+    });
+})();
