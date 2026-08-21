@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-36.js",
+      "title": "نظام تتبع المحادثات",
+      "description": "مراقب ومسجل للمحادثات والارقام والروابط",
+      "language": "js",
+      "author": "Appod1234",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-21T21:17:20.997Z"
+    },
+    {
       "filename": "3-0.js",
       "title": "المدير الخارق 3.0",
       "description": "مهام متعددة مع كلمة مرور قم بتعديل رقم المطور والقناة في الكود",
