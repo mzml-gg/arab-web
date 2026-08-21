@@ -240,157 +240,142 @@ window.submitReport = submitReport; window.renderBanOverlay = renderBanOverlay;
 
 
 
+
 // --- Advanced Visual Effects: Falcon & Fire ---
 (function() {
   const isCodePage = window.location.pathname.includes('/c/');
   const isProfilePage = window.location.pathname.includes('/u/');
   const isHomePage = window.location.pathname === '/' || window.location.pathname.includes('index');
+  const FALCON_URL = 'https://nezukouploads.servegame.net/file/cXNtl.jpg';
 
   const style = document.createElement('style');
   style.textContent = `
-    .falcon-container {
+    .falcon-fx {
       position: fixed;
-      width: 100px;
-      height: 100px;
-      z-index: 10001;
+      width: 70px;
+      height: 70px;
+      z-index: 99999;
       pointer-events: none;
+      background: url('${FALCON_URL}') center/cover no-repeat;
+      border-radius: 50%;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5), 0 0 15px rgba(255,215,0,0.3);
+      border: 2px solid #ffd700;
       opacity: 0;
-      transition: opacity 0.5s;
+      transform: translate(-100px, 50vh) scale(0.5);
     }
-    .falcon-img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
-    }
-    @keyframes falcon-fly-path {
-      0% { transform: translate(-150px, 80vh) rotate(15deg) scale(0.6); opacity: 0; }
-      10% { opacity: 1; }
-      40% { transform: translate(30vw, 20vh) rotate(-5deg) scale(1.1); }
-      70% { transform: translate(70vw, 50vh) rotate(5deg) scale(0.9); }
+    @keyframes falcon-fly-in {
+      0% { transform: translate(-100px, 70vh) rotate(20deg) scale(0.5); opacity: 0; }
+      20% { opacity: 1; transform: translate(20vw, 20vh) rotate(-10deg) scale(1.2); }
+      50% { transform: translate(60vw, 40vh) rotate(10deg) scale(1); }
       100% { transform: translate(var(--tx), var(--ty)) rotate(0deg) scale(var(--sc, 1)); opacity: 1; }
     }
     .falcon-active {
-      animation: falcon-fly-path 4s forwards cubic-bezier(0.45, 0.05, 0.55, 0.95);
+      animation: falcon-fly-in 3.5s forwards cubic-bezier(0.4, 0, 0.2, 1);
     }
     .falcon-shrink {
-      transition: all 1.5s ease-in-out;
-      transform: translate(var(--tx), var(--ty)) scale(0.3) !important;
-      opacity: 0.8;
+      transition: all 1.2s ease-in-out;
+      width: 35px !important;
+      height: 35px !important;
+      border-width: 1px !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
     }
 
-    .fire-box {
+    .fire-wrapper {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 50px;
+      height: 45px;
       pointer-events: none;
-      z-index: 2;
+      z-index: 10;
       overflow: hidden;
       border-radius: 0 0 15px 15px;
     }
-    .fire-flame {
+    .flame-particle {
       position: absolute;
-      bottom: -10px;
-      width: 12px;
-      height: 12px;
-      background: radial-gradient(circle, #ff6a00 20%, #ff2a00 60%, transparent 80%);
-      border-radius: 50% 50% 20% 20%;
-      filter: blur(1px);
-      animation: flame-rise var(--dur) infinite ease-in;
-      opacity: 0.7;
+      bottom: -5px;
+      width: 10px;
+      height: 10px;
+      background: #ff4500;
+      border-radius: 50%;
+      filter: blur(1.5px);
+      animation: flame-up var(--d) infinite ease-out;
+      opacity: 0.6;
     }
-    @keyframes flame-rise {
-      0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0.8; }
-      50% { transform: translateY(-20px) scale(1.2) rotate(10deg); opacity: 0.5; }
-      100% { transform: translateY(-45px) scale(0.5) rotate(-10deg); opacity: 0; }
+    @keyframes flame-up {
+      0% { transform: translateY(0) scale(1); opacity: 0.7; background: #ff4500; }
+      50% { background: #ffa500; }
+      100% { transform: translateY(-40px) scale(0); opacity: 0; background: #ffff00; }
     }
   `;
   document.head.appendChild(style);
 
-  // Real Falcon SVG Path (More detailed)
-  const falconSVG = `
-    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <path d="M100 40 L80 80 L30 90 L80 100 L70 150 L100 120 L130 150 L120 100 L170 90 L120 80 Z" fill="#333" stroke="#000" stroke-width="2"/>
-      <path d="M100 50 L90 80 L50 90 L90 100 L85 130 L100 115 L115 130 L110 100 L150 90 L110 80 Z" fill="#555"/>
-      <path d="M95 85 Q100 75 105 85" fill="none" stroke="#ffd700" stroke-width="3"/>
-      <circle cx="92" cy="88" r="2" fill="#fff"/>
-      <circle cx="108" cy="88" r="2" fill="#fff"/>
-    </svg>
-  `;
-
-  function startFalcon(tx, ty, shrink = false) {
-    const container = document.createElement('div');
-    container.className = 'falcon-container';
-    container.innerHTML = falconSVG;
-    document.body.appendChild(container);
-
-    container.style.setProperty('--tx', (tx - 50) + 'px');
-    container.style.setProperty('--ty', (ty - 50) + 'px');
+  function spawnFalcon(tx, ty, shrink = false) {
+    const el = document.createElement('div');
+    el.className = 'falcon-fx';
+    document.body.appendChild(el);
     
-    requestAnimationFrame(() => {
-      container.classList.add('falcon-active');
-    });
+    // Adjust target to center the 70px element
+    el.style.setProperty('--tx', (tx - 35) + 'px');
+    el.style.setProperty('--ty', (ty - 35) + 'px');
+    
+    requestAnimationFrame(() => el.classList.add('falcon-active'));
 
     if (shrink) {
-      setTimeout(() => container.classList.add('falcon-shrink'), 4200);
+      setTimeout(() => {
+        el.classList.add('falcon-shrink');
+        // If profile page, try to snap to avatar
+        const avatar = document.querySelector('.profile-avatar') || document.querySelector('.user-badge');
+        if (avatar) {
+          const r = avatar.getBoundingClientRect();
+          el.style.setProperty('--tx', (r.left + r.width/2 - 17.5) + 'px');
+          el.style.setProperty('--ty', (r.top + r.height/2 - 17.5) + 'px');
+        }
+      }, 3600);
     }
   }
 
-  // Optimized Fire (Uses fewer particles and better CSS)
-  function applyFire(card) {
-    if (card.querySelector('.fire-box')) return;
-    const box = document.createElement('div');
-    box.className = 'fire-box';
-    for (let i = 0; i < 8; i++) {
-      const flame = document.createElement('div');
-      flame.className = 'fire-flame';
-      flame.style.left = (Math.random() * 90) + '%';
-      flame.style.setProperty('--dur', (0.8 + Math.random() * 0.7) + 's');
-      flame.style.animationDelay = (Math.random() * 1) + 's';
-      box.appendChild(flame);
-    }
-    card.style.position = 'relative';
-    card.appendChild(box);
-  }
-
-  // Initialization
   window.addEventListener('load', () => {
     if (isCodePage) {
       setTimeout(() => {
-        const code = document.querySelector('pre') || document.querySelector('.code-content');
-        if (code) {
-          const rect = code.getBoundingClientRect();
-          startFalcon(rect.left + 60, rect.top + 20);
+        const target = document.querySelector('pre') || document.querySelector('.code-container');
+        if (target) {
+          const r = target.getBoundingClientRect();
+          spawnFalcon(r.left + 80, r.top + 10);
         }
-      }, 1000);
+      }, 1200);
     }
 
     if (isProfilePage) {
       setTimeout(() => {
-        const avatar = document.querySelector('.profile-avatar') || document.querySelector('.user-badge');
-        if (avatar) {
-          const rect = avatar.getBoundingClientRect();
-          startFalcon(rect.left + (rect.width/2), rect.top + (rect.height/2), true);
-        }
+        const target = document.querySelector('.profile-header') || document.querySelector('h2') || document.body;
+        const r = target.getBoundingClientRect();
+        spawnFalcon(r.left + r.width/2, r.top + 50, true);
       }, 800);
     }
   });
 
   if (isHomePage) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const cards = Array.from(document.querySelectorAll('.code-card'));
-          cards.forEach((card, idx) => {
-            if (idx >= 5 && idx <= 7) applyFire(card);
-          });
+    const injectFire = () => {
+      const cards = document.querySelectorAll('.code-card');
+      cards.forEach((card, i) => {
+        if (i >= 5 && i <= 7 && !card.querySelector('.fire-wrapper')) {
+          const wrap = document.createElement('div');
+          wrap.className = 'fire-wrapper';
+          for (let j = 0; j < 10; j++) {
+            const p = document.createElement('div');
+            p.className = 'flame-particle';
+            p.style.left = (Math.random() * 95) + '%';
+            p.style.setProperty('--d', (0.7 + Math.random() * 0.8) + 's');
+            p.style.animationDelay = (Math.random() * 1.5) + 's';
+            wrap.appendChild(p);
+          }
+          card.style.position = 'relative';
+          card.appendChild(wrap);
         }
       });
-    }, { threshold: 0.1 });
-
-    const container = document.querySelector('.codes-grid') || document.body;
-    observer.observe(container);
+    };
+    // Use a single timeout for home page fire to save resources
+    setTimeout(injectFire, 1500);
   }
 })();
