@@ -127,11 +127,11 @@ function codeCard(c, opts = {}) {
 
   return `<article class="code-card ${c.video_url ? 'has-video' : ''}" onclick="location.href='/c/${encodeURIComponent(file)}'">
     ${videoHtml}
-    <div style="position:relative; z-index:2;">
+    <div>
       <h3 class="card-title">${esc(c.title || file)}${c.admin_added ? ' <span class="admin-mark" title="مضاف من الإدارة">' + verifiedBadge('مضاف من الإدارة') + '</span>' : ''}</h3>
       <p class="card-desc">${esc(c.description || 'لا يوجد وصف لهذا الكود')}</p>
     </div>
-    <div class="card-footer" style="position:relative; z-index:2;">
+    <div class="card-footer">
       ${authorLink(c)}
       <span class="lang-badge">${esc(c.language || 'txt')}</span>
       ${likeBadge}

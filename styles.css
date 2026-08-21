@@ -197,35 +197,40 @@ input,textarea,select{font-family:inherit}
 /* Video background for cards */
 .card-video-bg {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
+  inset: 0;
+  z-index: 0;
   overflow: hidden;
   border-radius: 20px;
+  pointer-events: none;
 }
 .card-video-bg video {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: cover;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 .card-video-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%);
-  z-index: 2;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.6) 100%);
+  z-index: 1;
 }
 .code-card.has-video {
-  background: transparent !important;
-  border-color: var(--gold) !important;
+  background: #fff !important;
+  overflow: hidden !important;
+  border: 1px solid var(--gold) !important;
+  position: relative;
 }
 .code-card.has-video .card-title, 
 .code-card.has-video .card-desc,
 .code-card.has-video .card-footer {
-  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 1px 3px rgba(255,255,255,0.9);
 }
