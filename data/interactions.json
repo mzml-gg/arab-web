@@ -13,10 +13,11 @@
     }
   ],
   "likes": {
-    "ziad|team-x.js": true
+    "ziad|team-x.js": true,
+    "ahmed5|team-x.js": true
   },
   "reports": [],
   "likeTotals": {
-    "team-x.js": 1
+    "team-x.js": 2
   }
 }
