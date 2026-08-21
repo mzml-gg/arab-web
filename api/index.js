@@ -33,6 +33,14 @@ const routes = {
   'delete-account': require('./_h/account').deleteAccount,
   google: require('./_h/google').start,
   'google-callback': require('./_h/google').callback,
+  // --- New experiment features ---
+  comments: require('./_h/comments'),
+  likes: require('./_h/likes'),
+  'report-check': require('./_report').reportCheck,
+  reports: require('./_report').reports,
+  'report-dismiss': require('./_report').reportDismiss,
+  ban: require('./_h/ban'),
+  messages: require('./_h/messages'),
 };
 
 module.exports = async (req, res) => {

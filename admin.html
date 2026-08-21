@@ -35,6 +35,9 @@
     <button data-tab="deletes">طلبات حذف</button>
     <button data-tab="verified">الحسابات الموثقة</button>
     <button data-tab="users">كل الحسابات</button>
+    <button data-tab="reports">⚠ البلاغات</button>
+    <button data-tab="messages">✉ الرسائل</button>
+    <button data-tab="bans">🚫 التبنيد</button>
   </div>
   <div id="msg" class="msg"></div>
 
@@ -76,6 +79,35 @@
       </div>
       <div id="bc-progress" style="margin-top:12px;color:var(--muted);font-size:13px"></div>
     </div>
+  </section>
+
+  <section class="pane" id="pane-reports">
+    <h3 style="color:var(--gold-2);margin:4px 0 10px">البلاغات الواردة</h3>
+    <p style="color:var(--muted);font-size:13px;margin:0 0 12px">تصل هنا البلاغات التي يرسلها الأعضاء قبل نشر تعليق مخالف أو عند الإبلاغ عن كود. يُرسل لك بريد تنبيه لكل بلاغ جديد.</p>
+    <div id="reports-list"></div>
+    <p id="reports-empty" style="color:var(--muted);text-align:center;display:none">لا توجد بلاغات.</p>
+  </section>
+
+  <section class="pane" id="pane-messages">
+    <h3 style="color:var(--gold-2);margin:4px 0 10px">رسائل الدعم من الأعضاء</h3>
+    <div id="messages-list"></div>
+    <p id="messages-empty" style="color:var(--muted);text-align:center;display:none">لا توجد رسائل.</p>
+  </section>
+
+  <section class="pane" id="pane-bans">
+    <h3 style="color:var(--gold-2);margin:4px 0 10px">التبنيد (حظر الحسابات)</h3>
+    <p style="color:var(--muted);font-size:13px;margin:0 0 12px">
+      تبنيد أي حساب: يُحذف/يُحظر كل أكواده المنشورة تلقائياً، وتُرسل له رسالة إيميل «تم إغلاق حسابك لأسباب أمنية» مع زر واتساب.
+      عند فك الباند تُرسل له رسالة «عادت حسابك مجددا» ويستعيد قدرته على النشر.
+    </p>
+    <div class="user-row" style="margin-bottom:14px;gap:10px">
+      <input id="ban-input" type="text" placeholder="اسم المستخدم (username)" style="flex:1;min-width:200px;padding:11px 14px;border-radius:14px;border:1px solid var(--border);background:var(--soft);color:var(--text)" />
+      <input id="ban-reason" type="text" placeholder="السبب (اختياري)" style="flex:1;min-width:180px;padding:11px 14px;border-radius:14px;border:1px solid var(--border);background:var(--soft);color:var(--text)" />
+      <button class="btn danger" onclick="doBan(true, this)">تبنيد</button>
+      <button class="btn primary" onclick="doBan(false, this)">فك التبنيد</button>
+    </div>
+    <div id="bans-list"></div>
+    <p id="bans-empty" style="color:var(--muted);text-align:center;display:none">لا توجد حسابات مبنّدة حالياً.</p>
   </section>
 
   <section class="pane" id="pane-stats">
@@ -182,7 +214,7 @@
   const me = await loadMe();
   if (!me || !me.is_admin) { location.href='/auth'; return; }
   document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
-  await Promise.all([loadPending(), loadDeletes(), loadUsers('verified'), loadUsers('all'), loadSettings(), loadStats()]);
+  await Promise.all([loadPending(), loadDeletes(), loadUsers('verified'), loadUsers('all'), loadSettings(), loadStats(), loadReports(), loadMessages(), loadBans()]);
 })();
 
 function switchTab(t) {
@@ -459,6 +491,96 @@ async function sendBroadcast(btn) {
 }
 
 function showMsg(t, ok) { const m=document.getElementById('msg'); m.className='msg '+(ok?'ok':'err'); m.textContent=t; setTimeout(()=>{m.className='msg';m.textContent='';},3500); }
+
+// ===== Reports tab =====
+async function loadReports() {
+  const list = document.getElementById('reports-list');
+  list.innerHTML = '<p style="color:var(--muted)">تحميل...</p>';
+  try {
+    const { reports } = await api('/api/reports');
+    if (!reports.length) { list.innerHTML=''; document.getElementById('reports-empty').style.display='block'; return; }
+    document.getElementById('reports-empty').style.display='none';
+    list.innerHTML = reports.map(r => `
+      <div class="user-row">
+        <div class="who">
+          <span style="flex-shrink:0">${avatarNode({ username: r.reporter, avatar_url: r.reporter_avatar })}</span>
+          <div>
+            <a href="/u/${esc(r.reporter)}" style="font-weight:700;color:var(--gold-2);text-decoration:none">${esc(r.reporter_display || r.reporter)}</a>
+            <div class="email">${esc(r.text)}</div>
+            <div class="email">${new Date(r.created_at).toLocaleString('ar')} · <span style="color:${r.status==='open'?'var(--danger)':'var(--muted)'}">${r.status==='open'?'جديد':'مُتجاهل'}</span></div>
+          </div>
+        </div>
+        <div class="actions">
+          ${r.status==='open' ? `<button class="btn ghost sm" onclick="dismissReport('${r.id}',this)">تمييز كمُتجاهل</button>` : `<button class="btn ghost sm" onclick="reopenReport('${r.id}',this)">إعادة فتح</button>`}
+          <a class="btn ghost sm" href="/u/${esc(r.reporter)}">الملف</a>
+        </div>
+      </div>`).join('');
+  } catch (e) { list.innerHTML = `<p style="color:var(--danger)">${esc(e.message)}</p>`; }
+}
+async function dismissReport(id, btn) { btn.disabled=true; try { await api('/api/report-dismiss',{method:'POST',body:JSON.stringify({id,dismiss:true})}); await loadReports(); } catch(err){showMsg(err.message,false);btn.disabled=false;} }
+async function reopenReport(id, btn) { btn.disabled=true; try { await api('/api/report-dismiss',{method:'POST',body:JSON.stringify({id,dismiss:false})}); await loadReports(); } catch(err){showMsg(err.message,false);btn.disabled=false;} }
+
+// ===== Messages tab =====
+async function loadMessages() {
+  const list = document.getElementById('messages-list');
+  list.innerHTML = '<p style="color:var(--muted)">تحميل...</p>';
+  try {
+    const { messages } = await api('/api/messages');
+    if (!messages.length) { list.innerHTML=''; document.getElementById('messages-empty').style.display='block'; return; }
+    document.getElementById('messages-empty').style.display='none';
+    list.innerHTML = messages.map(m => `
+      <div class="user-row">
+        <div class="who">
+          <span style="flex-shrink:0">${avatarNode({ username: m.author, avatar_url: m.avatar_url })}</span>
+          <div>
+            <a href="/u/${esc(m.author)}" style="font-weight:700;color:var(--gold-2);text-decoration:none">${esc(m.display_name || m.author)}</a>
+            <div class="email">${esc(m.email||'')}</div>
+            <div style="font-weight:600;margin-top:4px">${esc(m.subject)}</div>
+            <div class="email" style="margin-top:4px;white-space:pre-wrap">${esc(m.text)}</div>
+            <div class="email">${new Date(m.created_at).toLocaleString('ar')}</div>
+          </div>
+        </div>
+      </div>`).join('');
+  } catch (e) { list.innerHTML = `<p style="color:var(--danger)">${esc(e.message)}</p>`; }
+}
+
+// ===== Bans tab =====
+async function doBan(ban, btn) {
+  const username = document.getElementById('ban-input').value.trim();
+  if (!username) return showMsg('أدخل اسم المستخدم', false);
+  btn.disabled = true;
+  try {
+    await api('/api/ban', { method:'POST', body: JSON.stringify({ username, ban, reason: document.getElementById('ban-reason').value.trim() || undefined }) });
+    showMsg(ban ? 'تم تبنيد الحساب — أُحذفت أكواده وأُرسلت رسالة الإغلاق للبريد ✓' : 'تم فك التبنيد — أُرسلت رسالة العودة للبريد ✓', true);
+    document.getElementById('ban-input').value='';
+    document.getElementById('ban-reason').value='';
+    await loadBans();
+  } catch (e) { showMsg(e.message, false); btn.disabled=false; }
+  btn.disabled = false;
+}
+async function loadBans() {
+  const list = document.getElementById('bans-list');
+  try {
+    const { bans } = await api('/api/ban');
+    const entries = Object.entries(bans || {});
+    if (!entries.length) { list.innerHTML=''; document.getElementById('bans-empty').style.display='block'; return; }
+    document.getElementById('bans-empty').style.display='none';
+    list.innerHTML = entries.map(([u, b]) => `
+      <div class="user-row" style="border-color:${b.banned?'var(--danger)':'var(--border)'}">
+        <div class="who">
+          <div>
+            <a href="/u/${esc(u)}" style="font-weight:700;color:var(--gold-2);text-decoration:none">${esc(u)}</a>
+            <div class="email">${b.banned ? '🚫 مبنّد' : '✓ غير مبنّد'}${b.reason ? ' — السبب: '+esc(b.reason) : ''}</div>
+            <div class="email">${b.banned_at ? 'تبنيد: '+new Date(b.banned_at).toLocaleString('ar')+'<br>' : ''}${b.unbanned_at ? 'فك: '+new Date(b.unbanned_at).toLocaleString('ar') : ''}</div>
+          </div>
+        </div>
+        <div class="actions">
+          ${b.banned ? `<button class="btn primary sm" onclick="doBan(false, this)">فك التبنيد</button>` : ''}
+          ${!b.banned ? `<button class="btn danger sm" onclick="document.getElementById('ban-input').value='${esc(u)}';doBan(true,this)">تبنيد</button>` : ''}
+        </div>
+      </div>`).join('');
+  } catch (e) { list.innerHTML = `<p style="color:var(--danger)">${esc(e.message)}</p>`; }
+}
 </script>
 </body>
 </html>

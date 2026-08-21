@@ -170,12 +170,20 @@
     </div>
     <iframe id="preview" sandbox="allow-scripts allow-modals allow-popups" style="width:100%;height:420px;border:1px solid var(--border);border-radius:14px;background:#fff"></iframe>
   </div>
+
+  <!-- ===== الإعجابات والتعليقات والبلاغ ===== -->
+  <section id="interact-section" style="margin-top:22px;border:1px solid var(--border);border-radius:20px;background:var(--panel);padding:18px">
+    <div id="interact-header" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"></div>
+    <div id="comments-box" style="margin-top:14px"></div>
+    <div id="comment-form" style="margin-top:12px;display:none"></div>
+  </section>
 </main>
 
 <script src="/app.js"></script>
 <script>
 (async () => {
   await renderNav();
+  await renderBanOverlay(await loadMe());
   const parts = location.pathname.split('/').filter(Boolean);
   const filename = decodeURIComponent(parts[0] === 'c' ? (parts[1] || '') : (new URLSearchParams(location.search).get('file') || new URLSearchParams(location.search).get('c') || new URLSearchParams(location.search).get('x') || ''));
   if (!filename) { location.href='/'; return; }
@@ -233,6 +241,112 @@
   const ext = (filename.includes('.') ? filename.split('.').pop() : '').toLowerCase();
   const previewable = ['html','htm','css','svg','md','markdown'].includes(ext)
     || ['html','css','svg','markdown','md'].includes(String(meta.language||'').toLowerCase());
+  window.__filename = filename;
+
+  // ===== Interaction section =====
+  const interactSection = document.getElementById('interact-section');
+  async function renderInteraction() {
+    if (!interactSection) return;
+    const [likeData, comments, me] = await Promise.all([loadLike(filename), loadComments(filename), loadMe()]);
+    const bannedMe = !!(me && me.ban);
+    const header = document.getElementById('interact-header');
+    header.innerHTML = `
+      <button class="btn ${likeData.like ? 'danger' : 'ghost'}" id="likeBtn" onclick="doLike()" style="display:inline-flex;align-items:center;gap:8px">
+        ${heartSvg(likeData.like)} إعجاب <span id="likeCount">${likeData.total}</span>
+      </button>
+      <button class="btn ghost sm" onclick="doReportPrompt()" style="font-size:12.5px;color:var(--muted)">⚑ إبلاغ عن الكود</button>`;
+    const box = document.getElementById('comments-box');
+    if (!comments.length) {
+      box.innerHTML = '<p style="color:var(--muted);font-size:13px;text-align:center;padding:10px 0">لا تعليقات بعد. كن أول من يعلّق!</p>';
+    } else {
+      box.innerHTML = comments.map((c) => `
+        <div class="comment-row" style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+          <div style="flex-shrink:0">${avatarNode({ username: c.author, avatar_url: c.avatar_url })}</div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <a href="/u/${encodeURIComponent(c.author)}" style="font-weight:700;color:var(--gold-2);text-decoration:none;font-size:13.5px">${esc(c.display_name || c.author)}</a>
+              ${c.is_verified_badge ? verifiedBadge() : ''}
+              ${c.line ? `<span class="lang-tag" style="font-size:10.5px">سطر ${c.line}</span>` : ''}
+              <span style="font-size:11px;color:var(--muted)">${new Date(c.created_at).toLocaleString('ar')}</span>
+              ${me && (me.username.toLowerCase() === c.author.toLowerCase() || me.is_admin) ? `<button class="btn ghost sm" style="font-size:11px;padding:3px 10px" onclick="deleteComment('${c.id}')">حذف</button>` : ''}
+            </div>
+            <p style="margin:5px 0 0;font-size:13.5px;line-height:1.7;color:var(--text);word-break:break-word">${esc(c.text)}</p>
+          </div>
+        </div>`).join('');
+    }
+    const form = document.getElementById('comment-form');
+    if (!me) {
+      form.style.display = 'block';
+      form.innerHTML = `<a class="btn primary" href="/auth" style="width:100%;text-align:center">سجّل دخول لتعلّق على الكود</a>`;
+    } else if (bannedMe) {
+      form.style.display = 'block';
+      form.innerHTML = `<p style="color:var(--danger);font-size:13px;text-align:center">حسابك مغلق مؤقتًا ولا يمكنك التعليق.</p>`;
+    } else {
+      form.style.display = 'block';
+      form.innerHTML = `
+        <textarea id="commentInput" placeholder="اكتب تعليقك..." style="width:100%;min-height:70px;padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:var(--soft);color:var(--text);font-family:'Cairo',sans-serif;font-size:14px;resize:vertical"></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn primary" onclick="submitComment(this)">إرسال التعليق</button>
+        </div>
+        <p id="commentMsg" style="margin-top:8px;font-size:12.5px"></p>`;
+    }
+  }
+  window.doLike = async function () {
+    try {
+      const r = await toggleLike(filename);
+      document.getElementById('likeCount').textContent = r.total;
+      const btn = document.getElementById('likeBtn');
+      btn.className = 'btn ' + (r.liked ? 'danger' : 'ghost');
+      btn.innerHTML = heartSvg(r.liked) + ' إعجاب <span id="likeCount">' + r.total + '</span>';
+    } catch (e) { alert(e.message); }
+  };
+  window.deleteComment = async function (id) {
+    if (!confirm('حذف التعليق؟')) return;
+    try {
+      await api('/api/comments', { method: 'DELETE', body: JSON.stringify({ id }) });
+      await renderInteraction();
+    } catch (e) { alert(e.message); }
+  };
+  window.submitComment = async function (btn) {
+    const input = document.getElementById('commentInput');
+    const text = input.value.trim();
+    if (!text) return;
+    btn.disabled = true;
+    const msg = document.getElementById('commentMsg');
+    const check = await checkProfanity(text);
+    if (!check.ok) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = '⚠️ ' + check.warning;
+      btn.disabled = false;
+      return;
+    }
+    try {
+      await api('/api/comments', { method: 'POST', body: JSON.stringify({ code: filename, text }) });
+      input.value = '';
+      msg.style.color = 'var(--gold-2)';
+      msg.textContent = '✓ تم نشر التعليق';
+      setTimeout(() => renderInteraction(), 600);
+    } catch (e) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = e.message;
+      btn.disabled = false;
+    }
+  };
+  window.doReportPrompt = async function () {
+    const me = await loadMe();
+    if (!me) return alert('سجّل دخول أولاً');
+    if (me.ban) return alert('حسابك مغلق ولا يمكنك البلاغ');
+    const text = prompt('اكتب سبب البلاغ عن هذا الكود:');
+    if (!text || !text.trim()) return;
+    const check = await checkProfanity(text);
+    if (!check.ok) return alert('⚠️ ' + check.warning);
+    try {
+      await submitReport(text.trim());
+      alert('✓ تم إرسال البلاغ للإدارة');
+    } catch (e) { alert(e.message); }
+  };
+  await renderInteraction();
+  window.__filename = filename;
 
   actions.innerHTML = `
     <button class="btn primary" id="copyBtn" onclick="copyCode()">
