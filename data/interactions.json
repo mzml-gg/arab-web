@@ -25,10 +25,12 @@
   ],
   "likes": {
     "manustest88|pinterest-video-search.js": true,
-    "ziad|pinterest-video-search.js": true
+    "ziad|pinterest-video-search.js": true,
+    "ziad|pinterest": true
   },
   "reports": [],
   "likeTotals": {
-    "pinterest-video-search.js": 2
+    "pinterest-video-search.js": 2,
+    "pinterest": 1
   }
 }
