@@ -246,3 +246,139 @@ window.heartSvg = heartSvg; window.loadLike = loadLike; window.toggleLike = togg
 window.loadComments = loadComments; window.checkProfanity = checkProfanity;
 window.submitReport = submitReport; window.renderBanOverlay = renderBanOverlay;
 
+// BMG AI Chat System
+let aiSessionId = localStorage.getItem('bmg_ai_session') || Math.random().toString(36).substring(7);
+localStorage.setItem('bmg_ai_session', aiSessionId);
+
+let aiMsgCount = parseInt(localStorage.getItem('bmg_ai_count') || '0');
+const GUEST_LIMIT = 5;
+const CHAT_LIMIT = 20;
+
+function initBMGAI() {
+  if (document.getElementById('ai-trigger')) return;
+
+  const trigger = document.createElement('div');
+  trigger.id = 'ai-trigger';
+  trigger.className = 'ai-trigger';
+  trigger.innerHTML = `<div class="avatar-eye"></div><div class="avatar-eye"></div>`;
+  trigger.onclick = toggleAI;
+  document.body.appendChild(trigger);
+
+  const win = document.createElement('div');
+  win.id = 'ai-window';
+  win.className = 'ai-window';
+  win.innerHTML = `
+    <div class="ai-header">
+      <div class="ai-header-title">
+        <div class="avatar-sm"><div class="avatar-eye"></div><div class="avatar-eye"></div></div>
+        <span>BMG AI — ARAB CODE</span>
+      </div>
+      <button onclick="toggleAI()" style="background:none;border:none;color:#a1a1aa;cursor:pointer;font-size:20px">✕</button>
+    </div>
+    <div class="ai-body" id="ai-body">
+      <div class="ai-msg bot">مرحباً بك! أنا المساعد الذكي لشركة BMG ومنصة ARAB CODE. كيف يمكنني مساعدتك اليوم؟</div>
+    </div>
+    <div class="ai-footer">
+      <div class="ai-input-wrap">
+        <input type="text" id="ai-input" class="ai-input" placeholder="اسأل BMG AI..." onkeypress="if(event.key==='Enter')sendAIMessage()">
+        <button class="ai-send" id="ai-send" onclick="sendAIMessage()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+      <div id="ai-limit-wrap"></div>
+    </div>
+  `;
+  document.body.appendChild(win);
+}
+
+function toggleAI() {
+  const win = document.getElementById('ai-window');
+  win.classList.toggle('open');
+}
+
+async function sendAIMessage() {
+  const input = document.getElementById('ai-input');
+  const body = document.getElementById('ai-body');
+  const sendBtn = document.getElementById('ai-send');
+  const limitWrap = document.getElementById('ai-limit-wrap');
+  const text = input.value.trim();
+  
+  if (!text) return;
+
+  // التحقق من الجلسة والمستخدم
+  const me = window.__ME || null;
+  
+  if (!me && aiMsgCount >= GUEST_LIMIT) {
+    limitWrap.innerHTML = `
+      <div class="ai-limit-msg">
+        لقد استنفدت الرسائل المجانية. يرجى تسجيل الدخول للمتابعة.
+        <a href="/auth" class="btn primary sm" style="display:block;margin-top:5px;text-decoration:none;border-radius:8px">تسجيل الدخول</a>
+      </div>`;
+    return;
+  }
+
+  if (aiMsgCount >= CHAT_LIMIT) {
+    limitWrap.innerHTML = `<div class="ai-limit-msg">لقد امتلأت الرسائل في هذه الدردشة. ابدأ محادثة جديدة. <button onclick="resetAIChat()" class="btn ghost sm" style="margin-top:5px">محادثة جديدة</button></div>`;
+    return;
+  }
+
+  // إضافة رسالة المستخدم
+  const userMsg = document.createElement('div');
+  userMsg.className = 'ai-msg user';
+  userMsg.textContent = text;
+  body.appendChild(userMsg);
+  input.value = '';
+  body.scrollTop = body.scrollHeight;
+
+  // تعطيل الإدخال أثناء التحميل
+  input.disabled = true;
+  sendBtn.disabled = true;
+
+  // إضافة رسالة "جاري التفكير"
+  const botMsg = document.createElement('div');
+  botMsg.className = 'ai-msg bot';
+  botMsg.innerHTML = '<span class="thinking-dots">جاري التفكير...</span>';
+  body.appendChild(botMsg);
+
+  try {
+    const res = await fetch(`/api/ai?prompt=${encodeURIComponent(text)}&session_id=${aiSessionId}&model=BMG-1.7`);
+    const data = await res.text();
+    
+    botMsg.innerHTML = formatAIResponse(data);
+    
+    aiMsgCount++;
+    localStorage.setItem('bmg_ai_count', aiMsgCount);
+  } catch (e) {
+    botMsg.textContent = "عذراً، واجهت مشكلة في الاتصال بخادم BMG AI.";
+  } finally {
+    input.disabled = false;
+    sendBtn.disabled = false;
+    input.focus();
+    body.scrollTop = body.scrollHeight;
+  }
+}
+
+function formatAIResponse(text) {
+  text = esc(text);
+  // تحويل الأكواد
+  text = text.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+  // تحويل الأسطر الجديدة
+  text = text.replace(/\n/g, '<br>');
+  return text;
+}
+
+function resetAIChat() {
+  aiSessionId = Math.random().toString(36).substring(7);
+  localStorage.setItem('bmg_ai_session', aiSessionId);
+  aiMsgCount = 0;
+  localStorage.setItem('bmg_ai_count', '0');
+  location.reload();
+}
+
+// تشغيل الـ AI عند تحميل الصفحة
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(initBMGAI, 1000));
+} else {
+  setTimeout(initBMGAI, 1000);
+}
+
