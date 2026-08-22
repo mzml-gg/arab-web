@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "table-meta-ai.js",
+      "title": "Table-Meta-AI",
+      "description": "داله تعرض الرسايل بصيغه جدول من غير بايلس و دعمها ",
+      "language": "js",
+      "author": "Monte",
+      "author_avatar": "https://nezukouploads.servegame.net/file/9Fw91.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-22T10:44:04.001Z"
+    },
+    {
       "filename": "dual-meta-ai.js",
       "title": "Dual-meta-ai",
       "description": "داله يعرض الأكواد شكل محرر اكواد زي بتاع ميتا في الواتس بيشتغل في بايلس قديمه عادي ما تحتاج بليلس",
