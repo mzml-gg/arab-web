@@ -198,9 +198,28 @@
     if (found) { meta = found; filename = found.filename; }
   } catch {}
   
-  // تحديث عنوان الصفحة ديناميكياً لخدمة الـ SEO
+  // تحديث عنوان الصفحة ووسوم الـ SEO ديناميكياً
   if (meta.title) {
-    document.title = `${meta.title} · ARAB code | كود برمجي`;
+    const fullTitle = `${meta.title} · ARAB code | كود برمجي`;
+    document.title = fullTitle;
+    
+    // Update Meta Tags for SEO & Social Media
+    const updateMeta = (name, content, attr='name') => {
+      let el = document.querySelector(`meta[${attr}="${name}"]`);
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, name);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', content);
+    };
+    
+    updateMeta('description', meta.description || `تصفح كود ${meta.title} على منصة ARAB code.`);
+    updateMeta('og:title', fullTitle, 'property');
+    updateMeta('og:description', meta.description || `كود ${meta.title} متاح الآن على ARAB code.`, 'property');
+    updateMeta('og:url', window.location.href, 'property');
+    updateMeta('twitter:title', fullTitle);
+    updateMeta('twitter:description', meta.description || `تصفح كود ${meta.title} على ARAB code.`);
   }
 
   const rawUrl = `/api/raw?file=${encodeURIComponent(filename)}`;

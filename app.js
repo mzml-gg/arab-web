@@ -171,7 +171,7 @@ function codeCard(c, opts = {}) {
     : '';
   return `<article class="code-card" onclick="location.href='/c/${encodeURIComponent(file)}'">
     <div>
-      <h3 class="card-title">${esc(c.title || file)}${c.admin_added ? ' <span class="admin-mark" title="مضاف من الإدارة">' + eagleBadge('مضاف من الإدارة') + '</span>' : ''}</h3>
+      <h3 class="card-title">${esc(c.title || file)}</h3>
       <p class="card-desc">${esc(c.description || 'لا يوجد وصف لهذا الكود')}</p>
     </div>
     <div class="card-footer">

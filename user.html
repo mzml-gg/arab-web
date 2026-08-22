@@ -43,13 +43,20 @@
                     }
 
                     const u = data.user;
+                    const isAdmin = u.is_admin || (u.username.toLowerCase() === 'ziad');
                     document.getElementById('profile-header').innerHTML = `
-                        <div class="profile-banner" style="background-image: url('${u.banner_url || 'https://via.placeholder.com/1200x300'}')">
-                            <div class="profile-info">
-                                <img src="${u.avatar_url || 'https://nezukouploads.servegame.net/file/qwjuA.jpg'}" class="profile-avatar">
-                                <h2>${u.display_name} ${u.is_verified_badge ? '✔️' : ''}</h2>
-                                <p>@${u.username}</p>
-                                <p class="bio">${u.bio}</p>
+                        <div class="profile-card">
+                            <div class="profile-banner" style="background-image: url('${u.banner_url || 'https://via.placeholder.com/1200x300'}')"></div>
+                            <div class="profile-body">
+                                ${avatarNode({ username: u.username, avatar_url: u.avatar_url }, 'xl')}
+                                <div class="profile-name">
+                                    <h2>${esc(u.display_name)} ${u.is_verified_badge ? verifiedBadge() : ''} ${isAdmin ? eagleBadge() : ''}</h2>
+                                </div>
+                                <p class="profile-handle">@${u.username}</p>
+                                <div class="profile-stats">
+                                    <div><b>${allCodes.length}</b> كود منشور</div>
+                                    <div><b>${u.bio || 'لا يوجد وصف'}</b></div>
+                                </div>
                             </div>
                         </div>
                     `;
