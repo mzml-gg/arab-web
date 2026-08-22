@@ -18,7 +18,8 @@
     "montetopdev|team-x.js": true,
     "appod1234|3-0.js": true,
     "prototype|all-media-download.js": true,
-    "monte|dual-meta-ai.js": true
+    "monte|dual-meta-ai.js": true,
+    "vex|code-42.js": true
   },
   "reports": [
     {
@@ -36,6 +37,7 @@
     "team-x.js": 3,
     "3-0.js": 1,
     "all-media-download.js": 1,
-    "dual-meta-ai.js": 1
+    "dual-meta-ai.js": 1,
+    "code-42.js": 1
   }
 }
