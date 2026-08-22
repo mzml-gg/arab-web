@@ -284,9 +284,65 @@
 
   // ===== Interaction section =====
   const interactSection = document.getElementById('interact-section');
+  let allComments = [];
+  let visibleCommentsCount = 5;
+
+  function showCommentsSkeleton(container, count = 3) {
+    if (!container) return;
+    container.innerHTML = Array.from({ length: count }, () => `
+      <div class="skeleton-comment">
+        <div class="skeleton-comment-avatar"></div>
+        <div class="skeleton-comment-body">
+          <div class="skeleton-comment-line" style="width:30%"></div>
+          <div class="skeleton-comment-line"></div>
+          <div class="skeleton-comment-line short"></div>
+        </div>
+      </div>`).join('');
+  }
+
+  function renderCommentsList(me) {
+    const box = document.getElementById('comments-box');
+    if (!box) return;
+    
+    const visible = allComments.slice(0, visibleCommentsCount);
+    if (!allComments.length) {
+      box.innerHTML = '<p style="color:var(--muted);font-size:13px;text-align:center;padding:10px 0">لا تعليقات بعد. كن أول من يعلّق!</p>';
+      return;
+    }
+
+    let html = visible.map((c, index) => `
+      <div class="comment-row reveal-item" style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);--i:${index}">
+        <div style="flex-shrink:0">${avatarNode({ username: c.author, avatar_url: c.avatar_url })}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <a href="/u/${encodeURIComponent(c.author)}" style="font-weight:700;color:var(--gold-2);text-decoration:none;font-size:13.5px">${esc(c.display_name || c.author)}</a>
+            ${c.is_verified_badge ? verifiedBadge() : ''}
+            ${c.line ? `<span class="lang-tag" style="font-size:10.5px">سطر ${c.line}</span>` : ''}
+            <span style="font-size:11px;color:var(--muted)">${new Date(c.created_at).toLocaleString('ar')}</span>
+            ${me && (me.username.toLowerCase() === c.author.toLowerCase() || me.is_admin) ? `<button class="btn ghost sm" style="font-size:11px;padding:3px 10px" onclick="deleteComment('${c.id}')">حذف</button>` : ''}
+          </div>
+          <p style="margin:5px 0 0;font-size:13.5px;line-height:1.7;color:var(--text);word-break:break-word">${esc(c.text)}</p>
+        </div>
+      </div>`).join('');
+
+    if (allComments.length > visibleCommentsCount) {
+      html += `<button class="load-more-comments" onclick="loadMoreComments()">عرض المزيد من التعليقات (${allComments.length - visibleCommentsCount})</button>`;
+    }
+    box.innerHTML = html;
+  }
+
+  window.loadMoreComments = function() {
+    visibleCommentsCount += 10;
+    loadMe().then(me => renderCommentsList(me));
+  };
+
   async function renderInteraction() {
     if (!interactSection) return;
+    const box = document.getElementById('comments-box');
+    showCommentsSkeleton(box);
+    
     const [likeData, comments, me] = await Promise.all([loadLike(filename), loadComments(filename), loadMe()]);
+    allComments = comments;
     const bannedMe = !!(me && me.ban);
     const header = document.getElementById('interact-header');
     header.innerHTML = `
@@ -294,25 +350,8 @@
         ${heartSvg(likeData.like)} إعجاب <span id="likeCount">${likeData.total}</span>
       </button>
       <button class="btn ghost sm" onclick="doReportPrompt()" style="font-size:12.5px;color:var(--muted)">⚑ إبلاغ عن الكود</button>`;
-    const box = document.getElementById('comments-box');
-    if (!comments.length) {
-      box.innerHTML = '<p style="color:var(--muted);font-size:13px;text-align:center;padding:10px 0">لا تعليقات بعد. كن أول من يعلّق!</p>';
-    } else {
-      box.innerHTML = comments.map((c) => `
-        <div class="comment-row" style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
-          <div style="flex-shrink:0">${avatarNode({ username: c.author, avatar_url: c.avatar_url })}</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-              <a href="/u/${encodeURIComponent(c.author)}" style="font-weight:700;color:var(--gold-2);text-decoration:none;font-size:13.5px">${esc(c.display_name || c.author)}</a>
-              ${c.is_verified_badge ? verifiedBadge() : ''}
-              ${c.line ? `<span class="lang-tag" style="font-size:10.5px">سطر ${c.line}</span>` : ''}
-              <span style="font-size:11px;color:var(--muted)">${new Date(c.created_at).toLocaleString('ar')}</span>
-              ${me && (me.username.toLowerCase() === c.author.toLowerCase() || me.is_admin) ? `<button class="btn ghost sm" style="font-size:11px;padding:3px 10px" onclick="deleteComment('${c.id}')">حذف</button>` : ''}
-            </div>
-            <p style="margin:5px 0 0;font-size:13.5px;line-height:1.7;color:var(--text);word-break:break-word">${esc(c.text)}</p>
-          </div>
-        </div>`).join('');
-    }
+    
+    renderCommentsList(me);
     const form = document.getElementById('comment-form');
     if (!me) {
       form.style.display = 'block';
