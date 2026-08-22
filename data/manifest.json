@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-37.js",
+      "title": "المدير الخارق المميز",
+      "description": "كود مميز يجمع إدارة البروفايل والمجموعات والقنوات والمتابعة للمطور فقط",
+      "language": "js",
+      "author": "fares",
+      "author_avatar": null,
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-22T00:18:06.666Z"
+    },
+    {
       "filename": "3-0-1.js",
       "title": "المدير الخارق 3.0",
       "description": "مدير خارق للمطور: بروفايل، منشن، حظر، طرد، تفاعل ومتابعة قنوات",
