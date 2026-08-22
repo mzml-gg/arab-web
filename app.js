@@ -305,24 +305,21 @@ async function sendAIMessage() {
   
   if (!text) return;
 
-  // التحقق من الجلسة والمستخدم
   const me = window.__ME || null;
-  
   if (!me && aiMsgCount >= GUEST_LIMIT) {
     limitWrap.innerHTML = `
       <div class="ai-limit-msg">
         لقد استنفدت الرسائل المجانية. يرجى تسجيل الدخول للمتابعة.
-        <a href="/auth" class="btn primary sm" style="display:block;margin-top:5px;text-decoration:none;border-radius:8px">تسجيل الدخول</a>
+        <a href="/auth" class="btn primary sm" style="display:block;margin-top:5px;text-decoration:none;border-radius:12px">تسجيل الدخول</a>
       </div>`;
     return;
   }
 
   if (aiMsgCount >= CHAT_LIMIT) {
-    limitWrap.innerHTML = `<div class="ai-limit-msg">لقد امتلأت الرسائل في هذه الدردشة. ابدأ محادثة جديدة. <button onclick="resetAIChat()" class="btn ghost sm" style="margin-top:5px">محادثة جديدة</button></div>`;
+    limitWrap.innerHTML = `<div class="ai-limit-msg">لقد امتلأت الرسائل في هذه الدردشة. ابدأ محادثة جديدة. <button onclick="resetAIChat()" class="btn ghost sm" style="margin-top:5px;border-radius:10px">محادثة جديدة</button></div>`;
     return;
   }
 
-  // إضافة رسالة المستخدم
   const userMsg = document.createElement('div');
   userMsg.className = 'ai-msg user';
   userMsg.textContent = text;
@@ -330,26 +327,36 @@ async function sendAIMessage() {
   input.value = '';
   body.scrollTop = body.scrollHeight;
 
-  // تعطيل الإدخال أثناء التحميل
   input.disabled = true;
   sendBtn.disabled = true;
 
-  // إضافة رسالة "جاري التفكير"
   const botMsg = document.createElement('div');
   botMsg.className = 'ai-msg bot';
-  botMsg.innerHTML = '<span class="thinking-dots">جاري التفكير...</span>';
+  botMsg.innerHTML = `<div class="bot-inner"><div class="thinking-dots"><span></span><span></span><span></span> جاري التفكير...</div></div>`;
   body.appendChild(botMsg);
 
   try {
     const res = await fetch(`/api/ai?prompt=${encodeURIComponent(text)}&session_id=${aiSessionId}&model=BMG-1.7`);
-    const data = await res.text();
+    let data = await res.text();
     
-    botMsg.innerHTML = formatAIResponse(data);
+    // محاولة استخراج النص الصافي إذا كان JSON
+    try {
+      const parsed = JSON.parse(data);
+      if (parsed.reply) data = parsed.reply;
+    } catch(e) {}
+
+    const inner = botMsg.querySelector('.bot-inner');
+    inner.innerHTML = formatAIResponse(data);
+    
+    const actions = document.createElement('div');
+    actions.className = 'ai-msg-actions';
+    actions.innerHTML = `<button class="ai-action-btn" onclick="copyText(this, \`${esc(data).replace(/`/g, '\\`')}\`)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> نسخ</button>`;
+    botMsg.appendChild(actions);
     
     aiMsgCount++;
     localStorage.setItem('bmg_ai_count', aiMsgCount);
   } catch (e) {
-    botMsg.textContent = "عذراً، واجهت مشكلة في الاتصال بخادم BMG AI.";
+    botMsg.querySelector('.bot-inner').textContent = "عذراً، واجهت مشكلة في الاتصال بخادم BMG AI.";
   } finally {
     input.disabled = false;
     sendBtn.disabled = false;
@@ -359,12 +366,33 @@ async function sendAIMessage() {
 }
 
 function formatAIResponse(text) {
-  text = esc(text);
+  // تنظيف النص من علامات JSON الزائدة إذا وجدت
+  text = text.replace(/^success":true,"model_used":".*?","reply":/, '');
+  
+  // تحويل الجداول
+  text = text.replace(/\|(.+)\|/g, (match) => {
+    const cells = match.split('|').filter(c => c.trim() !== '');
+    if (cells.length === 0) return match;
+    return `<table><tr>${cells.map(c => `<td>${esc(c.trim())}</td>`).join('')}</tr></table>`;
+  });
+  
+  // دمج الجداول المتتالية
+  text = text.replace(/<\/table><table>/g, '');
+
   // تحويل الأكواد
   text = text.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+  
   // تحويل الأسطر الجديدة
   text = text.replace(/\n/g, '<br>');
+  
   return text;
+}
+
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text);
+  const old = btn.innerHTML;
+  btn.innerHTML = '✅ تم النسخ';
+  setTimeout(() => btn.innerHTML = old, 2000);
 }
 
 function resetAIChat() {
