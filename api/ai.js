@@ -58,29 +58,40 @@ export default async function handler(req, res) {
       'BMG-1.7': "https://www.monte-dev.online/api/ai/deepseek-reasoner?prompt="
     };
 
-    const baseUrl = endpoints[model] || endpoints['BMG-1'];
-    
-    // دمج البرومبت مع سؤال المستخدم
     const fullPrompt = `${systemPrompt}\n\nسؤال المستخدم: ${prompt}`;
-    const targetUrl = `${baseUrl}${encodeURIComponent(fullPrompt)}`;
+    const modelsToTry = [model, 'BMG-1.7', 'BMG-1', 'BMG-1.6'];
+    let lastError = null;
 
-    // توليد هوية فريدة للطلب
-    const randomVersion = Math.floor(Math.random() * 9000) + 1000;
-    const uniqueUserAgent = `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.${randomVersion} Safari/537.36 BMG-ID/${session_id}`;
-    const randomIP = `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+    for (const m of modelsToTry) {
+      const baseUrl = endpoints[m] || endpoints['BMG-1'];
+      const targetUrl = `${baseUrl}${encodeURIComponent(fullPrompt)}`;
+      
+      const randomVersion = Math.floor(Math.random() * 9000) + 1000;
+      const uniqueUserAgent = `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.${randomVersion} Safari/537.36 BMG-ID/${session_id}`;
+      const randomIP = `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
 
-    const response = await fetch(targetUrl, {
-      method: 'GET',
-      headers: {
-        'User-Agent': uniqueUserAgent,
-        'X-Forwarded-For': randomIP,
-        'X-Real-IP': randomIP,
-        'Cache-Control': 'no-cache'
+      try {
+        const response = await fetch(targetUrl, {
+          method: 'GET',
+          headers: {
+            'User-Agent': uniqueUserAgent,
+            'X-Forwarded-For': randomIP,
+            'X-Real-IP': randomIP,
+            'Cache-Control': 'no-cache'
+          }
+        });
+        
+        const data = await response.text();
+        if (response.ok && data && !data.includes('"success":false')) {
+          return res.status(200).send(data);
+        }
+        lastError = data;
+      } catch (e) {
+        lastError = e.message;
       }
-    });
+    }
     
-    const data = await response.text();
-    res.status(200).send(data);
+    res.status(500).json({ error: "فشل الاتصال بكافة خوادم BMG AI", details: lastError });
 
   } catch (error) {
     console.error("AI_API_ERROR:", error);

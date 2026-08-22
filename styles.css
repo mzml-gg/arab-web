@@ -388,9 +388,14 @@ input,textarea,select{font-family:inherit}
 .eagle-badge img { width: 100%; height: 100%; object-fit: contain; }
 
 /* BMG AI Chat Styles */
-.ai-trigger { position: fixed; bottom: 20px; left: 20px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #ffd700, #b8860b); color: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; box-shadow: 0 8px 24px rgba(184,134,11,0.4); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-.ai-trigger:hover { transform: scale(1.1) rotate(5deg); }
-.ai-trigger .avatar-eye { width: 4px; height: 10px; background: #000; border-radius: 2px; margin: 0 2px; animation: eyeBlinkAction 3s infinite; }
+.ai-trigger { position: fixed; bottom: 20px; left: 20px; width: 56px; height: 56px; border-radius: 18px; background: linear-gradient(135deg, #ffd700, #b8860b); color: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; box-shadow: 0 8px 24px rgba(184,134,11,0.4); transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1); animation: kimiFloating 3s ease-in-out infinite; }
+.ai-trigger:hover { transform: scale(1.05) translateY(-5px); box-shadow: 0 12px 32px rgba(184,134,11,0.6); }
+.ai-trigger .avatar-eye { width: 4px; height: 12px; background: #000; border-radius: 2px; margin: 0 3px; animation: eyeBlinkAction 3.5s infinite; }
+
+@keyframes kimiFloating {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-10px) scale(1.02) rotate(2deg); }
+}
 
 .ai-window { position: fixed; bottom: 90px; left: 20px; width: 360px; height: 500px; max-width: calc(100vw - 40px); max-height: calc(100vh - 120px); background: #0a0a0a; border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; z-index: 1000; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: translateY(20px); opacity: 0; transition: 0.3s ease; }
 .ai-window.open { display: flex; transform: translateY(0); opacity: 1; }
