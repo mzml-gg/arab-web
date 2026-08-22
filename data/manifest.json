@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "dual-meta-ai.js",
+      "title": "Dual-meta-ai",
+      "description": "داله يعرض الأكواد شكل محرر اكواد زي بتاع ميتا في الواتس بيشتغل في بايلس قديمه عادي ما تحتاج بليلس",
+      "language": "js",
+      "author": "Monte",
+      "author_avatar": "https://nezukouploads.servegame.net/file/9Fw91.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-22T10:42:24.024Z"
+    },
+    {
       "filename": "code-42.js",
       "title": "تحميل ",
       "description": "تحميل من جميع المنصات",
