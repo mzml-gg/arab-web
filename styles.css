@@ -194,43 +194,36 @@ input,textarea,select{font-family:inherit}
 .toggle-switch input:checked + span{background:linear-gradient(135deg,#f4c400,#e6a900)}
 .toggle-switch input:checked + span:before{transform:translateX(-23px)}
 
-/* Video background for cards */
-.card-video-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  border-radius: 20px;
-  pointer-events: none;
+/* Pagination styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 40px;
+  margin-bottom: 40px;
 }
-.card-video-bg video {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: cover;
+.pagination-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--gold);
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+.pagination-btn:hover:not(:disabled) {
+  background: var(--gold);
+  color: #fff;
+}
+.pagination-btn:disabled {
   opacity: 0.5;
+  cursor: not-allowed;
+  border-color: var(--muted);
+  color: var(--muted);
 }
-.card-video-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.6) 100%);
-  z-index: 1;
-}
-.code-card.has-video {
-  background: #fff !important;
-  overflow: hidden !important;
-  border: 1px solid var(--gold) !important;
-  position: relative;
-}
-.code-card.has-video .card-title, 
-.code-card.has-video .card-desc,
-.code-card.has-video .card-footer {
-  position: relative;
-  z-index: 2;
-  text-shadow: 0 1px 3px rgba(255,255,255,0.9);
+.pagination-info {
+  font-weight: 700;
+  color: var(--dark);
 }

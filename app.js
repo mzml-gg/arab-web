@@ -116,17 +116,7 @@ function codeCard(c, opts = {}) {
   const likeBadge = likes !== null
     ? `<span style="color:${likes > 0 ? '#e05252' : 'var(--muted)'};font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:4px;">${heartSvg(likes > 0)} ${likes}</span>`
     : '';
-  
-  let videoHtml = '';
-  if (c.video_url) {
-    videoHtml = `<div class="card-video-bg">
-      <video src="${esc(c.video_url)}" autoplay loop muted playsinline></video>
-      <div class="card-video-overlay"></div>
-    </div>`;
-  }
-
-  return `<article class="code-card ${c.video_url ? 'has-video' : ''}" onclick="location.href='/c/${encodeURIComponent(file)}'">
-    ${videoHtml}
+  return `<article class="code-card" onclick="location.href='/c/${encodeURIComponent(file)}'">
     <div>
       <h3 class="card-title">${esc(c.title || file)}${c.admin_added ? ' <span class="admin-mark" title="مضاف من الإدارة">' + verifiedBadge('مضاف من الإدارة') + '</span>' : ''}</h3>
       <p class="card-desc">${esc(c.description || 'لا يوجد وصف لهذا الكود')}</p>

@@ -28,6 +28,7 @@
   <div id="readme"></div>
   <h3 style="color:var(--gold-2);margin:20px 0 10px">الأكواد المنشورة</h3>
   <div id="codes" class="grid"></div>
+  <div id="pagination" class="pagination"></div>
   <p id="empty" style="color:var(--muted);text-align:center;display:none;margin-top:20px">لا توجد أكواد بعد.</p>
   <div id="side-wrap" style="margin-top:22px"></div>
 </main>
@@ -240,6 +241,51 @@ async function saveProfile(btn) {
   } catch (e) { msg.style.color = 'var(--danger)'; msg.textContent = e.message; btn.disabled = false; }
 }
 
+let allCodes = [];
+let currentPage = 1;
+const perPage = 15;
+
+async function renderCurrentPage() {
+  const box = document.getElementById('codes');
+  const pagBox = document.getElementById('pagination');
+  const start = (currentPage - 1) * perPage;
+  const end = start + perPage;
+  const codes = allCodes.slice(start, end);
+  
+  if (!codes.length) {
+    box.innerHTML = '';
+    pagBox.innerHTML = '';
+    return;
+  }
+
+  // Fetch like totals for visible codes
+  const totals = {};
+  await Promise.all(codes.map(async (c) => {
+    try { totals[c.filename] = (await api('/api/likes?code=' + encodeURIComponent(c.filename))).total || 0; }
+    catch { totals[c.filename] = 0; }
+  }));
+  
+  box.innerHTML = codes.map((c) => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
+  
+  const totalPages = Math.ceil(allCodes.length / perPage);
+  if (totalPages <= 1) {
+    pagBox.innerHTML = '';
+    return;
+  }
+
+  pagBox.innerHTML = `
+    <button class="pagination-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>السابق</button>
+    <span class="pagination-info">صفحة ${currentPage} من ${totalPages}</span>
+    <button class="pagination-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>التالي</button>
+  `;
+}
+
+function changePage(p) {
+  currentPage = p;
+  renderCurrentPage();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 (async () => {
   await renderNav();
   ME = await loadMe();
@@ -268,8 +314,13 @@ async function saveProfile(btn) {
   }
   document.getElementById('readme').innerHTML = renderReadme(user);
 
-  if (!codes || !codes.length) document.getElementById('empty').style.display = 'block';
-  else document.getElementById('codes').innerHTML = codes.map(codeCard).join('');
+  allCodes = codes || [];
+  if (!allCodes.length) {
+    document.getElementById('empty').style.display = 'block';
+  } else {
+    document.getElementById('empty').style.display = 'none';
+    await renderCurrentPage();
+  }
 
   if (is_self) {
     const pendingHtml = pending && pending.length

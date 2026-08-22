@@ -37,7 +37,6 @@
         <option value="txt">أخرى</option>
       </select>
     </div>
-    <div class="field" id="video-field" style="display:none"><label>رابط فيديو العرض (للموثقين فقط)</label><input name="video_url" placeholder="https://example.com/video.mp4"/></div>
     <div class="field"><label>الكود</label><textarea name="code" rows="14" required></textarea></div>
     <button type="submit" class="btn primary submit">إرسال للمراجعة</button>
   </form>
@@ -48,9 +47,7 @@
   await renderNav();
   const me = await loadMe();
   if (!me) { location.href = '/auth?mode=login'; return; }
-  if (me.is_verified_badge || me.is_admin) {
-    document.getElementById('video-field').style.display = 'block';
-  }
+
 
   const fork = new URLSearchParams(location.search).get('fork');
   if (fork) {
