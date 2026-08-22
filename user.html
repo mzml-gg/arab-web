@@ -7,17 +7,10 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <a href="/" class="logo">ARAB code</a>
-            <div class="nav-actions">
-                <button class="search-btn" title="بحث">🔍</button>
-                <a href="/submit" class="add-btn">+ كود</a>
-                <a href="/admin" class="admin-link">الإدارة</a>
-                <div id="user-nav"></div>
-            </div>
-        </div>
-    </header>
+    <nav class="nav">
+      <a href="/" class="brand"><span class="dot"></span> ARAB code</a>
+      <div class="nav-actions" id="nav-actions"></div>
+    </nav>
 
     <main>
         <div id="profile-header"></div>
@@ -64,20 +57,7 @@
                     allCodes = data.codes || [];
                     renderPage(1);
 
-                    const userNav = document.getElementById('user-nav');
-                    const meRes = await fetch('/api/me');
-                    const meData = await meRes.json();
-                    if (meData.user) {
-                        userNav.innerHTML = `
-                            <a href="/u/${meData.user.username}" class="user-link">
-                                <img src="${meData.user.avatar_url || 'https://nezukouploads.servegame.net/file/qwjuA.jpg'}" class="nav-avatar">
-                                ${meData.user.username}
-                            </a>
-                            <button onclick="logout()" class="logout-btn" title="خروج">🚪</button>
-                        `;
-                    } else {
-                        userNav.innerHTML = `<a href="/login" class="login-btn">دخول</a>`;
-                    }
+                    await renderNav();
                 } catch (e) {
                     console.error("PROFILE_LOAD_ERROR:", e);
                 }
@@ -124,10 +104,7 @@
                 container.appendChild(nextBtn);
             }
 
-            window.logout = async () => {
-                await fetch('/api/logout', { method: 'POST' });
-                location.reload();
-            };
+            window.logout = doLogout;
 
             loadProfile();
         })();

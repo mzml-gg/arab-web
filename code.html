@@ -155,7 +155,7 @@
 </head>
 <body>
 <nav class="nav">
-  <a href="/" class="brand"><img src="https://files.catbox.moe/i5gf6h.jpg" alt="ARAB CODE Logo" class="brand-logo"> ARAB code</a>
+  <a href="/" class="brand"><span class="dot"></span> ARAB code</a>
   <div class="nav-actions" id="nav-actions"></div>
 </nav>
 
@@ -209,12 +209,7 @@
   const me = await loadMe();
   const isOwner = me && me.username.toLowerCase() === (meta.author||'').toLowerCase();
 
-  const renderAuthor = (m) => `
-      <a href="/u/${encodeURIComponent(m.author || 'unknown')}" class="author-badge">
-        ${avatarNode({ username: m.author, avatar_url: avatarUrl(m) })}
-        <span>${esc(m.author_display || m.author || 'مجهول')}</span>
-        ${isVerified(m) ? verifiedBadge() : ''}
-      </a>`;
+  const renderAuthor = (m) => authorLink(m);
 
   document.getElementById('header').innerHTML = `
     <div class="code-header">

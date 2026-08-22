@@ -32,6 +32,10 @@ function avatarNode(user, size = '') {
   return `<span class="${cls}">${esc(avatarLetter(name))}</span>`;
 }
 
+function eagleBadge(title) {
+  return `<span class="eagle-badge" title="${esc(title || 'شارة الإدارة')}"></span>`;
+}
+
 function verifiedBadge(title) {
   return `<span class="verified-badge" title="${esc(title || 'حساب موثّق')}">
     <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
@@ -50,10 +54,12 @@ function isVerified(entry) {
 function authorLink(entry, opts = {}) {
   const username = entry.author || entry.username || 'unknown';
   const name = entry.author_display || entry.display_name || username;
+  const isAdmin = entry.is_admin || entry.author_is_admin || (username.toLowerCase() === 'ziad');
   return `<a href="/u/${encodeURIComponent(username)}" class="author" onclick="event.stopPropagation()">
     ${avatarNode({ username, avatar_url: avatarUrl(entry) }, opts.size || 'sm')}
     <span class="uname">${esc(name)}</span>
     ${isVerified(entry) ? verifiedBadge() : ''}
+    ${isAdmin ? eagleBadge() : ''}
   </a>`;
 }
 
@@ -61,20 +67,67 @@ async function loadMe() {
   try { const { user, ban } = await api('/api/me'); if (user) user.ban = ban || null; return user; } catch { return null; }
 }
 
+function ensureSidebar() {
+  if (document.getElementById('sidebar-overlay')) return;
+  const overlay = document.createElement('div');
+  overlay.id = 'sidebar-overlay';
+  overlay.className = 'sidebar-overlay';
+  overlay.onclick = closeSidebar;
+  
+  const sidebar = document.createElement('div');
+  sidebar.id = 'sidebar';
+  sidebar.className = 'sidebar';
+  sidebar.innerHTML = `
+    <div class="sidebar-header">
+      <h3>القائمة</h3>
+      <button class="close-sidebar" onclick="closeSidebar()">&times;</button>
+    </div>
+    <div class="sidebar-nav" id="sidebar-nav"></div>
+  `;
+  
+  document.body.appendChild(overlay);
+  document.body.appendChild(sidebar);
+}
+
+function openSidebar() {
+  ensureSidebar();
+  document.getElementById('sidebar-overlay').classList.add('open');
+  document.getElementById('sidebar').classList.add('open');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar-overlay').classList.remove('open');
+  document.getElementById('sidebar').classList.remove('open');
+}
+
 async function renderNav() {
   const el = document.getElementById('nav-actions');
   if (!el) return;
+  ensureSidebar();
   const me = await loadMe();
-  const searchBtn = `<button class="icon-btn" title="بحث" onclick="openSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg></button>`;
+  const sideNav = document.getElementById('sidebar-nav');
+  
+  const searchLink = `<a href="#" class="sidebar-link" onclick="closeSidebar(); openSearch(); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg> بحث عن كود</a>`;
+  const homeLink = `<a href="/" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> الرئيسية</a>`;
+  
   if (me) {
-    const adminLink = me.is_admin ? `<a class="btn ghost" href="/admin">الإدارة</a>` : '';
-    el.innerHTML = `${searchBtn}
-      <a class="btn" href="/submit">+ كود</a>
-      ${adminLink}
-      ${authorLink({ username: me.username, author_avatar: me.avatar_url, author_verified: me.is_verified_badge })}
-      <button class="icon-btn" title="خروج" onclick="doLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>`;
+    const adminLink = me.is_admin ? `<a href="/admin" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> الإدارة</a>` : '';
+    const submitLink = `<a href="/submit" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة كود</a>`;
+    const logoutLink = `<a href="#" class="sidebar-link danger" onclick="doLogout(); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> تسجيل خروج</a>`;
+    
+    sideNav.innerHTML = `${homeLink}${searchLink}${submitLink}${adminLink}${logoutLink}`;
+    el.innerHTML = `
+      ${authorLink({ username: me.username, author_avatar: me.avatar_url, author_verified: me.is_verified_badge, is_admin: me.is_admin })}
+      <button class="menu-btn" onclick="openSidebar()">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>`;
   } else {
-    el.innerHTML = `${searchBtn}<a class="btn primary" href="/auth">دخول</a>`;
+    sideNav.innerHTML = `${homeLink}${searchLink}<a href="/auth" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> تسجيل دخول</a>`;
+    el.innerHTML = `
+      <a class="btn primary" href="/auth">دخول</a>
+      <button class="menu-btn" onclick="openSidebar()">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>`;
   }
 }
 
@@ -118,7 +171,7 @@ function codeCard(c, opts = {}) {
     : '';
   return `<article class="code-card" onclick="location.href='/c/${encodeURIComponent(file)}'">
     <div>
-      <h3 class="card-title">${esc(c.title || file)}${c.admin_added ? ' <span class="admin-mark" title="مضاف من الإدارة">' + verifiedBadge('مضاف من الإدارة') + '</span>' : ''}</h3>
+      <h3 class="card-title">${esc(c.title || file)}${c.admin_added ? ' <span class="admin-mark" title="مضاف من الإدارة">' + eagleBadge('مضاف من الإدارة') + '</span>' : ''}</h3>
       <p class="card-desc">${esc(c.description || 'لا يوجد وصف لهذا الكود')}</p>
     </div>
     <div class="card-footer">
