@@ -46,6 +46,21 @@
 <script>
 let ME = null, USER = null;
 
+function showUserSkeleton(container, count = 6) {
+  if (!container) return;
+  container.className = 'skeleton-grid';
+  container.innerHTML = Array.from({ length: count }, () => '<div class="skeleton-card" aria-hidden="true"></div>').join('');
+}
+
+function revealUserCards(container) {
+  if (!container) return;
+  container.className = 'grid';
+  [...container.children].forEach((card, index) => {
+    card.classList.add('reveal-item');
+    card.style.setProperty('--i', index);
+  });
+}
+
 function mdToHtml(md) {
   try {
     const raw = window.marked ? marked.parse(md, { breaks: true, gfm: true }) : esc(md).replace(/\n/g, '<br>');
@@ -251,6 +266,7 @@ async function saveProfile(btn) {
 }
 
 (async () => {
+  showUserSkeleton(document.getElementById('codes'));
   await renderNav();
   ME = await loadMe();
   try { SETTINGS = (await api('/api/public-settings')).settings || {}; } catch { SETTINGS = {}; }
@@ -317,6 +333,7 @@ async function saveProfile(btn) {
     }));
 
     box.innerHTML = items.map(c => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
+    revealUserCards(box);
 
     const totalPages = Math.ceil(allUserCodes.length / perUserPage);
     if (totalPages > 1) {

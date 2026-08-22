@@ -52,6 +52,21 @@ let allCodes = [];
 let currentPage = 1;
 const perPage = 15;
 
+function showCodeSkeleton(container, count = 6) {
+  if (!container) return;
+  container.className = 'skeleton-grid';
+  container.innerHTML = Array.from({ length: count }, () => '<div class="skeleton-card" aria-hidden="true"></div>').join('');
+}
+
+function revealCards(container) {
+  if (!container) return;
+  container.className = 'grid';
+  [...container.children].forEach((card, index) => {
+    card.classList.add('reveal-item');
+    card.style.setProperty('--i', index);
+  });
+}
+
 async function renderCurrentPage() {
   const box = document.getElementById('codes');
   const pagBox = document.getElementById('pagination');
@@ -74,6 +89,7 @@ async function renderCurrentPage() {
   }));
   
   box.innerHTML = codes.map((c) => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
+  revealCards(box);
   
   // Render Pagination UI
   const totalPages = Math.ceil(allCodes.length / perPage);
@@ -119,8 +135,8 @@ async function fetchAndRenderCodes() {
 }
 
 (async () => {
-  await renderNav();
-  await fetchAndRenderCodes();
+  showCodeSkeleton(document.getElementById('codes'));
+  await Promise.all([renderNav(), fetchAndRenderCodes()]);
   const me = await loadMe();
   await renderBanOverlay(me);
   setInterval(fetchAndRenderCodes, 60000);
