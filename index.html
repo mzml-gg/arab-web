@@ -45,6 +45,7 @@ const perPage = 15;
 async function renderCurrentPage() {
   const box = document.getElementById('codes');
   const pagBox = document.getElementById('pagination');
+  if (!box || !pagBox) return;
   const start = (currentPage - 1) * perPage;
   const end = start + perPage;
   const codes = allCodes.slice(start, end);

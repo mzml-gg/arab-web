@@ -285,6 +285,7 @@ async function saveProfile(btn) {
   async function renderUserPage() {
     const box = document.getElementById('codes');
     const pagBox = document.getElementById('pagination');
+    if (!box || !pagBox) return;
     const start = (currentUserPage - 1) * perUserPage;
     const end = start + perUserPage;
     const items = allUserCodes.slice(start, end);
@@ -292,7 +293,8 @@ async function saveProfile(btn) {
     if (!items.length) {
       box.innerHTML = '';
       pagBox.innerHTML = '';
-      document.getElementById('empty').style.display = 'block';
+      const emptyEl = document.getElementById('empty');
+      if (emptyEl) emptyEl.style.display = 'block';
       return;
     }
     document.getElementById('empty').style.display = 'none';
