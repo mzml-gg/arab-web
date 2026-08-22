@@ -51,14 +51,24 @@
                                 ${avatarNode({ username: u.username, avatar_url: u.avatar_url }, 'xl')}
                                 <div class="profile-name">
                                     <h2>${esc(u.display_name)} ${u.is_verified_badge ? verifiedBadge() : ''} ${isAdmin ? eagleBadge() : ''}</h2>
+                                    <div class="profile-actions">
+                                        ${u.username === (window.__me && window.__me.username) ? '<button class="btn sm" onclick="location.href=\'/settings\'">تعديل البروفايل</button>' : ''}
+                                    </div>
                                 </div>
                                 <p class="profile-handle">@${u.username}</p>
                                 <div class="profile-stats">
-                                    <div><b>${allCodes.length}</b> كود منشور</div>
-                                    <div><b>${u.bio || 'لا يوجد وصف'}</b></div>
+                                    <span><b>${allCodes.length}</b> كود منشور</span>
+                                    <span><b>0</b> متابع</span>
+                                    <span><b>0</b> يتابع</span>
                                 </div>
                             </div>
                         </div>
+                        ${u.bio ? `
+                        <div class="readme">
+                            <div class="readme-head">README.md</div>
+                            <div class="readme-body">${u.bio.replace(/\n/g, '<br>')}</div>
+                        </div>
+                        ` : ''}
                     `;
 
                     allCodes = data.codes || [];
