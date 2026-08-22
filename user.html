@@ -300,58 +300,33 @@ async function saveProfile(btn) {
   }
   document.getElementById('readme').innerHTML = renderReadme(user);
 
-  if (!document.getElementById('pagination')) {
-    document.getElementById('codes').insertAdjacentHTML('afterend', '<div id="pagination" class="pagination"></div>');
-  }
-
   let allUserCodes = codes || [];
-  let currentUserPage = 1;
-  const perUserPage = 15;
 
   async function renderUserPage() {
     const box = document.getElementById('codes');
     const pagBox = document.getElementById('pagination');
-    if (!box || !pagBox) return;
-    const start = (currentUserPage - 1) * perUserPage;
-    const end = start + perUserPage;
-    const items = allUserCodes.slice(start, end);
+    if (!box) return;
 
-    if (!items.length) {
+    if (!allUserCodes.length) {
       box.innerHTML = '';
-      pagBox.innerHTML = '';
+      if (pagBox) pagBox.innerHTML = '';
       const emptyEl = document.getElementById('empty');
       if (emptyEl) emptyEl.style.display = 'block';
       return;
     }
     document.getElementById('empty').style.display = 'none';
     
-    // Fetch likes for visible items
+    // Fetch likes for all user codes
     const totals = {};
-    await Promise.all(items.map(async (c) => {
+    await Promise.all(allUserCodes.map(async (c) => {
       try { totals[c.filename] = (await api('/api/likes?code=' + encodeURIComponent(c.filename))).total || 0; }
       catch { totals[c.filename] = 0; }
     }));
 
-    box.innerHTML = items.map(c => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
+    box.innerHTML = allUserCodes.map(c => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
     revealUserCards(box);
-
-    const totalPages = Math.ceil(allUserCodes.length / perUserPage);
-    if (totalPages > 1) {
-      pagBox.innerHTML = `
-        <button class="pagination-btn" onclick="changeUserPage(${currentUserPage - 1})" ${currentUserPage === 1 ? 'disabled' : ''}>السابق</button>
-        <span class="pagination-info">صفحة ${currentUserPage} من ${totalPages}</span>
-        <button class="pagination-btn" onclick="changeUserPage(${currentUserPage + 1})" ${currentUserPage === totalPages ? 'disabled' : ''}>التالي</button>
-      `;
-    } else {
-      pagBox.innerHTML = '';
-    }
+    if (pagBox) pagBox.innerHTML = '';
   }
-
-  window.changeUserPage = (p) => {
-    currentUserPage = p;
-    renderUserPage();
-    document.getElementById('codes').scrollIntoView({ behavior: 'smooth' });
-  };
 
   await renderUserPage();
 

@@ -49,8 +49,6 @@
 <script src="/app.js"></script>
 <script>
 let allCodes = [];
-let currentPage = 1;
-const perPage = 15;
 
 function showCodeSkeleton(container, count = 6) {
   if (!container) return;
@@ -67,58 +65,17 @@ function revealCards(container) {
   });
 }
 
-async function renderCurrentPage() {
+async function fetchAndRenderCodes() {
   const box = document.getElementById('codes');
   const pagBox = document.getElementById('pagination');
-  if (!box || !pagBox) return;
-  const start = (currentPage - 1) * perPage;
-  const end = start + perPage;
-  const codes = allCodes.slice(start, end);
+  if (!box) return;
   
-  if (!codes.length) {
-    box.innerHTML = '';
-    pagBox.innerHTML = '';
-    return;
-  }
-
-  // Fetch like totals only for visible codes to improve performance
-  const totals = {};
-  await Promise.all(codes.map(async (c) => {
-    try { totals[c.filename] = (await api('/api/likes?code=' + encodeURIComponent(c.filename))).total || 0; }
-    catch { totals[c.filename] = 0; }
-  }));
-  
-  box.innerHTML = codes.map((c) => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
-  revealCards(box);
-  
-  // Render Pagination UI
-  const totalPages = Math.ceil(allCodes.length / perPage);
-  if (totalPages <= 1) {
-    pagBox.innerHTML = '';
-    return;
-  }
-
-  pagBox.innerHTML = `
-    <button class="pagination-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>السابق</button>
-    <span class="pagination-info">صفحة ${currentPage} من ${totalPages}</span>
-    <button class="pagination-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>التالي</button>
-  `;
-  
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function changePage(p) {
-  currentPage = p;
-  renderCurrentPage();
-}
-
-async function fetchAndRenderCodes() {
   try {
     const { codes } = await api(`/api/list?_t=${Date.now()}`);
     if (!codes || !codes.length) {
       document.getElementById('empty').style.display = 'block';
-      document.getElementById('codes').innerHTML = '';
-      document.getElementById('pagination').innerHTML = '';
+      box.innerHTML = '';
+      if (pagBox) pagBox.innerHTML = '';
       return;
     }
     document.getElementById('empty').style.display = 'none';
@@ -128,7 +85,16 @@ async function fetchAndRenderCodes() {
     document.getElementById('stats').innerHTML =
       `<div><b>${codes.length}</b> كود منشور</div><div><b>${devs.size}</b> مطوّر</div>`;
       
-    await renderCurrentPage();
+    // Fetch likes for all codes (since pagination is removed)
+    const totals = {};
+    await Promise.all(codes.map(async (c) => {
+      try { totals[c.filename] = (await api('/api/likes?code=' + encodeURIComponent(c.filename))).total || 0; }
+      catch { totals[c.filename] = 0; }
+    }));
+    
+    box.innerHTML = codes.map((c) => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
+    revealCards(box);
+    if (pagBox) pagBox.innerHTML = '';
   } catch (e) {
     console.error('Error fetching codes:', e);
   }
