@@ -12,29 +12,17 @@
     },
     {
       "source": "/u/(.*)",
-      "destination": "/user"
+      "destination": "/user.html"
     },
     {
       "source": "/c/(.*)",
-      "destination": "/code"
+      "destination": "/code.html"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "/api/index"
-    },
-    {
-      "src": "/ai",
-      "dest": "/ai.html"
-    },
-    {
-      "src": "/u/(.*)",
-      "dest": "/user"
-    },
-    {
-      "src": "/c/(.*)",
-      "dest": "/code"
     },
     {
       "handle": "filesystem"

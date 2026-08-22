@@ -1,7 +1,7 @@
 const { currentUser, loadUsers } = require('./_auth');
 const { readJson } = require('./_gh');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // إيقاف الكاش تماماً
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.setHeader('Pragma', 'no-cache');
@@ -97,4 +97,4 @@ export default async function handler(req, res) {
     console.error("AI_API_ERROR:", error);
     res.status(500).json({ error: "فشل الاتصال بخادم الذكاء الاصطناعي الخاص بـ BMG" });
   }
-}
+};
