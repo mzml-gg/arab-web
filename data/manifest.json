@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-38.js",
+      "title": " سبوتيفاي ",
+      "description": "تحميل و بحث من سبوتيفاي",
+      "language": "js",
+      "author": "Prototype",
+      "author_avatar": "https://nezukouploads.servegame.net/file/rQ3GS.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-22T00:41:50.611Z"
+    },
+    {
       "filename": "code-37.js",
       "title": "المدير الخارق المميز",
       "description": "كود مميز يجمع إدارة البروفايل والمجموعات والقنوات والمتابعة للمطور فقط",
