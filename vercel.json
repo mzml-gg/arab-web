@@ -25,6 +25,18 @@
       "dest": "/api/index"
     },
     {
+      "src": "/ai",
+      "dest": "/ai.html"
+    },
+    {
+      "src": "/u/(.*)",
+      "dest": "/user.html"
+    },
+    {
+      "src": "/c/(.*)",
+      "dest": "/code.html"
+    },
+    {
       "handle": "filesystem"
     },
     {

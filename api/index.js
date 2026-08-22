@@ -46,7 +46,7 @@ const routes = {
 
 module.exports = async (req, res) => {
   try {
-    const url = new URL(req.url, 'http://x');
+    const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     let p = url.pathname.replace(/^\/api\//, '').replace(/\/+$/, '');
     if (!p || p === 'index') p = 'me';
     const h = routes[p];
