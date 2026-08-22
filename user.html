@@ -86,7 +86,6 @@
             function renderPage(page) {
                 currentPage = page;
                 const container = document.getElementById('user-codes');
-                container.innerHTML = '';
                 
                 const start = (page - 1) * codesPerPage;
                 const end = start + codesPerPage;
@@ -94,12 +93,9 @@
 
                 if (pageCodes.length === 0) {
                     container.innerHTML = '<p>لا توجد أكواد منشورة بعد.</p>';
-                    return;
+                } else {
+                    container.innerHTML = pageCodes.map(c => window.codeCard(c)).join('');
                 }
-
-                pageCodes.forEach(code => {
-                    container.appendChild(window.codeCard(code));
-                });
 
                 renderPagination();
                 window.scrollTo(0, 0);
