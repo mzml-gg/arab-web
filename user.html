@@ -49,7 +49,19 @@ let ME = null, USER = null;
 function showUserSkeleton(container, count = 6) {
   if (!container) return;
   container.className = 'skeleton-grid';
-  container.innerHTML = Array.from({ length: count }, () => '<div class="skeleton-card" aria-hidden="true"></div>').join('');
+  container.innerHTML = Array.from({ length: count }, () => `
+    <div class="skeleton-card" aria-hidden="true">
+      <div class="skeleton-line skeleton-title"></div>
+      <div class="skeleton-line skeleton-text"></div>
+      <div class="skeleton-line skeleton-text" style="width:70%"></div>
+      <div class="skeleton-footer">
+        <div class="skeleton-line skeleton-badge"></div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <div class="skeleton-line skeleton-badge" style="width:60px"></div>
+          <div class="skeleton-line skeleton-avatar-sm"></div>
+        </div>
+      </div>
+    </div>`).join('');
 }
 
 function revealUserCards(container) {
