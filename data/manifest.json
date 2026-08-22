@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-41.js",
+      "title": "صوت لي نص ",
+      "description": "تحويل الصوت لي نص ",
+      "language": "js",
+      "author": "Prototype",
+      "author_avatar": "https://nezukouploads.servegame.net/file/rQ3GS.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-22T00:45:25.778Z"
+    },
+    {
       "filename": "code-40.js",
       "title": "قول ",
       "description": "انشاء اصوت بي AI",
