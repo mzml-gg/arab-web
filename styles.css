@@ -171,6 +171,46 @@ input,textarea,select{font-family:inherit}
   .profile{padding:16px}
 }
 
+/* Footer */
+.footer {
+  margin-top: 60px;
+  padding: 40px 20px;
+  border-top: 1px solid var(--border);
+  background: rgba(255,255,255,0.5);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.footer-content {
+  position: relative;
+  z-index: 2;
+}
+.footer-rights {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold-2);
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.footer-rights .bmg {
+  color: var(--gold);
+  text-shadow: 0 0 10px rgba(240,180,0,0.2);
+}
+.footer-decoration {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(240,180,0,0.15) 0%, transparent 70%);
+  filter: blur(10px);
+  z-index: 1;
+}
+
 /* ============ Unified code cards (used on all pages) ============ */
 .code-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;gap:10px;box-shadow:0 6px 18px rgba(129,96,0,.06);transition:transform .2s,box-shadow .2s,border-color .2s;cursor:pointer}
 .code-card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 16px 34px rgba(129,96,0,.14)}
