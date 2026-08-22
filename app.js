@@ -261,39 +261,8 @@ function initBMGAI() {
   trigger.id = 'ai-trigger';
   trigger.className = 'ai-trigger';
   trigger.innerHTML = `<div class="avatar-eye"></div><div class="avatar-eye"></div>`;
-  trigger.onclick = toggleAI;
+  trigger.onclick = () => location.href = '/ai';
   document.body.appendChild(trigger);
-
-  const win = document.createElement('div');
-  win.id = 'ai-window';
-  win.className = 'ai-window';
-  win.innerHTML = `
-    <div class="ai-header">
-      <div class="ai-header-title">
-        <div class="avatar-sm"><div class="avatar-eye"></div><div class="avatar-eye"></div></div>
-        <span>BMG AI — ARAB CODE</span>
-      </div>
-      <button onclick="toggleAI()" style="background:none;border:none;color:#a1a1aa;cursor:pointer;font-size:20px">✕</button>
-    </div>
-    <div class="ai-body" id="ai-body">
-      <div class="ai-msg bot">مرحباً بك! أنا المساعد الذكي لشركة BMG ومنصة ARAB CODE. كيف يمكنني مساعدتك اليوم؟</div>
-    </div>
-    <div class="ai-footer">
-      <div class="ai-input-wrap">
-        <input type="text" id="ai-input" class="ai-input" placeholder="اسأل BMG AI..." onkeypress="if(event.key==='Enter')sendAIMessage()">
-        <button class="ai-send" id="ai-send" onclick="sendAIMessage()">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-        </button>
-      </div>
-      <div id="ai-limit-wrap"></div>
-    </div>
-  `;
-  document.body.appendChild(win);
-}
-
-function toggleAI() {
-  const win = document.getElementById('ai-window');
-  win.classList.toggle('open');
 }
 
 async function sendAIMessage() {

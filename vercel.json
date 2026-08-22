@@ -7,12 +7,22 @@
       "destination": "/api/index"
     },
     {
+      "source": "/ai",
+      "destination": "/ai.html"
+    },
+    {
       "source": "/u/(.*)",
       "destination": "/user"
     },
     {
       "source": "/c/(.*)",
       "destination": "/code"
+    }
+  ],
+  "errorPages": [
+    {
+      "status": 404,
+      "src": "/404.html"
     }
   ]
 }
