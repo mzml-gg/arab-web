@@ -264,6 +264,13 @@ async function saveProfile(btn) {
     document.getElementById('editor-wrap').innerHTML = renderEditor(user);
     document.getElementById('account-wrap').innerHTML = renderAccount(user);
     document.getElementById('avatar-file')?.addEventListener('change', onAvatarPick);
+    
+    // Auto-open settings if tab=settings is in URL
+    if (new URLSearchParams(location.search).get('tab') === 'settings') {
+      setTimeout(() => {
+        toggleAccount();
+      }, 300);
+    }
   }
   document.getElementById('readme').innerHTML = renderReadme(user);
 
