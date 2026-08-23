@@ -32,7 +32,8 @@
     "monte|dual-meta-ai.js": true,
     "vex|code-42.js": true,
     "vex|table-meta-ai.js": true,
-    "azazazazazazazaz|code.txt": true
+    "azazazazazazazaz|code.txt": true,
+    "gjllljgkpmlkvvho|table-meta-ai.js": true
   },
   "reports": [
     {
@@ -52,7 +53,7 @@
     "all-media-download.js": 1,
     "dual-meta-ai.js": 1,
     "code-42.js": 1,
-    "table-meta-ai.js": 1,
+    "table-meta-ai.js": 2,
     "code.txt": 1
   }
 }
