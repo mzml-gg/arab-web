@@ -7,10 +7,10 @@
     { "source": "/c/(.*)", "destination": "/code.html" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index" },
-    { "src": "/u/(.*)", "dest": "/user.html" },
-    { "src": "/c/(.*)", "dest": "/code.html" },
     { "handle": "filesystem" },
+    { "src": "/u/.*", "dest": "/user.html" },
+    { "src": "/c/.*", "dest": "/code.html" },
+    { "src": "/api/.*", "dest": "/api/index" },
     { "src": "/(.*)", "status": 404, "dest": "/404.html" }
   ]
 }
