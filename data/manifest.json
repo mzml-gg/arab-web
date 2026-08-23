@@ -1,6 +1,270 @@
 {
   "codes": [
     {
+      "filename": "code-43.js",
+      "title": "رد-بوت",
+      "description": "ادا كتب شخص في شات بوت يرد عليه هادا ",
+      "language": "js",
+      "author": "gjllljgkpmlkvvho",
+      "author_avatar": "https://nezukouploads.servegame.net/file/qDwsx.jpg",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-23T13:01:28.321Z"
+    },
+    {
+      "filename": "code.txt",
+      "title": "مصر ",
+      "description": "ادخلو نوروني قناه دين هتستفادو",
+      "language": "txt",
+      "author": "azazazazazazazaz",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocLEfjziOzrDr9crtw8AEgVqBdiiTJT_fX0nCsXVmXCd0kIvgg=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-23T11:29:37.206Z"
+    },
+    {
+      "filename": "table-meta-ai.js",
+      "title": "Table-Meta-AI",
+      "description": "داله تعرض الرسايل بصيغه جدول من غير بايلس و دعمها ",
+      "language": "js",
+      "author": "Monte",
+      "author_avatar": "https://nezukouploads.servegame.net/file/9Fw91.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-22T10:44:04.001Z"
+    },
+    {
+      "filename": "dual-meta-ai.js",
+      "title": "Dual-meta-ai",
+      "description": "داله يعرض الأكواد شكل محرر اكواد زي بتاع ميتا في الواتس بيشتغل في بايلس قديمه عادي ما تحتاج بليلس",
+      "language": "js",
+      "author": "Monte",
+      "author_avatar": "https://nezukouploads.servegame.net/file/9Fw91.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-22T10:42:24.024Z"
+    },
+    {
+      "filename": "code-42.js",
+      "title": "تحميل ",
+      "description": "تحميل من جميع المنصات",
+      "language": "js",
+      "author": "Prototype",
+      "author_avatar": "https://nezukouploads.servegame.net/file/rQ3GS.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-22T00:46:53.144Z"
+    },
+    {
+      "filename": "applemusic.js",
+      "title": "applemusic",
+      "description": "تحميل و بحث من applemusic",
+      "language": "js",
+      "author": "Prototype",
+      "author_avatar": "https://nezukouploads.servegame.net/file/rQ3GS.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-22T00:46:05.878Z"
+    },
+    {
+      "filename": "code-41.js",
+      "title": "صوت لي نص ",
+      "description": "تحويل الصوت لي نص ",
+      "language": "js",
+      "author": "Prototype",
+      "author_avatar": "https://nezukouploads.servegame.net/file/rQ3GS.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-22T00:45:25.778Z"
+    },
+    {
+      "filename": "code-40.js",
+      "title": "قول ",
+      "description": "انشاء اصوت بي AI",
+      "language": "js",
+      "author": "Prototype",
+      "author_avatar": "https://nezukouploads.servegame.net/file/rQ3GS.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-22T00:44:31.705Z"
+    },
+    {
+      "filename": "code-39.js",
+      "title": "نانو ",
+      "description": " تعديل و انشاء صور ",
+      "language": "js",
+      "author": "Prototype",
+      "author_avatar": "https://nezukouploads.servegame.net/file/rQ3GS.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-22T00:43:06.995Z"
+    },
+    {
+      "filename": "code-38.js",
+      "title": " سبوتيفاي ",
+      "description": "تحميل و بحث من سبوتيفاي",
+      "language": "js",
+      "author": "Prototype",
+      "author_avatar": "https://nezukouploads.servegame.net/file/rQ3GS.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-22T00:41:50.611Z"
+    },
+    {
+      "filename": "code-37.js",
+      "title": "المدير الخارق المميز",
+      "description": "كود مميز يجمع إدارة البروفايل والمجموعات والقنوات والمتابعة للمطور فقط",
+      "language": "js",
+      "author": "fares",
+      "author_avatar": null,
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-22T00:18:06.666Z"
+    },
+    {
+      "filename": "3-0-1.js",
+      "title": "المدير الخارق 3.0",
+      "description": "مدير خارق للمطور: بروفايل، منشن، حظر، طرد، تفاعل ومتابعة قنوات",
+      "language": "js",
+      "author": "fares",
+      "author_avatar": null,
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-22T00:15:36.934Z"
+    },
+    {
+      "filename": "code-36.js",
+      "title": "نظام تتبع المحادثات",
+      "description": "مراقب ومسجل للمحادثات والارقام والروابط",
+      "language": "js",
+      "author": "Appod1234",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-21T21:17:20.997Z"
+    },
+    {
+      "filename": "3-0.js",
+      "title": "المدير الخارق 3.0",
+      "description": "مهام متعددة مع كلمة مرور قم بتعديل رقم المطور والقناة في الكود",
+      "language": "js",
+      "author": "Appod1234",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-21T21:14:48.451Z"
+    },
+    {
+      "filename": "code-35.js",
+      "title": "المدير الخارق ",
+      "description": "خمس في كود واحد  ",
+      "language": "js",
+      "author": "Appod1234",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-21T20:57:15.057Z"
+    },
+    {
+      "filename": "all-media-download.js",
+      "title": "All-Media-download ",
+      "description": "يحمل فيديوهات من جميع المنصات by prototype ",
+      "language": "js",
+      "author": "Monte",
+      "author_avatar": "https://nezukouploads.servegame.net/file/9Fw91.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-21T18:32:45.888Z"
+    },
+    {
+      "filename": "code-34.js",
+      "title": "مارد",
+      "description": "لعبة مارد تخمين شخصية ",
+      "language": "js",
+      "author": "gjllljgkpmlkvvho",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocJ10LH3Pu96QD5ANPDkSLT9aCH2kyIuTBy31HZ5xg5TyCLNmA=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-20T16:37:21.885Z"
+    },
+    {
+      "filename": "code-29.js",
+      "title": "ميمز ",
+      "description": "يجيب لك ميمز عشوائي ",
+      "language": "js",
+      "author": "gjllljgkpmlkvvho",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocJ10LH3Pu96QD5ANPDkSLT9aCH2kyIuTBy31HZ5xg5TyCLNmA=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-20T16:33:40.587Z"
+    },
+    {
+      "filename": "team-x.js",
+      "title": "Team-X",
+      "description": "بحث و تحميل المانهوا من موقع تيم اكس امر لبوت واتس اب ",
+      "language": "js",
+      "author": "Monte",
+      "author_avatar": "https://nezukouploads.servegame.net/file/9Fw91.jpg",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-20T15:28:32.078Z"
+    },
+    {
+      "filename": "fork-of.js",
+      "title": "Fork of كود ترفية اختراق",
+      "description": "اختراق وهمي للمقالب",
+      "language": "js",
+      "author": "Appod1234",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-20T10:21:05.737Z"
+    },
+    {
+      "filename": "code-33.js",
+      "title": "حذف_اساسي",
+      "description": "يحذف البوت المعين اساسي ويرجع الامور لطبيعتها",
+      "language": "js",
+      "author": "Appod1234",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-20T10:15:45.448Z"
+    },
+    {
+      "filename": "code-32.js",
+      "title": "تعيين_اساسي",
+      "description": "تعيين بوت ليرد على الاوامر",
+      "language": "js",
+      "author": "Appod1234",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-20T10:14:52.077Z"
+    },
+    {
+      "filename": "code.cpp",
+      "title": "محرك العب مصغر",
+      "description": "محرك اللعب",
+      "language": "cpp",
+      "author": "sovereignempirex",
+      "author_avatar": "https://nezukouploads.servegame.net/file/Wzo36.png",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-19T22:16:14.583Z"
+    },
+    {
+      "filename": "fork-of-cyber-security-for-passwords.py",
+      "title": "Fork of Cyber security for passwords",
+      "description": "كود ينشئ كلمات مرور و يحمي جهازك من attacks",
+      "language": "py",
+      "author": "sovereignempirex",
+      "author_avatar": "https://nezukouploads.servegame.net/file/Wzo36.png",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-08-19T18:09:25.869Z"
+    },
+    {
       "filename": "pinterest-video-search.js",
       "title": "Pinterest-Video-search",
       "description": "بحث و تحميل فيديوهات من بينترست عادي تستخدمها في ايديت ",
@@ -9,8 +273,7 @@
       "author_avatar": "https://nezukouploads.servegame.net/file/9Fw91.jpg",
       "author_verified": true,
       "admin_added": false,
-      "approved_at": "2026-08-19T10:09:52.913Z",
-      "video_url": "https://nezukouploads.servegame.net/file/JxxI0.mp4"
+      "approved_at": "2026-08-19T10:09:52.913Z"
     },
     {
       "filename": "code-31.js",
@@ -33,17 +296,6 @@
       "author_verified": false,
       "admin_added": false,
       "approved_at": "2026-08-18T23:57:02.597Z"
-    },
-    {
-      "filename": "code-29.js",
-      "title": "كود ترفية اختراق",
-      "description": "اختراق وهمي للمقالب",
-      "language": "js",
-      "author": "Appod1234",
-      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIPQRVgogz2rNNYuGsMhAUQ3XZnhVehTpUB87FLkW-c6Fr2MQ=s96-c",
-      "author_verified": false,
-      "admin_added": false,
-      "approved_at": "2026-08-18T13:31:21.045Z"
     },
     {
       "filename": "code-1.html",
