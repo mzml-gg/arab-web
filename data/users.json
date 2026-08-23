@@ -1032,6 +1032,18 @@
       "is_verified_badge": false,
       "provider": "google",
       "created_at": "2026-08-23T11:28:12.987Z"
+    },
+    {
+      "username": "njwy5698",
+      "email": "njwy5698@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$9EFIPs3FZVX4XGnO3LxBA.f0lQ/WLFZepN8yR/wr7nfLRzSJ8WBsC",
+      "display_name": "نجوي",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocKSX1a7sT67YEuSJMsESqfASkyeArmkUckl-irRKScwnLtIpA=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-23T18:47:06.853Z"
     }
   ]
 }
