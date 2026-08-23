@@ -119,7 +119,7 @@ async function renderNav() {
     const logoutLink = `<a href="#" class="sidebar-link danger" onclick="doLogout(); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> تسجيل خروج</a>`;
     
     sideNav.innerHTML = `${homeLink}${profileLink}${settingsLink}${searchLink}${submitLink}${adminLink}${logoutLink}
-      <div style="margin-top:auto;padding:20px;font-size:10px;color:var(--muted);text-align:center;font-weight:700;letter-spacing:1px;opacity:0.6;">BMG-CODE.2.0.0</div>`;
+      <div style="margin-top:auto;padding:20px;font-size:11px;color:var(--gold-dim);text-align:center;font-weight:800;letter-spacing:1px;border-top:1px dashed var(--border);">BMG-CODE.2.0.0</div>`;
     el.innerHTML = `
       <div class="nav-profile" onclick="location.href='/u/${esc(me.username)}'">
         ${avatarNode({ username: me.username, avatar_url: me.avatar_url }, 'sm')}
@@ -132,7 +132,7 @@ async function renderNav() {
       </button>`;
   } else {
     sideNav.innerHTML = `${homeLink}${searchLink}<a href="/auth" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> تسجيل دخول</a>
-      <div style="margin-top:auto;padding:20px;font-size:10px;color:var(--muted);text-align:center;font-weight:700;letter-spacing:1px;opacity:0.6;">BMG-CODE.2.0.0</div>`;
+      <div style="margin-top:auto;padding:20px;font-size:11px;color:var(--gold-dim);text-align:center;font-weight:800;letter-spacing:1px;border-top:1px dashed var(--border);">BMG-CODE.2.0.0</div>`;
     el.innerHTML = `
       <a class="btn primary" href="/auth">دخول</a>
       <button class="menu-btn" onclick="openSidebar()">
