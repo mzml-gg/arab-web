@@ -1062,11 +1062,12 @@
       "phone": "",
       "password_hash": "$2a$10$BXdodI./vMud3EOHsiZ1f.16BSbKXpUtwttekmJbx./svUXLatsHe",
       "display_name": "Mahmoud",
-      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocL0hz7XaOw2TIR0z-El4TQecaFcNH7wK80aMbrYzBwjQrmznQ=s96-c",
+      "avatar_url": "https://nezukouploads.servegame.net/file/KvEUc.jpg",
       "verified": true,
       "is_verified_badge": false,
       "provider": "google",
-      "created_at": "2026-08-23T22:33:32.247Z"
+      "created_at": "2026-08-23T22:33:32.247Z",
+      "profile_updated_at": "2026-08-23T22:41:13.938Z"
     },
     {
       "username": "SHANKSS",
