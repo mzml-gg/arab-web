@@ -1061,13 +1061,24 @@
       "email": "m83238961@gmail.com",
       "phone": "",
       "password_hash": "$2a$10$BXdodI./vMud3EOHsiZ1f.16BSbKXpUtwttekmJbx./svUXLatsHe",
-      "display_name": "Mahmoud",
+      "display_name": "Shanks",
       "avatar_url": "https://nezukouploads.servegame.net/file/KvEUc.jpg",
       "verified": true,
       "is_verified_badge": false,
       "provider": "google",
       "created_at": "2026-08-23T22:33:32.247Z",
-      "profile_updated_at": "2026-08-23T22:41:13.938Z"
+      "profile_updated_at": "2026-08-23T22:42:25.714Z",
+      "banner_url": null,
+      "bio": "",
+      "location": "فلسطين /Developer of WhatsApp, Telegram, and website bots",
+      "website": "",
+      "links": [
+        {
+          "label": "ريبيو الاكواد",
+          "url": "https://github.com/SHANKS-CODE-1/CODE",
+          "icon": ""
+        }
+      ]
     },
     {
       "username": "SHANKSS",
