@@ -1,9 +1,11 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/u/:username", "destination": "/user.html" },
-    { "source": "/c/:filename", "destination": "/code.html" },
-    { "source": "/api/:path*", "destination": "/api/index" }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/index" },
+    { "src": "/u/(.*)", "dest": "/user.html" },
+    { "src": "/c/(.*)", "dest": "/code.html" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "status": 404, "dest": "/404.html" }
   ]
 }
