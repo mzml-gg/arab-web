@@ -41,7 +41,7 @@ const routes = {
   'report-dismiss': require('./_report').reportDismiss,
   ban: require('./_h/ban'),
   messages: require('./_h/messages'),
-  ai: require('./ai'),
+
 };
 
 module.exports = async (req, res) => {

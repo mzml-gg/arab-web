@@ -6,10 +6,7 @@
       "source": "/api/(.*)",
       "destination": "/api/index"
     },
-    {
-      "source": "/ai",
-      "destination": "/ai.html"
-    },
+
     {
       "source": "/u/(.*)",
       "destination": "/user.html"
@@ -24,10 +21,7 @@
       "src": "/api/(.*)",
       "dest": "/api/index"
     },
-    {
-      "src": "/ai",
-      "dest": "/ai.html"
-    },
+
     {
       "src": "/u/(.*)",
       "dest": "/user.html"
