@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code.txt",
+      "title": "مصر ",
+      "description": "ادخلو نوروني قناه دين هتستفادو",
+      "language": "txt",
+      "author": "azazazazazazazaz",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocLEfjziOzrDr9crtw8AEgVqBdiiTJT_fX0nCsXVmXCd0kIvgg=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-23T11:29:37.206Z"
+    },
+    {
       "filename": "table-meta-ai.js",
       "title": "Table-Meta-AI",
       "description": "داله تعرض الرسايل بصيغه جدول من غير بايلس و دعمها ",
