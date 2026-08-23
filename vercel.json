@@ -5,7 +5,8 @@
     { "src": "/api/(.*)", "dest": "/api/index" },
     { "src": "/u/(.*)", "dest": "/user.html" },
     { "src": "/c/(.*)", "dest": "/code.html" },
+    { "src": "/(index|auth|submit|admin|404)(\\.html)?", "dest": "/$1.html" },
     { "handle": "filesystem" },
-    { "src": "/(.*)", "status": 404, "dest": "/404.html" }
+    { "src": "/.*", "status": 404, "dest": "/404.html" }
   ]
 }
