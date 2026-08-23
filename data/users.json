@@ -1044,6 +1044,17 @@
       "is_verified_badge": false,
       "provider": "google",
       "created_at": "2026-08-23T18:47:06.853Z"
+    },
+    {
+      "username": "SHANKS",
+      "email": "v.a.r.ad.ezs.c.a.rl@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$s6uA78k9yW5CrVf4fXqckuCVqi.hmfE6g10paTonMTD0RpCOqq7kS",
+      "display_name": "SHANKS",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "18f07347da4aa6c0042d417f2205e2915e001c72e73359f2",
+      "created_at": "2026-08-23T22:31:48.750Z"
     }
   ]
 }
