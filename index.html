@@ -97,14 +97,7 @@ async function fetchAndRenderCodes() {
     document.getElementById('stats').innerHTML =
       `<div><b>${codes.length}</b> كود منشور</div><div><b>${devs.size}</b> مطوّر</div>`;
       
-    // Fetch likes for all codes (since pagination is removed)
-    const totals = {};
-    await Promise.all(codes.map(async (c) => {
-      try { totals[c.filename] = (await api('/api/likes?code=' + encodeURIComponent(c.filename))).total || 0; }
-      catch { totals[c.filename] = 0; }
-    }));
-    
-    box.innerHTML = codes.map((c) => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
+    box.innerHTML = codes.map((c) => codeCard(c)).join('');
     revealCards(box);
     if (pagBox) pagBox.innerHTML = '';
   } catch (e) {

@@ -1,15 +1,31 @@
 // Shared client helpers
+// Spam Protection: simple lock for interactive requests
+const API_LOCKS = new Set();
 async function api(path, opts = {}) {
-  const res = await fetch(path, {
-    credentials: 'same-origin',
-    headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) },
-    ...opts,
-  });
-  const text = await res.text();
-  let data = {};
-  try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
-  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-  return data;
+  const isWrite = opts.method && opts.method !== 'GET';
+  const lockKey = `${opts.method || 'GET'}:${path.split('?')[0]}`;
+  
+  if (isWrite && API_LOCKS.has(lockKey)) {
+    console.warn('Spam protection: request ignored', lockKey);
+    return { spam: true };
+  }
+  
+  if (isWrite) API_LOCKS.add(lockKey);
+  
+  try {
+    const res = await fetch(path, {
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) },
+      ...opts,
+    });
+    const text = await res.text();
+    let data = {};
+    try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    return data;
+  } finally {
+    if (isWrite) setTimeout(() => API_LOCKS.delete(lockKey), 1500); // 1.5s lock
+  }
 }
 
 function esc(s) {
@@ -173,12 +189,8 @@ async function runSearch() {
   } catch (e) { box.innerHTML = `<p style="color:var(--danger)">${esc(e.message)}</p>`; }
 }
 
-function codeCard(c, opts = {}) {
+function codeCard(c) {
   const file = c.filename || c.title;
-  const likes = opts.likes != null ? opts.likes : (c.like_count != null ? c.like_count : null);
-  const likeBadge = likes !== null
-    ? `<span style="color:${likes > 0 ? '#e05252' : 'var(--muted)'};font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:4px;">${heartSvg(likes > 0)} ${likes}</span>`
-    : '';
   return `<article class="code-card" onclick="location.href='/c/${encodeURIComponent(file)}'">
     <div>
       <h3 class="card-title">${esc(c.title || file)}</h3>
@@ -187,7 +199,6 @@ function codeCard(c, opts = {}) {
     <div class="card-footer">
       ${authorLink(c)}
       <span class="lang-badge">${esc(c.language || 'txt')}</span>
-      ${likeBadge}
     </div>
   </article>`;
 }
@@ -198,16 +209,7 @@ window.renderNav = renderNav; window.doLogout = doLogout;
 window.openSearch = openSearch; window.closeSearch = closeSearch;
 window.codeCard = codeCard; window.loadMe = loadMe;
 
-// --- Interaction helpers (comments / likes / reports / ban overlay) ---
-function heartSvg(filled) {
-  return `<svg viewBox="0 0 24 24" width="16" height="16" fill="${filled ? '#e05252' : 'none'}" stroke="${filled ? '#e05252' : 'currentColor'}" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
-}
-async function loadLike(code) {
-  try { return await api('/api/likes?code=' + encodeURIComponent(code)); } catch { return { like: false, total: 0 }; }
-}
-async function toggleLike(code) {
-  return api('/api/likes', { method: 'POST', body: JSON.stringify({ code }) });
-}
+// --- Interaction helpers (comments / reports / ban overlay) ---
 async function loadComments(code) {
   try { const r = await api('/api/comments?code=' + encodeURIComponent(code)); return r.comments || []; } catch { return []; }
 }
@@ -244,7 +246,6 @@ async function renderBanOverlay(me) {
   document.body.appendChild(div);
   document.body.style.overflow = 'hidden';
 }
-window.heartSvg = heartSvg; window.loadLike = loadLike; window.toggleLike = toggleLike;
 window.loadComments = loadComments; window.checkProfanity = checkProfanity;
 window.submitReport = submitReport; window.renderBanOverlay = renderBanOverlay;
 

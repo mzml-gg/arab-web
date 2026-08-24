@@ -35,7 +35,7 @@ const routes = {
   'google-callback': require('./_h/google').callback,
   // --- New experiment features ---
   comments: require('./_h/comments'),
-  likes: require('./_h/likes'),
+
   'report-check': require('./_report').reportCheck,
   reports: require('./_report').reports,
   'report-dismiss': require('./_report').reportDismiss,

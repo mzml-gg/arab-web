@@ -1,7 +1,6 @@
-// Shared store for code interactions: comments + likes + reports, kept in data/interactions.json
-// Schema: { comments: [...], likes: {...}, reports: [...], likeTotals: {...} }
+// Shared store for code interactions: comments + reports, kept in data/interactions.json
+// Schema: { comments: [...], reports: [...] }
 // comments: { id, code, author, display_name, avatar_url, is_verified_badge, text, line, created_at }
-// likes: { "<username>|<code>": true }
 // reports: { id, code, reporter, email, text, created_at, status: 'open'|'dismissed' }
 const { readJson, writeJson } = require('./_gh');
 const { currentUser } = require('./_auth');
@@ -10,11 +9,9 @@ const { getSettings } = require('./_settings');
 const PATH = 'data/interactions.json';
 
 async function loadInteractions() {
-  const { data } = await readJson(PATH, { comments: [], likes: {}, reports: [], likeTotals: {} });
+  const { data } = await readJson(PATH, { comments: [], reports: [] });
   if (!Array.isArray(data.comments)) data.comments = [];
-  if (!data.likes) data.likes = {};
   if (!Array.isArray(data.reports)) data.reports = [];
-  if (!data.likeTotals) data.likeTotals = {};
   return data;
 }
 

@@ -328,14 +328,7 @@ async function saveProfile(btn) {
     }
     document.getElementById('empty').style.display = 'none';
     
-    // Fetch likes for all user codes
-    const totals = {};
-    await Promise.all(allUserCodes.map(async (c) => {
-      try { totals[c.filename] = (await api('/api/likes?code=' + encodeURIComponent(c.filename))).total || 0; }
-      catch { totals[c.filename] = 0; }
-    }));
-
-    box.innerHTML = allUserCodes.map(c => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
+    box.innerHTML = allUserCodes.map(c => codeCard(c)).join('');
     revealUserCards(box);
     if (pagBox) pagBox.innerHTML = '';
   }
