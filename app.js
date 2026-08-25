@@ -1,7 +1,7 @@
 // Shared client helpers
 // Spam Protection: simple lock for interactive requests
 const API_LOCKS = new Set();
-async function api(path, opts = {}) {
+async function api(path, opts = {}, retries = 2) {
   const isWrite = opts.method && opts.method !== 'GET';
   const lockKey = `${opts.method || 'GET'}:${path.split('?')[0]}`;
   
@@ -21,8 +21,21 @@ async function api(path, opts = {}) {
     const text = await res.text();
     let data = {};
     try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
-    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    
+    if (!res.ok) {
+      if (res.status >= 500 && retries > 0) {
+        await new Promise(r => setTimeout(r, 1000));
+        return api(path, opts, retries - 1);
+      }
+      throw new Error(data.error || `HTTP ${res.status}`);
+    }
     return data;
+  } catch (e) {
+    if (retries > 0) {
+      await new Promise(r => setTimeout(r, 1000));
+      return api(path, opts, retries - 1);
+    }
+    throw e;
   } finally {
     if (isWrite) setTimeout(() => API_LOCKS.delete(lockKey), 1500); // 1.5s lock
   }

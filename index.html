@@ -102,6 +102,10 @@ async function fetchAndRenderCodes() {
     if (pagBox) pagBox.innerHTML = '';
   } catch (e) {
     console.error('Error fetching codes:', e);
+    box.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px 20px;">
+      <p style="color:var(--danger);margin-bottom:12px;">⚠️ تعذّر تحميل الأكواد حالياً</p>
+      <button class="btn sm ghost" onclick="fetchAndRenderCodes()">إعادة المحاولة</button>
+    </div>`;
   }
 }
 
