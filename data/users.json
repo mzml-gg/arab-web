@@ -1090,6 +1090,18 @@
       "is_verified_badge": false,
       "verification_token": "9cf7be04cc06d55eae001693192d31d92ec176d6dc16f943",
       "created_at": "2026-08-23T22:36:25.176Z"
+    },
+    {
+      "username": "mzmlzip3",
+      "email": "mzmlzip3@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$KLZ2JcZQqbekfHafHgdYo.AuGM/Lp/JA7k4Knwi5hdEs52y9WkF2i",
+      "display_name": "مزمل zip",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocJIJPOPvIaS25oa6Kto3lHOgcSAjrwH2vGLTx-DiEJDO5E1yso=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-25T09:07:26.244Z"
     }
   ]
 }
