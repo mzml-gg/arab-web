@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-44.js",
+      "title": "عجلة جوجوتسو كايسن",
+      "description": "كود جوجوتسو كايسن يلف و يعطيك نقاط و مال و قدرات",
+      "language": "js",
+      "author": "alaarag75",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocJ4aKubSwZc8pnVXR9sNy5u7h_ymqsM6EFzm7qz0IMeROSRAyBd=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-08-26T17:48:48.264Z"
+    },
+    {
       "filename": "code-43.js",
       "title": "رد-بوت",
       "description": "ادا كتب شخص في شات بوت يرد عليه هادا ",
