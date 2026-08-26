@@ -1114,6 +1114,18 @@
       "is_verified_badge": false,
       "provider": "google",
       "created_at": "2026-08-26T13:35:21.873Z"
+    },
+    {
+      "username": "alaarag75",
+      "email": "alaarag75@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$QZeQOiBr5jN8GSfYYmJw3OeblZsm7OL2NwMnfqj8MZzvxsvOTigIK",
+      "display_name": "Ahmed Alaarag",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocJ4aKubSwZc8pnVXR9sNy5u7h_ymqsM6EFzm7qz0IMeROSRAyBd=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-26T17:23:07.278Z"
     }
   ]
 }
