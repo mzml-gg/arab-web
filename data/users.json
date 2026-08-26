@@ -1132,13 +1132,18 @@
       "email": "m30639102@gmail.com",
       "phone": "",
       "password_hash": "$2a$10$VG7o2HDqV.sH2Ww0WYwKM.2YFtZTbxRhX7ELLa2wbn8wZ73RL9Lhq",
-      "display_name": "محمد عادل",
+      "display_name": "𝑴𝑨7",
       "avatar_url": "https://nezukouploads.servegame.net/file/zfjXS.jpg",
       "verified": true,
       "is_verified_badge": false,
       "provider": "google",
       "created_at": "2026-08-26T17:30:53.608Z",
-      "profile_updated_at": "2026-08-26T17:32:42.120Z"
+      "profile_updated_at": "2026-08-26T17:33:52.218Z",
+      "banner_url": null,
+      "bio": "",
+      "location": "مصر",
+      "website": "",
+      "links": []
     }
   ]
 }
