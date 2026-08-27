@@ -12,7 +12,7 @@
 <link rel="icon" href="https://nezukouploads.servegame.net/file/cXNtl.jpg">
 <style>
   .brand .dot{background:url('https://nezukouploads.servegame.net/file/cXNtl.jpg') center/cover no-repeat !important;box-shadow:0 0 14px rgba(240,180,0,.35)}
-  .hero .sphere{width:120px;height:120px;background:url('https://nezukouploads.servegame.net/file/cXNtl.jpg') center/cover no-repeat;box-shadow:0 12px 34px rgba(0,0,0,.15);animation:none}
+  .hero .sphere{width:170px;height:170px;background:url('https://nezukouploads.servegame.net/file/cXNtl.jpg') center/cover no-repeat !important;box-shadow:0 28px 80px rgba(240,180,0,.28);animation:none;margin:0 auto}
   .stats-bar{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;margin-top:16px;font-size:13px;color:var(--muted)}
   .stats-bar b{color:var(--gold-2);font-size:17px;display:block}
 </style>
@@ -32,36 +32,28 @@
 
 <main class="container">
   <div id="codes" class="grid"></div>
-  <div id="pagination" class="pagination"></div>
   <p id="empty" style="text-align:center;color:var(--muted);display:none;margin-top:40px">لا توجد أكواد منشورة بعد.</p>
 </main>
 
-<footer class="footer">
-  <div class="footer-decoration"></div>
-  <div class="footer-content">
-    <div class="footer-rights">
-      <span>© 2026 Code ARAB</span>
-      <span class="bmg">— BMG</span>
-    </div>
-  </div>
-</footer>
-
 <script src="/app.js"></script>
 <script>
-let allCodes = [];
 async function fetchAndRenderCodes() {
-  const box = document.getElementById('codes');
-  if (!allCodes.length) showCodeSkeleton(box);
   try {
     const { codes } = await api(`/api/list?_t=${Date.now()}`);
+    const box = document.getElementById('codes');
     if (!codes || !codes.length) {
       document.getElementById('empty').style.display = 'block';
       box.innerHTML = '';
       return;
     }
-    allCodes = codes;
     document.getElementById('empty').style.display = 'none';
-    box.innerHTML = codes.map((c) => codeCard(c)).join('');
+    // Fetch like totals for every code
+    const totals = {};
+    await Promise.all(codes.map(async (c) => {
+      try { totals[c.filename] = (await api('/api/likes?code=' + encodeURIComponent(c.filename))).total || 0; }
+      catch { totals[c.filename] = 0; }
+    }));
+    box.innerHTML = codes.map((c) => codeCard(c, { likes: totals[c.filename] || 0 })).join('');
     const devs = new Set(codes.map(c => (c.author || '').toLowerCase()).filter(Boolean));
     document.getElementById('stats').innerHTML =
       `<div><b>${codes.length}</b> كود منشور</div><div><b>${devs.size}</b> مطوّر</div>`;
