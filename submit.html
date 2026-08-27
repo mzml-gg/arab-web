@@ -41,12 +41,23 @@
     <button type="submit" class="btn primary submit">إرسال للمراجعة</button>
   </form>
 </main>
+
+<footer class="footer">
+  <div class="footer-decoration"></div>
+  <div class="footer-content">
+    <div class="footer-rights">
+      <span>© 2026 Code ARAB</span>
+      <span class="bmg">— BMG</span>
+    </div>
+  </div>
+</footer>
 <script src="/app.js"></script>
 <script>
 (async () => {
   await renderNav();
   const me = await loadMe();
   if (!me) { location.href = '/auth?mode=login'; return; }
+
 
   const fork = new URLSearchParams(location.search).get('fork');
   if (fork) {

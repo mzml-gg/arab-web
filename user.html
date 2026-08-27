@@ -32,9 +32,46 @@
   <div id="side-wrap" style="margin-top:22px"></div>
 </main>
 
+<footer class="footer">
+  <div class="footer-decoration"></div>
+  <div class="footer-content">
+    <div class="footer-rights">
+      <span>© 2026 Code ARAB</span>
+      <span class="bmg">— BMG</span>
+    </div>
+  </div>
+</footer>
+
 <script src="/app.js"></script>
 <script>
 let ME = null, USER = null;
+
+function showUserSkeleton(container, count = 6) {
+  if (!container) return;
+  container.className = 'skeleton-grid';
+  container.innerHTML = Array.from({ length: count }, () => `
+    <div class="skeleton-card" aria-hidden="true">
+      <div class="skeleton-line skeleton-title"></div>
+      <div class="skeleton-line skeleton-text"></div>
+      <div class="skeleton-line skeleton-text" style="width:70%"></div>
+      <div class="skeleton-footer">
+        <div class="skeleton-line skeleton-badge"></div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <div class="skeleton-line skeleton-badge" style="width:60px"></div>
+          <div class="skeleton-line skeleton-avatar-sm"></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function revealUserCards(container) {
+  if (!container) return;
+  container.className = 'grid';
+  [...container.children].forEach((card, index) => {
+    card.classList.add('reveal-item');
+    card.style.setProperty('--i', index);
+  });
+}
 
 function mdToHtml(md) {
   try {
@@ -241,6 +278,7 @@ async function saveProfile(btn) {
 }
 
 (async () => {
+  showUserSkeleton(document.getElementById('codes'));
   await renderNav();
   ME = await loadMe();
   try { SETTINGS = (await api('/api/public-settings')).settings || {}; } catch { SETTINGS = {}; }
@@ -264,11 +302,38 @@ async function saveProfile(btn) {
     document.getElementById('editor-wrap').innerHTML = renderEditor(user);
     document.getElementById('account-wrap').innerHTML = renderAccount(user);
     document.getElementById('avatar-file')?.addEventListener('change', onAvatarPick);
+    
+    // Auto-open settings if tab=settings is in URL
+    if (new URLSearchParams(location.search).get('tab') === 'settings') {
+      setTimeout(() => {
+        toggleAccount();
+      }, 300);
+    }
   }
   document.getElementById('readme').innerHTML = renderReadme(user);
 
-  if (!codes || !codes.length) document.getElementById('empty').style.display = 'block';
-  else document.getElementById('codes').innerHTML = codes.map(codeCard).join('');
+  let allUserCodes = codes || [];
+
+  async function renderUserPage() {
+    const box = document.getElementById('codes');
+    const pagBox = document.getElementById('pagination');
+    if (!box) return;
+
+    if (!allUserCodes.length) {
+      box.innerHTML = '';
+      if (pagBox) pagBox.innerHTML = '';
+      const emptyEl = document.getElementById('empty');
+      if (emptyEl) emptyEl.style.display = 'block';
+      return;
+    }
+    document.getElementById('empty').style.display = 'none';
+    
+    box.innerHTML = allUserCodes.map(c => codeCard(c)).join('');
+    revealUserCards(box);
+    if (pagBox) pagBox.innerHTML = '';
+  }
+
+  await renderUserPage();
 
   if (is_self) {
     const pendingHtml = pending && pending.length
