@@ -1,15 +1,14 @@
-// Joins stored code entries with the LIVE user record so avatars / verified
-// badges are never stale snapshots.
-const { loadUsers, isAdminEmail } = require('./_auth');
+// Joins stored code entries with the LIVE user record
+import { loadUsers, isAdminEmail } from './_auth';
 
-async function userMap() {
+export async function userMap() {
   const { users } = await loadUsers();
   const m = new Map();
   for (const u of users) m.set(String(u.username || '').toLowerCase(), u);
   return m;
 }
 
-function liveAuthor(entry, u) {
+export function liveAuthor(entry, u) {
   if (!u) return { ...entry };
   const admin = isAdminEmail(u.email);
   return {
@@ -23,9 +22,7 @@ function liveAuthor(entry, u) {
   };
 }
 
-async function enrichCodes(codes) {
+export async function enrichCodes(codes) {
   const m = await userMap();
   return (codes || []).map((c) => liveAuthor(c, m.get(String(c.author || '').toLowerCase())));
 }
-
-module.exports = { enrichCodes, userMap, liveAuthor };

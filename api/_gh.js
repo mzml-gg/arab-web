@@ -1,12 +1,14 @@
-const REPO = (process.env.GITHUB_REPO || 'mzml-gg/arab-web').trim();
-const BRANCH = (process.env.GITHUB_BRANCH || 'main').trim();
-const TOKEN = (process.env.GITHUB_TOKEN || '').trim();
+// GitHub Datastore Layer for Cloudflare Workers
 const API = 'https://api.github.com';
-
 const CACHE = new Map();
-const CACHE_TTL = 10000; // 10 seconds cache for GET requests
+const CACHE_TTL = 10000;
 
 async function gh(path, opts = {}, retries = 2) {
+  const env = globalThis.process.env;
+  const REPO = (env.GITHUB_REPO || 'mzml-gg/arab-web').trim();
+  const BRANCH = (env.GITHUB_BRANCH || 'main').trim();
+  const TOKEN = (env.GITHUB_TOKEN || '').trim();
+
   const headers = {
     'Accept': 'application/vnd.github+json',
     'Content-Type': 'application/json',
@@ -15,29 +17,30 @@ async function gh(path, opts = {}, retries = 2) {
   };
   if (TOKEN) headers['Authorization'] = `Bearer ${TOKEN}`;
 
-  // Cache handling for GET requests
   const isGet = !opts.method || opts.method === 'GET';
-  if (isGet && CACHE.has(path)) {
-    const entry = CACHE.get(path);
+  const fullPath = path.includes('?') ? `${path}&ref=${BRANCH}` : `${path}?ref=${BRANCH}`;
+  const url = `${API}/repos/${REPO}${fullPath}`;
+
+  if (isGet && CACHE.has(url)) {
+    const entry = CACHE.get(url);
     if (Date.now() - entry.time < CACHE_TTL) return entry.res.clone();
   }
 
   try {
-    const res = await fetch(`${API}${path}`, { ...opts, headers });
+    const res = await fetch(url, { ...opts, headers });
     if (!res.ok) {
-      if (res.status === 409 && retries > 0) { // Conflict retry (common in GH API)
+      if (res.status === 409 && retries > 0) {
         await new Promise(r => setTimeout(r, 1000));
         return gh(path, opts, retries - 1);
       }
       const text = await res.text();
-      console.error(`GH ERROR: ${res.status} ${text} on ${path}`);
+      console.error(`GH ERROR: ${res.status} ${text} on ${url}`);
       throw new Error(`خطأ في الاتصال بقاعدة البيانات (${res.status})`);
     }
     
     if (isGet) {
-      CACHE.set(path, { res: res.clone(), time: Date.now() });
+      CACHE.set(url, { res: res.clone(), time: Date.now() });
     } else {
-      // Clear cache on mutations to ensure fresh data
       CACHE.clear();
     }
     
@@ -51,20 +54,23 @@ async function gh(path, opts = {}, retries = 2) {
   }
 }
 
-async function getFile(path) {
+export async function getFile(path) {
   try {
-    const res = await gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`);
+    const res = await gh(`/contents/${encodeURIComponent(path)}`);
     const j = await res.json();
-    return { content: Buffer.from(j.content, 'base64').toString('utf8'), sha: j.sha };
+    // Use standard Web APIs for base64 decoding in Workers
+    const content = atob(j.content.replace(/\n/g, ''));
+    const utf8Content = new TextDecoder().decode(Uint8Array.from(content, c => c.charCodeAt(0)));
+    return { content: utf8Content, sha: j.sha };
   } catch (e) {
     if (e.message.includes('404')) return null;
     throw e;
   }
 }
 
-async function listDir(path) {
+export async function listDir(path) {
   try {
-    const res = await gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`);
+    const res = await gh(`/contents/${encodeURIComponent(path)}`);
     return await res.json();
   } catch (e) {
     if (e.message.includes('404')) return [];
@@ -72,18 +78,30 @@ async function listDir(path) {
   }
 }
 
-async function putFile(path, content, message, sha) {
-  const body = { message, content: Buffer.from(content).toString('base64'), branch: BRANCH };
+export async function putFile(path, content, message, sha) {
+  const env = globalThis.process.env;
+  const BRANCH = (env.GITHUB_BRANCH || 'main').trim();
+  // Use standard Web APIs for base64 encoding in Workers
+  const base64Content = btoa(unescape(encodeURIComponent(content)));
+  const body = { message, content: base64Content, branch: BRANCH };
   if (sha) body.sha = sha;
-  return gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}`, { method: 'PUT', body: JSON.stringify(body) });
+  return gh(`/contents/${encodeURIComponent(path)}`, { 
+    method: 'PUT', 
+    body: JSON.stringify(body) 
+  });
 }
 
-async function deleteFile(path, message, sha) {
+export async function deleteFile(path, message, sha) {
+  const env = globalThis.process.env;
+  const BRANCH = (env.GITHUB_BRANCH || 'main').trim();
   const body = { message, sha, branch: BRANCH };
-  return gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}`, { method: 'DELETE', body: JSON.stringify(body) });
+  return gh(`/contents/${encodeURIComponent(path)}`, { 
+    method: 'DELETE', 
+    body: JSON.stringify(body) 
+  });
 }
 
-async function readJson(path, fallback) {
+export async function readJson(path, fallback) {
   const f = await getFile(path);
   if (!f) return { data: fallback, sha: null };
   try {
@@ -93,9 +111,7 @@ async function readJson(path, fallback) {
   }
 }
 
-async function writeJson(path, data, message) {
+export async function writeJson(path, data, message) {
   const { sha } = await readJson(path, null);
   return putFile(path, JSON.stringify(data, null, 2), message, sha);
 }
-
-module.exports = { getFile, putFile, deleteFile, listDir, readJson, writeJson, REPO, BRANCH };
