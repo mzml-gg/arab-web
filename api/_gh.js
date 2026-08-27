@@ -1,5 +1,5 @@
-const REPO = process.env.GITHUB_REPO || 'mzml-gg/arab-web';
-const BRANCH = process.env.GITHUB_BRANCH || 'main';
+const REPO = (process.env.GITHUB_REPO || 'mzml-gg/arab-web').trim();
+const BRANCH = (process.env.GITHUB_BRANCH || 'main').trim();
 const TOKEN = (process.env.GITHUB_TOKEN || '').trim();
 const API = 'https://api.github.com';
 

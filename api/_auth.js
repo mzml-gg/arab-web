@@ -71,9 +71,15 @@ async function currentUser(req) {
   return u || null;
 }
 
-function readBody(req) {
+async function readBody(req) {
+  if (req.body && typeof req.body === 'string') {
+    try { return JSON.parse(req.body); } catch (e) { return {}; }
+  }
+  if (req.json) return await req.json(); // Standard Fetch/Cloudflare
+  
   return new Promise((resolve, reject) => {
     let d = '';
+    if (!req.on) return resolve({}); // Not a stream
     req.on('data', (c) => (d += c));
     req.on('end', () => {
       try { resolve(d ? JSON.parse(d) : {}); } catch (e) { reject(e); }
