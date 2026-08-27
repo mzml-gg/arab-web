@@ -18,10 +18,9 @@ function esc(s) {
 
 function avatarLetter(name) { return (name || '?').trim().charAt(0).toUpperCase(); }
 
-// Always resolves the LIVE avatar coming from the API (never a stale snapshot).
-function avatarUrl(entry) {
-  if (!entry) return null;
-  return entry.avatar_url || entry.author_avatar || entry.avatar || null;
+function avatarUrl(user) {
+  if (!user) return null;
+  return user.avatar_url || user.author_avatar || user.avatar || null;
 }
 
 function avatarNode(user, size = '') {
@@ -30,10 +29,6 @@ function avatarNode(user, size = '') {
   const cls = 'avatar' + (size ? ' ' + size : '');
   if (url) return `<span class="${cls}"><img src="${esc(url)}" alt="${esc(name)}" loading="lazy"></span>`;
   return `<span class="${cls}">${esc(avatarLetter(name))}</span>`;
-}
-
-function eagleBadge(title) {
-  return `<span class="eagle-badge" title="${esc(title || 'شارة المنصة')}"><img src="https://nezukouploads.servegame.net/file/cXNtl.jpg"></span>`;
 }
 
 function verifiedBadge(title) {
@@ -45,7 +40,10 @@ function verifiedBadge(title) {
   </span>`;
 }
 
-// Single source of truth for "is this author verified?" across every page.
+function eagleBadge(title) {
+  return `<span class="eagle-badge" title="${esc(title || 'شارة المنصة')}"><img src="https://nezukouploads.servegame.net/file/cXNtl.jpg"></span>`;
+}
+
 function isVerified(entry) {
   if (!entry) return false;
   return !!(entry.author_verified || entry.is_verified_badge || entry.is_admin || entry.author_is_admin);
@@ -106,42 +104,44 @@ async function renderNav() {
   ensureSidebar();
   const me = await loadMe();
   const sideNav = document.getElementById('sidebar-nav');
-  if (!sideNav) return;
-  
-  const searchLink = `<a href="#" class="sidebar-link" onclick="closeSidebar(); openSearch(); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg> بحث عن كود</a>`;
-  const homeLink = `<a href="/" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> الرئيسية</a>`;
-  
+  const searchBtn = `<button class="icon-btn" title="بحث" onclick="openSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg></button>`;
+  const menuBtn = `<button class="icon-btn menu-btn" onclick="openSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>`;
+
   if (me) {
-    const profileLink = `<a href="/u/${esc(me.username)}" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> الملف الشخصي</a>`;
-    const settingsLink = `<a href="/u/${esc(me.username)}?tab=settings" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> إعدادات الحساب</a>`;
-    const adminLink = me.is_admin ? `<a href="/admin" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> الإدارة</a>` : '';
-    const submitLink = `<a href="/submit" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> إضافة كود</a>`;
-    const logoutLink = `<a href="#" class="sidebar-link danger" onclick="doLogout(); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> تسجيل خروج</a>`;
-    
-    sideNav.innerHTML = `${homeLink}${profileLink}${settingsLink}${searchLink}${submitLink}${adminLink}${logoutLink}
-      <div style="margin-top:auto;padding:20px;font-size:11px;color:var(--gold-dim);text-align:center;font-weight:800;letter-spacing:1px;border-top:1px dashed var(--border);">BMG-CODE.2.0.0</div>`;
-    el.innerHTML = `
-      <div class="nav-profile" onclick="location.href='/u/${esc(me.username)}'">
-        ${avatarNode({ username: me.username, avatar_url: me.avatar_url }, 'sm')}
-        <span class="name">${esc(me.display_name || me.username)}</span>
-        ${isVerified(me) ? verifiedBadge() : ''}
-        ${me.is_admin ? eagleBadge() : ''}
-      </div>
-      <button class="menu-btn" onclick="openSidebar()">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>`;
+    const adminLink = me.is_admin ? `<a class="side-link" href="/admin">الإدارة</a>` : '';
+    el.innerHTML = `${searchBtn}${menuBtn}${authorLink(me, { size: 'sm' })}`;
+    if (sideNav) {
+      sideNav.innerHTML = `
+        <a class="side-link" href="/submit">إضافة كود</a>
+        ${adminLink}
+        <a class="side-link" href="/u/${me.username}">ملفي الشخصي</a>
+        <button class="side-link logout" onclick="doLogout()">تسجيل الخروج</button>
+      `;
+    }
   } else {
-    sideNav.innerHTML = `${homeLink}${searchLink}<a href="/auth" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> تسجيل دخول</a>
-      <div style="margin-top:auto;padding:20px;font-size:11px;color:var(--gold-dim);text-align:center;font-weight:800;letter-spacing:1px;border-top:1px dashed var(--border);">BMG-CODE.2.0.0</div>`;
-    el.innerHTML = `
-      <a class="btn primary" href="/auth">دخول</a>
-      <button class="menu-btn" onclick="openSidebar()">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>`;
+    el.innerHTML = `${searchBtn}${menuBtn}<a class="btn primary" href="/auth">دخول</a>`;
+    if (sideNav) {
+      sideNav.innerHTML = `<a class="side-link" href="/auth">تسجيل الدخول</a>`;
+    }
   }
 }
 
 async function doLogout() { await api('/api/logout', { method: 'POST' }); location.href = '/'; }
+
+// Skeleton Loader
+function showCodeSkeleton(container, count = 6) {
+  if (!container) return;
+  container.innerHTML = Array.from({ length: count }, () => `
+    <div class="skeleton-card">
+      <div class="skeleton-line title"></div>
+      <div class="skeleton-line desc"></div>
+      <div class="skeleton-footer">
+        <div class="skeleton-avatar"></div>
+        <div class="skeleton-line name"></div>
+      </div>
+    </div>
+  `).join('');
+}
 
 // Search overlay
 function ensureSearchOverlay() {
@@ -175,42 +175,27 @@ async function runSearch() {
 
 function codeCard(c, opts = {}) {
   const file = c.filename || c.title;
+  const likes = opts.likes != null ? opts.likes : (c.like_count != null ? c.like_count : null);
+  const likeBadge = likes !== null
+    ? `<span style="color:${likes > 0 ? '#e05252' : 'var(--muted)'};font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:4px;">${heartSvg(likes > 0)} ${likes}</span>`
+    : '';
   return `<article class="code-card" onclick="location.href='/c/${encodeURIComponent(file)}'">
     <div>
-      <h3 class="card-title">${esc(c.title || file)}</h3>
+      <h3 class="card-title">${esc(c.title || file)}${c.admin_added ? ' <span class="admin-mark" title="مضاف من الإدارة">' + verifiedBadge('مضاف من الإدارة') + '</span>' : ''}</h3>
       <p class="card-desc">${esc(c.description || 'لا يوجد وصف لهذا الكود')}</p>
     </div>
     <div class="card-footer">
       ${authorLink(c)}
       <span class="lang-badge">${esc(c.language || 'txt')}</span>
+      ${likeBadge}
     </div>
   </article>`;
 }
 
-window.api = api; window.esc = esc;
-window.avatarNode = avatarNode; window.avatarUrl = avatarUrl; window.isVerified = isVerified; window.authorLink = authorLink; window.verifiedBadge = verifiedBadge;
-window.renderNav = renderNav; window.doLogout = doLogout;
-window.openSearch = openSearch; window.closeSearch = closeSearch;
-window.codeCard = codeCard; window.loadMe = loadMe;
+function heartSvg(filled) {
+  return `<svg viewBox="0 0 24 24" width="16" height="16" fill="${filled ? '#e05252' : 'none'}" stroke="${filled ? '#e05252' : 'currentColor'}" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+}
 
-// --- Interaction helpers (comments / reports / ban overlay) ---
-async function loadComments(code) {
-  try { const r = await api('/api/comments?code=' + encodeURIComponent(code)); return r.comments || []; } catch { return []; }
-}
-// Warning check BEFORE sending a comment/report. Returns { ok } or { ok:false, warning }.
-async function checkProfanity(text) {
-  try {
-    await api('/api/report-check', { method: 'POST', body: JSON.stringify({ text }) });
-    return { ok: true };
-  } catch (e) {
-    let msg = e.message;
-    try { const d = JSON.parse(msg.replace(/^HTTP \d+:\s*/, '')); msg = d.warning || d.error || msg; } catch {}
-    return { ok: false, warning: msg };
-  }
-}
-async function submitReport(text) {
-  return api('/api/reports', { method: 'POST', body: JSON.stringify({ text }) });
-}
 async function renderBanOverlay(me) {
   if (!me || !me.ban) return;
   if (document.getElementById('ban-overlay')) return;
@@ -231,8 +216,11 @@ async function renderBanOverlay(me) {
   document.body.style.overflow = 'hidden';
 }
 
-window.loadComments = loadComments; window.checkProfanity = checkProfanity;
-window.submitReport = submitReport; window.renderBanOverlay = renderBanOverlay;
-
-
-
+window.api = api; window.esc = esc;
+window.avatarNode = avatarNode; window.avatarUrl = avatarUrl; window.isVerified = isVerified; window.authorLink = authorLink; window.verifiedBadge = verifiedBadge;
+window.renderNav = renderNav; window.doLogout = doLogout;
+window.openSearch = openSearch; window.closeSearch = closeSearch;
+window.codeCard = codeCard; window.loadMe = loadMe;
+window.heartSvg = heartSvg; window.renderBanOverlay = renderBanOverlay;
+window.showCodeSkeleton = showCodeSkeleton;
+window.openSidebar = openSidebar; window.closeSidebar = closeSidebar;

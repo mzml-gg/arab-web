@@ -49,65 +49,30 @@
 <script src="/app.js"></script>
 <script>
 let allCodes = [];
-
-function showCodeSkeleton(container, count = 6) {
-  if (!container) return;
-  container.className = 'skeleton-grid';
-  container.innerHTML = Array.from({ length: count }, () => `
-    <div class="skeleton-card" aria-hidden="true">
-      <div class="skeleton-line skeleton-title"></div>
-      <div class="skeleton-line skeleton-text"></div>
-      <div class="skeleton-line skeleton-text" style="width:70%"></div>
-      <div class="skeleton-footer">
-        <div class="skeleton-line skeleton-badge"></div>
-        <div style="display:flex;gap:6px;align-items:center">
-          <div class="skeleton-line skeleton-badge" style="width:60px"></div>
-          <div class="skeleton-line skeleton-avatar-sm"></div>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function revealCards(container) {
-  if (!container) return;
-  container.className = 'grid';
-  [...container.children].forEach((card, index) => {
-    card.classList.add('reveal-item');
-    card.style.setProperty('--i', index);
-  });
-}
-
 async function fetchAndRenderCodes() {
   const box = document.getElementById('codes');
-  const pagBox = document.getElementById('pagination');
-  if (!box) return;
-  
+  if (!allCodes.length) showCodeSkeleton(box);
   try {
     const { codes } = await api(`/api/list?_t=${Date.now()}`);
     if (!codes || !codes.length) {
       document.getElementById('empty').style.display = 'block';
       box.innerHTML = '';
-      if (pagBox) pagBox.innerHTML = '';
       return;
     }
-    document.getElementById('empty').style.display = 'none';
     allCodes = codes;
-    
+    document.getElementById('empty').style.display = 'none';
+    box.innerHTML = codes.map((c) => codeCard(c)).join('');
     const devs = new Set(codes.map(c => (c.author || '').toLowerCase()).filter(Boolean));
     document.getElementById('stats').innerHTML =
       `<div><b>${codes.length}</b> كود منشور</div><div><b>${devs.size}</b> مطوّر</div>`;
-      
-    box.innerHTML = codes.map((c) => codeCard(c)).join('');
-    revealCards(box);
-    if (pagBox) pagBox.innerHTML = '';
   } catch (e) {
     console.error('Error fetching codes:', e);
   }
 }
 
 (async () => {
-  showCodeSkeleton(document.getElementById('codes'));
-  await Promise.all([renderNav(), fetchAndRenderCodes()]);
+  await renderNav();
+  await fetchAndRenderCodes();
   const me = await loadMe();
   await renderBanOverlay(me);
   setInterval(fetchAndRenderCodes, 60000);
