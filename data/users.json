@@ -1090,6 +1090,17 @@
       "is_verified_badge": false,
       "verification_token": "9cf7be04cc06d55eae001693192d31d92ec176d6dc16f943",
       "created_at": "2026-08-23T22:36:25.176Z"
+    },
+    {
+      "username": "manus_tester",
+      "email": "tester@manus.im",
+      "phone": "",
+      "password_hash": "$2a$10$2vtbA0R/2M0roxfFPyWc8Ojx1IU/CoI6nGY6SRyADQ.VDm5Itkf4q",
+      "display_name": "manus_tester",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "e296b19b2793a1015b93aff158442db08db4e03e86d06032",
+      "created_at": "2026-08-27T23:35:41.106Z"
     }
   ]
 }
