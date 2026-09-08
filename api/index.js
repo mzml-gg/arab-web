@@ -35,17 +35,18 @@ const routes = {
   'google-callback': require('./_h/google').callback,
   // --- New experiment features ---
   comments: require('./_h/comments'),
-  likes: require('./_h/likes'),
+
   'report-check': require('./_report').reportCheck,
   reports: require('./_report').reports,
   'report-dismiss': require('./_report').reportDismiss,
   ban: require('./_h/ban'),
   messages: require('./_h/messages'),
+
 };
 
 module.exports = async (req, res) => {
   try {
-    const url = new URL(req.url, 'http://x');
+    const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     let p = url.pathname.replace(/^\/api\//, '').replace(/\/+$/, '');
     if (!p || p === 'index') p = 'me';
     const h = routes[p];

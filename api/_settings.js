@@ -1,9 +1,8 @@
-// Settings Helper for Cloudflare Workers
-import { readJson, writeJson } from './_gh';
+const { readJson, writeJson } = require('./_gh');
 
 const PATH = 'data/settings.json';
 
-export const DEFAULT_BANNED = [
+const DEFAULT_BANNED = [
   'porn', 'porno', 'pornhub', 'xnxx', 'xvideos', 'xhamster', 'sex', 'sexy',
   'nude', 'nudes', 'nsfw', 'hentai', 'onlyfans', 'escort', 'viagra', 'incest',
   'rape', 'child porn', 'cp video', 'carding', 'cc checker', 'ddos', 'botnet',
@@ -13,9 +12,27 @@ export const DEFAULT_BANNED = [
   'تهكير حسابات', 'سرقة حسابات', 'كروت مسروقة', 'بطاقات مسروقة',
 ];
 
+const DEFAULTS = {
+  auto_approve: false,
+  filter_enabled: true,
+  // When true, any user can delete their own code instantly (no admin request).
+  direct_delete: false,
+  // When false, the "طلب حذف" flow is disabled entirely.
+  delete_requests_enabled: true,
+  // Google one-click sign-in.
+  google_login_enabled: true,
+  // Master switch for new account creation (email + google).
+  signup_enabled: true,
+  // Account self-service features.
+  email_change_enabled: true,
+  username_change_enabled: true,
+  account_delete_enabled: true,
+  banned_words: DEFAULT_BANNED,
+};
+
 const bool = (v, d) => (v === undefined ? d : !!v);
 
-export async function getSettings() {
+async function getSettings() {
   const { data } = await readJson(PATH, {});
   return {
     auto_approve: bool(data.auto_approve, false),
@@ -33,12 +50,13 @@ export async function getSettings() {
   };
 }
 
-export async function saveSettings(next) {
+async function saveSettings(next) {
   await writeJson(PATH, next, 'settings: update');
   return next;
 }
 
-export function scanContent({ title = '', description = '', code = '', filename = '' }, words) {
+// Returns the matched banned word, or null when clean.
+function scanContent({ title = '', description = '', code = '', filename = '' }, words) {
   const hay = `${title}\n${description}\n${filename}\n${code}`.toLowerCase();
   for (const w of words || []) {
     const t = String(w || '').trim().toLowerCase();
@@ -47,3 +65,5 @@ export function scanContent({ title = '', description = '', code = '', filename 
   }
   return null;
 }
+
+module.exports = { getSettings, saveSettings, scanContent, DEFAULTS, DEFAULT_BANNED };

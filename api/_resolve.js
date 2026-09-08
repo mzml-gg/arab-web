@@ -1,7 +1,8 @@
-// Filename Resolver for Cloudflare Workers
-import { readJson } from './_gh';
+const { readJson } = require('./_gh');
 
-export async function resolveFilename(name) {
+// Resolves a requested code name to the real file in codes/.
+// Handles Vercel cleanUrls stripping ".html" (e.g. /c/demo.html -> /c/demo).
+async function resolveFilename(name) {
   const raw = String(name || '').trim();
   if (!raw) return null;
   const { data } = await readJson('data/manifest.json', { codes: [] });
@@ -20,3 +21,5 @@ export async function resolveFilename(name) {
 
   return raw;
 }
+
+module.exports = { resolveFilename };

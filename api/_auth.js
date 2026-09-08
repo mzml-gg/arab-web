@@ -1,60 +1,49 @@
-// Auth Helper for Cloudflare Workers
-import { readJson, writeJson } from './_gh';
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const { readJson, writeJson } = require('./_gh');
 
-// Note: In Workers, we should use Web Crypto for JWT or a compatible library.
-// For now, we'll keep using jsonwebtoken but ensure it's bundled.
-// If it fails, we will switch to jose or manual Web Crypto.
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-
+const SECRET = process.env.JWT_SECRET || 'change-me';
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'mzmlzip@gmail.com').toLowerCase();
 const USERS_PATH = 'data/users.json';
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_RE = /^[a-zA-Z0-9_]{3,20}$/;
 
-export const getSecret = () => globalThis.process.env.JWT_SECRET || 'change-me';
-export const getAdminEmail = () => (globalThis.process.env.ADMIN_EMAIL || 'mzmlzip@gmail.com').toLowerCase();
+function sign(payload) { return jwt.sign(payload, SECRET, { expiresIn: '30d' }); }
+function verify(token) { try { return jwt.verify(token, SECRET); } catch { return null; } }
 
-export function sign(payload) { 
-  return jwt.sign(payload, getSecret(), { expiresIn: '30d' }); 
-}
-
-export function verify(token) { 
-  try { return jwt.verify(token, getSecret()); } catch { return null; } 
-}
-
-export function parseCookies(request) {
-  const cookieHeader = request.headers.get('Cookie') || '';
+function parseCookies(req) {
+  const h = req.headers.cookie || '';
   const out = {};
-  cookieHeader.split(';').forEach((c) => {
+  h.split(';').forEach((c) => {
     const [k, ...v] = c.trim().split('=');
     if (k) out[k] = decodeURIComponent(v.join('='));
   });
   return out;
 }
 
-export function setSessionCookie(token) {
-  return `session=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${60 * 60 * 24 * 30}`;
+function setSessionCookie(res, token) {
+  res.setHeader('Set-Cookie', [
+    `session=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${60 * 60 * 24 * 30}`,
+  ]);
+}
+function clearSessionCookie(res) {
+  res.setHeader('Set-Cookie', ['session=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0']);
 }
 
-export function clearSessionCookie() {
-  return 'session=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0';
-}
-
-export async function loadUsers() {
+async function loadUsers() {
   const { data } = await readJson(USERS_PATH, { users: [] });
   if (!data.users) data.users = [];
   return data;
 }
-
-export async function saveUsers(data, msg) {
+async function saveUsers(data, msg) {
   await writeJson(USERS_PATH, data, msg || 'chore: update users');
 }
 
-export function isAdminEmail(email) { 
-  return (email || '').toLowerCase() === getAdminEmail(); 
-}
+function isAdminEmail(email) { return (email || '').toLowerCase() === ADMIN_EMAIL; }
 
-export function publicUser(u) {
+function publicUser(u) {
   if (!u) return null;
   const admin = isAdminEmail(u.email);
   return {
@@ -71,8 +60,8 @@ export function publicUser(u) {
   };
 }
 
-export async function currentUser(request) {
-  const cookies = parseCookies(request);
+async function currentUser(req) {
+  const cookies = parseCookies(req);
   const t = cookies.session;
   if (!t) return null;
   const p = verify(t);
@@ -82,21 +71,21 @@ export async function currentUser(request) {
   return u || null;
 }
 
-export async function readBody(request) {
-  try {
-    // Clone request to avoid stream issues if needed, though usually one-time is fine
-    const body = await request.clone().json();
-    return body || {};
-  } catch (e) {
-    return {};
-  }
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let d = '';
+    req.on('data', (c) => (d += c));
+    req.on('end', () => {
+      try { resolve(d ? JSON.parse(d) : {}); } catch (e) { reject(e); }
+    });
+    req.on('error', reject);
+  });
 }
 
-export function randomToken(n = 24) {
-  const array = new Uint8Array(n);
-  crypto.getRandomValues(array);
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
-}
+function randomToken(n = 24) { return crypto.randomBytes(n).toString('hex'); }
 
-export { bcrypt, jwt, USERS_PATH, EMAIL_RE, USERNAME_RE };
-export const ADMIN_EMAIL = getAdminEmail();
+module.exports = {
+  bcrypt, jwt, sign, verify, parseCookies, setSessionCookie, clearSessionCookie,
+  loadUsers, saveUsers, currentUser, publicUser, readBody, randomToken,
+  isAdminEmail, ADMIN_EMAIL, EMAIL_RE, USERNAME_RE, SECRET,
+};

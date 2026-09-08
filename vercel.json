@@ -2,17 +2,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/u/(.*)",
-      "destination": "/user"
-    },
-    {
-      "source": "/c/(.*)",
-      "destination": "/code"
-    }
+    { "source": "/api/:path*", "destination": "/api/index" },
+    { "source": "/u/:username", "destination": "/user" },
+    { "source": "/c/:filename", "destination": "/code" }
   ]
 }

@@ -1092,15 +1092,58 @@
       "created_at": "2026-08-23T22:36:25.176Z"
     },
     {
-      "username": "manus_tester",
-      "email": "tester@manus.im",
+      "username": "mzmlzip3",
+      "email": "mzmlzip3@gmail.com",
       "phone": "",
-      "password_hash": "$2a$10$2vtbA0R/2M0roxfFPyWc8Ojx1IU/CoI6nGY6SRyADQ.VDm5Itkf4q",
-      "display_name": "manus_tester",
-      "verified": false,
+      "password_hash": "$2a$10$KLZ2JcZQqbekfHafHgdYo.AuGM/Lp/JA7k4Knwi5hdEs52y9WkF2i",
+      "display_name": "مزمل zip",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocJIJPOPvIaS25oa6Kto3lHOgcSAjrwH2vGLTx-DiEJDO5E1yso=s96-c",
+      "verified": true,
       "is_verified_badge": false,
-      "verification_token": "e296b19b2793a1015b93aff158442db08db4e03e86d06032",
-      "created_at": "2026-08-27T23:35:41.106Z"
+      "provider": "google",
+      "created_at": "2026-08-25T09:07:26.244Z"
+    },
+    {
+      "username": "7rspeedo",
+      "email": "7rspeedo@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$g6AGpMNpM9QCCUdN/aAgzO/UWY5uAvKokqI7IRDymBqEmIZnlcZUq",
+      "display_name": "7rSpeed",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocK26Naws0ThKstVttutD6cLFbaV3B7kKziho3EwVqhxHpnHxDM=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-26T13:35:21.873Z"
+    },
+    {
+      "username": "alaarag75",
+      "email": "alaarag75@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$QZeQOiBr5jN8GSfYYmJw3OeblZsm7OL2NwMnfqj8MZzvxsvOTigIK",
+      "display_name": "Ahmed Alaarag",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocJ4aKubSwZc8pnVXR9sNy5u7h_ymqsM6EFzm7qz0IMeROSRAyBd=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-26T17:23:07.278Z"
+    },
+    {
+      "username": "m30639102",
+      "email": "m30639102@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$VG7o2HDqV.sH2Ww0WYwKM.2YFtZTbxRhX7ELLa2wbn8wZ73RL9Lhq",
+      "display_name": "𝑴𝑨7",
+      "avatar_url": "https://nezukouploads.servegame.net/file/zfjXS.jpg",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-08-26T17:30:53.608Z",
+      "profile_updated_at": "2026-08-26T17:33:52.218Z",
+      "banner_url": null,
+      "bio": "",
+      "location": "مصر",
+      "website": "",
+      "links": []
     }
   ]
 }
