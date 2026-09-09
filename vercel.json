@@ -22,5 +22,17 @@
       "source": "/c/:filename",
       "destination": "/code"
     }
-  ]
+  ],
+  "functions": {
+    "api/index.js": {
+      "includeFiles": [
+        "api/**/*.js"
+      ]
+    },
+    "api/list-direct.js": {
+      "includeFiles": [
+        "api/**/*.js"
+      ]
+    }
+  }
 }
