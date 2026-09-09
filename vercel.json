@@ -2,9 +2,25 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/api/health", "destination": "/api/health.js" },
-    { "source": "/api/:path*", "destination": "/api/index" },
-    { "source": "/u/:username", "destination": "/user" },
-    { "source": "/c/:filename", "destination": "/code" }
+    {
+      "source": "/api/list-direct",
+      "destination": "/api/list-direct.js"
+    },
+    {
+      "source": "/api/health",
+      "destination": "/api/health.js"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/u/:username",
+      "destination": "/user"
+    },
+    {
+      "source": "/c/:filename",
+      "destination": "/code"
+    }
   ]
 }
