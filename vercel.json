@@ -25,10 +25,10 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "api/**/*.js"
+      "includeFiles": "api/_h/**"
     },
     "api/list-direct.js": {
-      "includeFiles": "api/**/*.js"
+      "includeFiles": "api/_h/**"
     }
   }
 }
