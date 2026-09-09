@@ -3,14 +3,6 @@
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/api/list-direct",
-      "destination": "/api/list-direct.js"
-    },
-    {
-      "source": "/api/health",
-      "destination": "/api/health.js"
-    },
-    {
       "source": "/api/:path*",
       "destination": "/api/index"
     },
@@ -25,10 +17,7 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "api/_h/**"
-    },
-    "api/list-direct.js": {
-      "includeFiles": "api/_h/**"
+      "includeFiles": "api/**/*.js"
     }
   }
 }

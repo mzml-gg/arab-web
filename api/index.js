@@ -51,7 +51,7 @@ module.exports = async (req, res) => {
     if (!p || p === 'index') p = 'me';
     const h = routes[p];
     if (!h) return res.status(404).json({ error: 'Not found: ' + p });
-    return h(req, res);
+    return await h(req, res);
   } catch (e) {
     console.error('router error:', e);
     res.status(500).json({ error: 'خطأ داخلي: ' + (e && e.message ? e.message : 'unknown') });
