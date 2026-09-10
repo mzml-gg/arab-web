@@ -13,7 +13,7 @@ async function gh(path, opts = {}, retries = 2) {
     'User-Agent': 'arab-code-web',
     ...(opts.headers || {})
   };
-  if (TOKEN) headers['Authorization'] = `Bearer ${TOKEN}`;
+  if (TOKEN && !opts.__anon) headers['Authorization'] = `Bearer ${TOKEN}`;
 
   // Cache handling for GET requests
   const isGet = !opts.method || opts.method === 'GET';
@@ -25,6 +25,11 @@ async function gh(path, opts = {}, retries = 2) {
   try {
     const res = await fetch(`${API}${path}`, { ...opts, headers });
     if (!res.ok) {
+      if (res.status === 401 && isGet && TOKEN && !opts.__anon) {
+        // Public repository fallback: keep read-only pages available if Vercel's
+        // secret is stale/invalid. Mutations never use this fallback.
+        return gh(path, { ...opts, __anon: true }, retries);
+      }
       if (res.status === 409 && retries > 0) { // Conflict retry (common in GH API)
         await new Promise(r => setTimeout(r, 1000));
         return gh(path, opts, retries - 1);
