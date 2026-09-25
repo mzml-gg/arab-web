@@ -1144,6 +1144,17 @@
       "location": "مصر",
       "website": "",
       "links": []
+    },
+    {
+      "username": "montetopdevd",
+      "email": "mzmlzip4@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$N0zX29a7mLdKxVFVwhxv6uzhUUn9V8n70kvVjjliNeTk/OnHEhweq",
+      "display_name": "montetopdevd",
+      "verified": false,
+      "is_verified_badge": false,
+      "verification_token": "7858a2dcc82479569ba20a836dfd97e19d7aded34bc74e34",
+      "created_at": "2026-09-25T11:08:01.572Z"
     }
   ]
 }
