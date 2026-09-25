@@ -28,22 +28,23 @@ module.exports = async (req, res) => {
     if (data.users.some((u) => u.email.toLowerCase() === emailLower))
       return res.status(400).json({ error: 'الإيميل مسجل مسبقاً' });
 
+    // The main admin already exists; public signup can never create an admin.
+    if (emailLower === ADMIN_EMAIL) return res.status(400).json({ error: 'الإيميل مسجل مسبقاً' });
     const password_hash = await bcrypt.hash(password, 10);
-    const isAdmin = emailLower === ADMIN_EMAIL;
     const verification_token = randomToken(24);
     const user = {
       username, email, phone: phone || '',
       password_hash,
-      display_name: isAdmin ? 'arab top' : username,
-      verified: isAdmin ? true : false,
-      is_verified_badge: isAdmin ? true : false,
-      verification_token: isAdmin ? null : verification_token,
+      display_name: username,
+      verified: false,
+      is_verified_badge: false,
+      verification_token,
       created_at: new Date().toISOString(),
     };
     data.users.push(user);
     await saveUsers(data, `chore: register ${username}`);
 
-    if (!isAdmin) {
+    {
       const base = process.env.PUBLIC_BASE_URL || `https://${req.headers.host}`;
       const verifyUrl = `${base}/api/verify?token=${verification_token}&u=${encodeURIComponent(username)}`;
       try {
@@ -53,7 +54,7 @@ module.exports = async (req, res) => {
         return res.status(200).json({ ok: true, warning: 'الحساب أنشئ لكن فشل إرسال إيميل التفعيل. جرّب "نسيت كلمة السر" أو راسل الإدارة.' });
       }
     }
-    res.status(200).json({ ok: true, needs_verification: !isAdmin });
+    res.status(200).json({ ok: true, needs_verification: true });
   } catch (e) {
     console.error('signup error:', e);
     res.status(500).json({ error: 'خطأ داخلي: ' + (e && e.message ? e.message : 'unknown') });
