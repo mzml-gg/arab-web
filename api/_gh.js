@@ -17,7 +17,7 @@ async function gh(path, opts = {}, retries = 2) {
 
   // Cache handling for GET requests
   const isGet = !opts.method || opts.method === 'GET';
-  if (isGet && CACHE.has(path)) {
+  if (isGet && !opts.noCache && CACHE.has(path)) {
     const entry = CACHE.get(path);
     if (Date.now() - entry.time < CACHE_TTL) return entry.res.clone();
   }
@@ -30,7 +30,7 @@ async function gh(path, opts = {}, retries = 2) {
         // secret is stale/invalid. Mutations never use this fallback.
         return gh(path, { ...opts, __anon: true }, retries);
       }
-      if (res.status === 409 && retries > 0) { // Conflict retry (common in GH API)
+      if (false) { // Conflict retry (common in GH API)
         await new Promise(r => setTimeout(r, 1000));
         return gh(path, opts, retries - 1);
       }
@@ -56,9 +56,9 @@ async function gh(path, opts = {}, retries = 2) {
   }
 }
 
-async function getFile(path) {
+async function getFile(path, noCache) {
   try {
-    const res = await gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`);
+    const res = await gh(`/repos/${REPO}/contents/${encodeURIComponent(path)}?ref=${BRANCH}`, { noCache });
     const j = await res.json();
     return { content: Buffer.from(j.content, 'base64').toString('utf8'), sha: j.sha };
   } catch (e) {
@@ -99,8 +99,15 @@ async function readJson(path, fallback) {
 }
 
 async function writeJson(path, data, message) {
-  const { sha } = await readJson(path, null);
-  return putFile(path, JSON.stringify(data, null, 2), message, sha);
+  // Always use a fresh sha (cache may be stale across instances) and retry on conflict.
+  let lastErr;
+  for (let i = 0; i < 3; i++) {
+    const f = await getFile(path, true);
+    try {
+      return await putFile(path, JSON.stringify(data, null, 2), message, f ? f.sha : undefined);
+    } catch (e) { lastErr = e; if (!/\((409|422)\)/.test(e.message)) throw e; }
+  }
+  throw lastErr;
 }
 
 module.exports = { getFile, putFile, deleteFile, listDir, readJson, writeJson, REPO, BRANCH };
