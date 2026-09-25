@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const { readJson, writeJson } = require('./_gh');
 
 const SECRET = process.env.JWT_SECRET || 'change-me';
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'mzmlzip@gmail.com').toLowerCase();
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || '3rab_top_devs@top.com').toLowerCase();
 const USERS_PATH = 'data/users.json';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
