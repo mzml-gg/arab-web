@@ -1,5 +1,5 @@
 {
-  "auto_approve": false,
+  "auto_approve": true,
   "filter_enabled": false,
   "direct_delete": true,
   "delete_requests_enabled": true,
