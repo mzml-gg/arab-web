@@ -2,42 +2,41 @@
 // Spam Protection: simple lock for interactive requests
 const API_LOCKS = new Set();
 async function api(path, opts = {}, retries = 2) {
-  const isWrite = opts.method && opts.method !== 'GET';
+  const isWrite = !!(opts.method && opts.method !== 'GET');
   const lockKey = `${opts.method || 'GET'}:${path.split('?')[0]}`;
-  
-  if (isWrite && API_LOCKS.has(lockKey)) {
-    console.warn('Spam protection: request ignored', lockKey);
-    return { spam: true };
-  }
-  
+  // Block accidental double-clicks on writes. Throw (never return a fake object)
+  // so callers don't read properties of an unexpected response.
+  if (isWrite && API_LOCKS.has(lockKey)) throw new Error('الطلب قيد التنفيذ، انتظر لحظة...');
   if (isWrite) API_LOCKS.add(lockKey);
-  
   try {
-    const res = await fetch(path, {
-      credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) },
-      ...opts,
-    });
+    let res;
+    try {
+      res = await fetch(path, {
+        credentials: 'same-origin',
+        ...opts,
+        headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) },
+      });
+    } catch (netErr) {
+      // Only retry network failures on safe (GET) requests — never replay writes.
+      if (!isWrite && retries > 0) {
+        await new Promise(r => setTimeout(r, 800));
+        return api(path, opts, retries - 1);
+      }
+      throw new Error('تعذّر الاتصال بالخادم، تحقق من الإنترنت');
+    }
     const text = await res.text();
     let data = {};
     try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
-    
     if (!res.ok) {
-      if (res.status >= 500 && retries > 0) {
-        await new Promise(r => setTimeout(r, 1000));
+      if (!isWrite && res.status >= 500 && retries > 0) {
+        await new Promise(r => setTimeout(r, 800));
         return api(path, opts, retries - 1);
       }
       throw new Error(data.error || `HTTP ${res.status}`);
     }
     return data;
-  } catch (e) {
-    if (retries > 0) {
-      await new Promise(r => setTimeout(r, 1000));
-      return api(path, opts, retries - 1);
-    }
-    throw e;
   } finally {
-    if (isWrite) setTimeout(() => API_LOCKS.delete(lockKey), 1500); // 1.5s lock
+    if (isWrite) API_LOCKS.delete(lockKey);
   }
 }
 
