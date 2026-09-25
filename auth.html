@@ -203,7 +203,7 @@ document.getElementById('form').onsubmit = async (e) => {
     if (mode === 'signup') {
       const r = await api('/api/signup', { method: 'POST', body: JSON.stringify(body) });
       msg.className = 'msg ok';
-      msg.textContent = r.needs_verification ? '✓ تم الإنشاء. تحقق من بريدك لتفعيل الحساب.' : '✓ تم إنشاء حساب الأدمن. سجّل الدخول.';
+      msg.textContent = r.warning ? ('✓ ' + r.warning) : '✓ تم إنشاء الحساب. تحقق من بريدك لتفعيل الحساب.';
       setTimeout(() => setMode('login'), 2000);
     } else if (mode === 'reset') {
       const resetBody = { ...body, token: params.get('token') };
@@ -215,6 +215,7 @@ document.getElementById('form').onsubmit = async (e) => {
       }, 2000);
     } else {
       const r = await api('/api/login', { method: 'POST', body: JSON.stringify(body) });
+      if (!r || !r.ok || !r.user) throw new Error((r && r.error) || 'فشل تسجيل الدخول');
       location.href = r.user.is_admin ? '/admin' : '/';
     }
   } catch (err) {
