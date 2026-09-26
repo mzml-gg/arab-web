@@ -1179,6 +1179,18 @@
       "is_verified_badge": false,
       "provider": "google",
       "created_at": "2026-09-26T18:31:21.574Z"
+    },
+    {
+      "username": "kozmozkz",
+      "email": "kozmozkz@gmail.com",
+      "phone": "",
+      "password_hash": "$2a$10$p8/KWZOHZRuJpnpoCbb8ZO7AQoNI834QR5VKdudMK.3Kl2LbOQjsm",
+      "display_name": "KOZMO Zkz",
+      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocK1aLQ_2ouk3-eGcck8zjyJ1JQTmfgBs0dvSRmcR8nUni6A=s96-c",
+      "verified": true,
+      "is_verified_badge": false,
+      "provider": "google",
+      "created_at": "2026-09-26T18:51:46.160Z"
     }
   ]
 }
