@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code-45.js",
+      "title": "استبدال الكلمات",
+      "description": "استبدال الكلمات الي في البوت ",
+      "language": "js",
+      "author": "mak8989kamelza",
+      "author_avatar": "https://lh3.googleusercontent.com/a/ACg8ocIuRbGqfS3TAh4uLD2GjQJkLbngzJi99mlsejOWOc2Q0DbiKlcr=s96-c",
+      "author_verified": false,
+      "admin_added": false,
+      "approved_at": "2026-09-26T18:33:38.105Z"
+    },
+    {
       "filename": "code.py",
       "title": "تجربه",
       "description": "تجربه",
