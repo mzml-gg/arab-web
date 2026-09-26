@@ -1,6 +1,17 @@
 {
   "codes": [
     {
+      "filename": "code.py",
+      "title": "تجربه",
+      "description": "تجربه",
+      "language": "py",
+      "author": "sovereignempirex",
+      "author_avatar": "https://nezukouploads.servegame.net/file/Wzo36.png",
+      "author_verified": true,
+      "admin_added": false,
+      "approved_at": "2026-09-26T18:32:23.445Z"
+    },
+    {
       "filename": "code-44.js",
       "title": "عجلة جوجوتسو كايسن",
       "description": "كود جوجوتسو كايسن يلف و يعطيك نقاط و مال و قدرات",
