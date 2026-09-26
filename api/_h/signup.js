@@ -1,13 +1,16 @@
 const { bcrypt, EMAIL_RE, USERNAME_RE, loadUsers, saveUsers, readBody, randomToken, ADMIN_EMAIL } = require('../_auth');
 const { sendVerification } = require('../_mail');
 const { getSettings } = require('../_settings');
+const { verifyTurnstile, clientIp } = require('../_turnstile');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   try {
     const _s = await getSettings();
     if (_s.signup_enabled === false) return res.status(403).json({ error: 'التسجيل الجديد متوقف مؤقتاً' });
-    let { username, email, password, phone } = await readBody(req);
+    let { username, email, password, phone, turnstile_token } = await readBody(req);
+    const ts = await verifyTurnstile(turnstile_token, clientIp(req));
+    if (!ts.ok) return res.status(400).json({ error: ts.error });
     username = (username || '').trim();
     email = (email || '').trim();
     phone = (phone || '').trim();
