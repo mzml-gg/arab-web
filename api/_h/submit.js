@@ -2,6 +2,7 @@ const { currentUser, readBody, isAdminEmail } = require('../_auth');
 const { getFile, putFile, writeJson, readJson } = require('../_gh');
 const { getSettings, scanContent } = require('../_settings');
 const { sendRejection } = require('../_mail');
+const { verifyTurnstile, clientIp } = require('../_turnstile');
 
 function slugify(s) {
   return String(s || 'code').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'code';
@@ -42,7 +43,9 @@ module.exports = async (req, res) => {
   if (!u) return res.status(401).json({ error: 'سجل دخول أولاً' });
   if (!u.verified) return res.status(403).json({ error: 'فعّل بريدك أولاً' });
   try {
-    const { title, description, language, code } = await readBody(req);
+    const { title, description, language, code, turnstile_token } = await readBody(req);
+    const ts = await verifyTurnstile(turnstile_token, clientIp(req));
+    if (!ts.ok) return res.status(400).json({ error: ts.error });
     if (!title || !code) return res.status(400).json({ error: 'العنوان والكود مطلوبان' });
     if (code.length > 200000) return res.status(400).json({ error: 'الكود طويل جداً' });
 
