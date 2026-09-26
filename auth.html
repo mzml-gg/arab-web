@@ -106,6 +106,7 @@
       <a href="#" id="forgot-btn" style="font-size:0.85rem;color:var(--gold);">نسيت كلمة السر؟</a>
     </div>
 
+    <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDSVkFD-ysdHC_H" data-theme="dark" style="margin:10px 0"></div>
     <button type="submit" class="btn primary submit" id="submit-btn">دخول</button>
     <div class="switch">
       <span id="switch-text">ليس لديك حساب؟</span>
@@ -114,6 +115,7 @@
   </form>
 </main>
 <script src="/app.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
 renderNav();
 let mode = 'login';
@@ -197,6 +199,7 @@ document.getElementById('form').onsubmit = async (e) => {
   msg.className = 'msg'; msg.textContent = '';
   const fd = new FormData(e.target);
   const body = Object.fromEntries(fd.entries());
+  body.turnstile_token = (document.querySelector('[name=cf-turnstile-response]') || {}).value || '';
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; const old = btn.textContent; btn.textContent = '...';
   try {
@@ -223,6 +226,7 @@ document.getElementById('form').onsubmit = async (e) => {
     msg.textContent = err.message;
   } finally {
     btn.disabled = false; btn.textContent = old;
+    if (window.turnstile) try { turnstile.reset(); } catch (_) {}
   }
 };
 </script>
