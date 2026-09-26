@@ -1,9 +1,12 @@
 const { bcrypt, loadUsers, sign, setSessionCookie, readBody, ADMIN_EMAIL } = require('../_auth');
+const { verifyTurnstile, clientIp } = require('../_turnstile');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   try {
-    let { email, password } = await readBody(req);
+    let { email, password, turnstile_token } = await readBody(req);
+    const ts = await verifyTurnstile(turnstile_token, clientIp(req));
+    if (!ts.ok) return res.status(400).json({ error: ts.error });
     email = (email || '').trim();
     if (!email || !password) return res.status(400).json({ error: 'الإيميل وكلمة السر مطلوبان' });
     const data = await loadUsers();
